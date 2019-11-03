@@ -12,10 +12,11 @@ public class Performance{
     public void setTime(String time){ this.time = time; }
     public void setDate(String date){ this.date = date; }
     public void setUrl(String url){ this.url = url; }
+ 
 
     public String getUrl(){ return url; }
 
     public String toString(){
-        return event + ":" + time;
+        return event + ":" + time + " - " + date;
     }
 }

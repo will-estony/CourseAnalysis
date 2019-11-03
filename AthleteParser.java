@@ -58,8 +58,10 @@ public class AthleteParser{
                     p.setEvent(split[0]);
                     p.setTime(split[1]);
                     p.setUrl("http:" + table.select("a").attr("href"));
-
-                    a.addPeformance(p);
+                    p.setDate(table.select("span").text());
+                    if(!split[1].equals("DNS") && !split[1].equals("DNF"))
+                        a.addPeformance(p);
+                    
                 }    
             }
         }
@@ -74,9 +76,12 @@ public class AthleteParser{
         with the event as the key and the time as the value.
         */
 
-        String careerBests = doc.select("table").get(0).text().replaceAll("\\(XC\\)", "");
+        String careerBests = doc.select("table").get(0).text();
+
+        String regex = "\\(\\d*\\.\\d+\\)|\\(\\d+\\.\\d*\\)"; //gets rid of wind if they ran <= 200 
+        careerBests = careerBests.replaceAll(regex, "");
+        careerBests = careerBests.replaceAll("\\(XC\\)", "");
         careerBests = careerBests.replaceAll("5 MILE", " 5MILE");
-        System.out.println(careerBests);
         String[] cb = careerBests.split("\\s+");
 
         //Skip every two strings in the array because each couple of strings represents 

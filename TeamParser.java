@@ -39,11 +39,20 @@ public class TeamParser{
             if(table.select("thead").select("tr").select("th").text().contains("NAME")){
                 for(Element td: table.select("td")){
                     if(!td.select("a").attr("href").equals("")){
-                        Athlete a = new Athlete(td.text(), "http:" + td.select("a").attr("href"));
+                        
+                        Athlete a = new Athlete(scrubName(td.text()), "http:" + td.select("a").attr("href"));
                         t.addAthlete(a);
+                        for(Performance p: a.getPerformances()){
+                            t.addMeet(p.getUrl());
+                        }
                     }
                 }
             }
         }
+    }
+    private String scrubName(String name){
+        name = name.replace(",", "");
+        String lastFirst[] = name.split("\\s");
+        return lastFirst[1] + " " + lastFirst[0];
     }
 }

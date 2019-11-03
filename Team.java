@@ -3,12 +3,17 @@ import java.util.ArrayList;
 public class Team{
 
     private ArrayList<Athlete> athletes;
+    private ArrayList<String> meets; //Contains a unique list of urls to meets that have been competed in by a team
     private String tfrrsURL; //The url to a teams XC tffrs page
     private String name;     //The name of an xc team
+
     public Team(String name, String tfrrsURL){
         athletes = new ArrayList<>();
+        meets = new ArrayList<>();
         this.name = name;
         this.tfrrsURL = tfrrsURL;
+
+        parseAthletes();
     }
 
     public String getName(){ return name; }
@@ -18,14 +23,30 @@ public class Team{
         athletes.add(a);
     }
 
-    public void parseAthletes(){
+    private void parseAthletes(){
         TeamParser tp = new TeamParser(this);
         tp.parseAthletes();
     }
 
-    public void printTeam(){
-        for(Athlete a: athletes){
-            a.printAthlete();
+    public void addMeet(String m){
+        if(!meets.contains(m))
+            meets.add(m);
+    }
+
+    public void printMeets(){
+        for(String m: meets){
+            System.out.println(m);
         }
     }
+
+    public void printTeam(){
+        for(Athlete a: athletes){
+            a.printPerformances();
+            System.out.println();
+            a.printPRs();
+            System.out.println("----------------------");
+        }
+    }
+
+    
 }
