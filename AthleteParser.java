@@ -13,37 +13,31 @@ public class AthleteParser{
     
     private Elements tables;
     private Elements headers;
+    private Athlete a;
     Document doc;
     
     private String url;
 
-    public AthleteParser(String url){
+    public AthleteParser(Athlete a){
+        this.a = a;
         try {
-        System.out.println("Establishing a connection to the website...");
-        doc = Jsoup.connect(url).timeout(0).get();
-        System.out.println("Connected");
+
+            this.url = a.getUrl();
+            System.out.println("Establishing a connection to the website...");
+            doc = Jsoup.connect(this.url).timeout(0).get();
+            System.out.println("Connected");
         
-        this.url = url;
-        tables = doc.select("table");
+            
+            tables = doc.select("table");
         
-        headers = doc.select("h1,h2,h3,h4,h5,h6");
+            headers = doc.select("h1,h2,h3,h4,h5,h6");
 
         }catch(IOException e){
             e.printStackTrace();
         }
 
     }
-
-    public void printTables1(){
-        System.out.println(doc.select("table[class=table bests]"));
-        System.out.println(doc.select("table").get(1).select("td").text());
-    }
-
-    public void printTables(){
-
-        if(tables.isEmpty()){
-            System.out.println("Athlete hasn't competed yet");
-        }
+    public void parseMeets(){
 
         /*We want to skip over these when we parse an athlete.
         It seems like these are baked into every athlete (including track only) so no matter
@@ -52,19 +46,46 @@ public class AthleteParser{
         This makes our job easier.*/
         Element firstTable = doc.select("table").get(0); //overall bests
         Element secondTable = doc.select("table").get(1); //outdoor bests
-        Element thirdTable = doc.select("table").get(2); //xc bests
-        Element fourthTable = doc.select("table").get(3); //indoor bests
+        Element thirdTable = doc.select("table").get(2); //indoor bests
+        Element fourthTable = doc.select("table").get(3); //xc bests
 
         for(Element table: tables){
             if(!table.equals(firstTable) && !table.equals(secondTable) && !table.equals(thirdTable) && !table.equals(fourthTable)){
                 if(table.select("td").text().contains("8K")){
-                    System.out.println(table.select("td").text());
-                    System.out.println("http:" + table.select("a").attr("href"));
-                    System.out.println();
+                    String info = table.select("td").text();
+                    String split[] = info.split("\\s+");
+                    Performance p = new Performance();
+                    p.setEvent(split[0]);
+                    p.setTime(split[1]);
+                    p.setUrl("http:" + table.select("a").attr("href"));
+
+                    a.addPeformance(p);
                 }    
             }
-
         }
     }
 
+    public void parseBests(){
+
+        /*
+        The basic idea here is to parse the first table on the tffrs website for a given athlete
+        every other "word" represents an event except for xc which has (XC) 
+        So we get the first tables "text", scrub out all occurances of (XC) then we populate a hash table
+        with the event as the key and the time as the value.
+        */
+
+        String careerBests = doc.select("table").get(0).text().replaceAll("\\(XC\\)", "");
+        careerBests = careerBests.replaceAll("5 MILE", " 5MILE");
+        System.out.println(careerBests);
+        String[] cb = careerBests.split("\\s+");
+
+        //Skip every two strings in the array because each couple of strings represents 
+        //the information necessary to populate a single PR.
+        for(int i = 0; i < cb.length-1; i+=2){
+            a.addPR(cb[i], cb[i+1]);
+        }
+    
+    }
+
+   // public String 
 }

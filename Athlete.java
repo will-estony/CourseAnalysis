@@ -1,5 +1,9 @@
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Athlete {
+	
 	public enum Distance {
 		XC,
 		outdoor_1500m, outdoor_800m,
@@ -22,46 +26,58 @@ public class Athlete {
 		}
 	};
 	public final short numDistances = 5;
-	
+
+	private HashMap<String,String> careerBests;
+	private ArrayList<Performance> performances; 
+
 	private String name, tfrrsURL;
 	private double [] PR, seasonalPR;
 	private int tfrrsValue;
 	
 	
 	public Athlete(String name, String tfrrsURL) {
+		
 		this.name = name;
 		this.tfrrsURL = tfrrsURL;
-		// instantiate PR arrays
-		PR = new double[numDistances];
-		seasonalPR = new double[numDistances];
-		
-		
-		updatePRs();
-		
-		
-	}
+		this.performances = new ArrayList<>(); 
+		this.careerBests = new HashMap<>();
 	
-	public void updatePRs() {
-		String tfrrsString = webURLHandler.pageToString(tfrrsURL);
-		
-		// find the start and end of the "College Bests" table
-		
-		
-		// iterate through each event and try to find the times
-		for (Distance distance : Distance.values()) {
-			int eventStartIndex = tfrrsString.indexOf(distance.getDistanceString());
-			if (eventStartIndex != -1) {	// if .indexOf didn't return a null value
-				int eventEndIndex = eventStartIndex + 1000;
-				String eventTimeString = tfrrsString.substring(eventStartIndex, eventEndIndex);
-				System.out.println(eventTimeString);
-			} else
-				System.out.println("Couldn't find event " + distance.getDistanceString());
-			
-			
-			
+	}
+
+	public void parseStats(){
+		AthleteParser ap = new AthleteParser(this);
+		ap.parseBests();
+		ap.parseMeets();
+
+	}
+
+	public String getUrl(){ return tfrrsURL; }
+
+	public void addPeformance(Performance p){
+		performances.add(p);
+	}
+
+	public void addPR(String event, String time){
+		careerBests.put(event, time);
+	}
+
+	public void printPerformances(){
+		System.out.println(name + " has raced " + performances.size() + " 8k's in his career.");
+		System.out.println("Here are his best times in each event");
+
+		for(Performance p: performances){
+			System.out.println(p);
 		}
-		
-		
 	}
-	
+
+	public void printPRs(){
+		System.out.println(name + " has competed in " + careerBests.size() + " events in his career.");
+		for(String event: careerBests.keySet()){
+			System.out.println(event + " - " + careerBests.get(event));
+		}
+	}
+
+	public void printAthlete(){
+		System.out.println(name);
+	}
 }
