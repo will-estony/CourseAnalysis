@@ -75,19 +75,13 @@ public class AthleteParser{
         So we get the first tables "text", scrub out all occurances of (XC) then we populate a hash table
         with the event as the key and the time as the value.
         */
-
-        String careerBests = doc.select("table").get(0).text();
-
-        String regex = "\\(\\d*\\.\\d+\\)|\\(\\d+\\.\\d*\\)"; //gets rid of wind if they ran <= 200 
-        careerBests = careerBests.replaceAll(regex, "");
-        careerBests = careerBests.replaceAll("\\(XC\\)", "");
-        careerBests = careerBests.replaceAll("5 MILE", " 5MILE");
-        String[] cb = careerBests.split("\\s+");
-
-        //Skip every two strings in the array because each couple of strings represents 
-        //the information necessary to populate a single PR.
-        for(int i = 0; i < cb.length-1; i+=2){
-            a.addPR(cb[i], cb[i+1]);
+        
+        Element careerBests = doc.select("table").get(0);
+        //System.out.println("SIZE" + careerBests.select("td").size());
+        for(int i = 0; i < careerBests.select("td").size()-1; i+=2){
+            if(!careerBests.select("td").get(i).text().equals("")){
+                a.addPR(careerBests.select("td").get(i).text(), careerBests.select("td").get(i+1).text());
+            }
         }
     
     }
