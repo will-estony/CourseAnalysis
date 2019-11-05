@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -28,7 +27,7 @@ public class Athlete {
 	public final short numDistances = 5;
 
 	private HashMap<String,String> careerBests;
-	private ArrayList<Performance> performances; 
+	private ArrayList<Meet> meets; 
 
 	private String name, tfrrsURL;
 	private double [] PR, seasonalPR;
@@ -39,7 +38,7 @@ public class Athlete {
 		
 		this.name = name;
 		this.tfrrsURL = tfrrsURL;
-		this.performances = new ArrayList<>(); 
+		this.meets = new ArrayList<>(); 
 		this.careerBests = new HashMap<>();
 
 		parseStats();
@@ -55,12 +54,12 @@ public class Athlete {
 
 	public String getUrl(){ return tfrrsURL; }
 
-	public void addPeformance(Performance p){
-		performances.add(p);
+	public void addMeet(Meet m){
+		meets.add(m);
 	}
 
-	public ArrayList<Performance> getPerformances(){
-		return performances;
+	public ArrayList<Meet> getMeets(){
+		return meets;
 	}
 
 	public void addPR(String event, String time){
@@ -68,11 +67,11 @@ public class Athlete {
 	}
 
 	public void printPerformances(){
-		System.out.println(name + " has raced " + performances.size() + " 8k's in his career.");
+		System.out.println(name + " has raced " + meets.size() + " 8k's in his career.");
 		System.out.println();
 
-		for(Performance p: performances){
-			System.out.println(p);
+		for(Meet m: meets){
+			System.out.println(m);
 		}
 	}
 

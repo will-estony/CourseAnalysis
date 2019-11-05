@@ -54,14 +54,13 @@ public class AthleteParser{
                 if(table.select("td").text().contains("8K")){
                     String info = table.select("td").text();
                     String split[] = info.split("\\s+");
-                    Performance p = new Performance();
-                    p.setEvent(split[0]);
-                    p.setTime(split[1]);
-                    p.setUrl("http:" + table.select("a").attr("href"));
-                    p.setDate(table.select("span").text());
+                    Meet m = new Meet();
+                    m.setEvent(split[0]);
+                    m.setTime(split[1]);
+                    m.setUrl("http:" + table.select("a").attr("href"));
+                    m.setDate(table.select("span").text());
                     if(!split[1].equals("DNS") && !split[1].equals("DNF"))
-                        a.addPeformance(p);
-                    
+                        a.addMeet(m);
                 }    
             }
         }

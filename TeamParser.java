@@ -42,14 +42,16 @@ public class TeamParser{
                         
                         Athlete a = new Athlete(scrubName(td.text()), "http:" + td.select("a").attr("href"));
                         t.addAthlete(a);
-                        for(Performance p: a.getPerformances()){
-                            t.addMeet(p.getUrl());
+                        for(Meet m: a.getMeets()){
+                            t.addMeetUrl(m.getUrl());
                         }
                     }
                 }
             }
         }
     }
+
+    
     private String scrubName(String name){
         name = name.replace(",", "");
         String lastFirst[] = name.split("\\s");
