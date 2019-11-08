@@ -4,7 +4,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 public class AthleteParser{
 
