@@ -22,7 +22,7 @@ public class AthleteParser{
         try {
 
             this.url = a.getUrl();
-            System.out.println("Establishing a connection to the website...");
+            System.out.println("Connecting to athlete page " + this.url + "...");
             doc = Jsoup.connect(this.url).timeout(0).get();
             System.out.println("Connected");
         
@@ -36,7 +36,7 @@ public class AthleteParser{
         }
 
     }
-    public void parseMeets(){
+    public void parsePerformances(){
 
         /*We want to skip over these when we parse an athlete.
         It seems like these are baked into every athlete (including track only) so no matter
@@ -53,13 +53,20 @@ public class AthleteParser{
                 if(table.select("td").text().contains("8K")){
                     String info = table.select("td").text();
                     String split[] = info.split("\\s+");
-                    Meet m = new Meet();
-                    m.setEvent(split[0]);
-                    m.setTime(split[1]);
-                    m.setUrl("http:" + table.select("a").attr("href"));
-                    m.setDate(table.select("span").text());
-                    if(!split[1].equals("DNS") && !split[1].equals("DNF"))
-                        a.addMeet(m);
+                    
+                    // creates a new Meet passing it the tfrrs URL and the date of the meet
+                    Meet m = new Meet(
+                    		"http:" + table.select("a").attr("href"),
+                    		table.select("span").text());
+                    
+                    // TODO: ? test for meet uniqueness before passing it to the performance ?
+                    // maybe we don't need to do that here...
+                    
+                    // creates a new performance passing it the Event, the event time (as a String), and the meet it occurred at
+                    Performance p = new Performance(split[0], split[1], m);
+                    
+                    // adds performance to athlete
+                    a.addPerformance(p);
                 }    
             }
         }

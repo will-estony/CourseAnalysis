@@ -27,7 +27,8 @@ public class Athlete {
 	public final short numDistances = 5;
 
 	private HashMap<String,String> careerBests;
-	private ArrayList<Meet> meets; 
+	private ArrayList<Meet> meets;
+	private ArrayList<Performance> performances;
 
 	private String name, tfrrsURL;
 	private double [] PR, seasonalPR;
@@ -39,6 +40,7 @@ public class Athlete {
 		this.name = name;
 		this.tfrrsURL = tfrrsURL;
 		this.meets = new ArrayList<>(); 
+		this.performances = new ArrayList<>();
 		this.careerBests = new HashMap<>();
 
 		parseStats();
@@ -48,12 +50,16 @@ public class Athlete {
 	private void parseStats(){
 		AthleteParser ap = new AthleteParser(this);
 		ap.parseBests();
-		ap.parseMeets();
+		ap.parsePerformances();
 
 	}
 
 	public String getUrl(){ return tfrrsURL; }
 
+	public void addPerformance(Performance p) {
+		performances.add(p);
+	}
+	
 	public void addMeet(Meet m){
 		meets.add(m);
 	}
@@ -67,17 +73,18 @@ public class Athlete {
 	}
 
 	public void printPerformances(){
-		System.out.println(name + " has raced " + meets.size() + " 8k's in his career.");
+		System.out.println(name + " has entered " + performances.size() + " 8k's in their career.");
 		System.out.println();
 
-		for(Meet m: meets){
-			System.out.println(m);
+		// prints every performance
+		for(Performance p: performances){
+			System.out.println(p);
 		}
 	}
 
 	public void printPRs(){
-		System.out.println(name + " has competed in " + careerBests.size() + " different event(s) in his career.");
-		System.out.println("Here are his best times in each event");
+		System.out.println(name + " has competed in " + careerBests.size() + " different event(s) in their career.");
+		System.out.println("Here are their best times in each event");
 		System.out.println();
 
 		for(String event: careerBests.keySet()){
