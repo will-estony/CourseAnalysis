@@ -3,8 +3,8 @@ public class programMain {
 
 	public static void main(String[] args) {
 				
-		//Team t = new Team("Browdies", "https://www.tfrrs.org/teams/xc/CT_college_m_Trinity_CT.html");
-		//t.printMeets();
+		Team t = new Team("Browdies", "https://www.tfrrs.org/teams/xc/CT_college_m_Trinity_CT.html");
+		t.printTeam();
 
 		//MeetParser mp = new MeetParser("https://www.tfrrs.org/results/xc/15785/Connecticut_College_XC_Invitational");
 		//mp.parseTables();
@@ -16,8 +16,8 @@ public class programMain {
 
 		//a.printPerformances();
 
-		MeetParser mp = new MeetParser("http://www.tfrrs.org/results/xc/9693/NEICAAA_XC_Championship");
-		mp.parseRows();
+		//MeetParser mp = new MeetParser("http://www.tfrrs.org/results/xc/9693/NEICAAA_XC_Championship");
+		//mp.parseRows();
 		//mp.parseTables();
 	
 		

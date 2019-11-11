@@ -1,14 +1,30 @@
 public class Performance{
-    private Meet meet;
+	private String event; //the event the athlete competed in ex. 8k
+    private double time;  //the time the athlete completed the event in, in seconds
+    private Meet meet;    //the meet the performance happened at
 
-    public Performance(Meet meet){
+    public Performance(String event, String time, Meet meet){
+    	this.event = event;
+    	this.time = timeStringToDouble(time);	// converts time String to a double value
         this.meet = meet;
     }
- 
+    
+    // Getter and Setters
+    public String getEvent() { return event; }
+    public double getTime() { return time; }
     public Meet getMeet(){ return meet; }
+    public String getDate() { return meet.getDate(); }
+    
+
     
     // converts String of the form hh:mm:ss.ms to a double
     public static double timeStringToDouble(String timeString) {
+    	// if the mark was a DNF or a DNS store the result as a -1 or -2 respectively
+    	if (timeString.equals("DNF"))
+    		return -1;
+    	if (timeString.equals("DNS"))
+    		return -2;
+    	
         double timeSecondsDouble = 0;   // initialize return value
         int indexOfFirstDecimal = timeString.indexOf(".");   // searches for the first decimal point
         // if a decimal was not found
@@ -81,4 +97,13 @@ public class Performance{
         return ret; // returns string with format dd:hh:mm:ss.ms
     }
     
+    public String toString(){
+    	// if the performance is a DNF or DNS
+    	if (time == -1)
+    		return event + ": DNF";
+    	else if (time == -2)
+    		return event + ": DNS";
+    	// if it's a regular performance
+        return event + ": " + timeDoubleToString(time) + " - " + getDate();
+    }
 }
