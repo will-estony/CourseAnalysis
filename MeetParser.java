@@ -4,6 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MeetParser{
 
@@ -32,8 +33,11 @@ public class MeetParser{
 
     //Tables and titles combined found in div tag: col-lg-12
     //Just the titles are found in div tag: custom-table-title.custom-table-title-xc
-    public void parseRows(){
+    public void parseMeet(){
+
+        HashMap<String, Integer> headerMap = new HashMap<>();
         ArrayList<String> raceTitles = new ArrayList<>();
+
         for(Element race : doc.select("div.col-lg-12")){
             String raceTitle = race.select("div.custom-table-title.custom-table-title-xc").text();
             if(raceTitle.contains("Men") || raceTitle.contains("Women")){
@@ -41,21 +45,31 @@ public class MeetParser{
             }
             
         }
+        //PL, NAME, YEAR, TEAM, Avg. Mile, TIME, SCORE
         //There was some sort of JV/Varsity race distinction
         if(raceTitles.size() > 4){
             for(Element race : doc.select("div.col-lg-12")){
                 String raceTitle = race.select("div.custom-table-title.custom-table-title-xc").text();
                 if(raceTitle.contains("Men") && raceTitle.contains("Varsity") && raceTitle.contains("Individual")){
+                    Elements headers = race.select("thead");
+                    int i = 0;
+
+                    for(Element head: headers.select("tr").select("th")){
+                        headerMap.put(head.text(),i);
+                        i++;
+                    }
+
                     Elements results = race.select("tbody.color-xc");
+
                     for(Element result: results.select("tr")){
-                        System.out.print(result.select("td").get(1).text() + " - ");
-                        System.out.print(result.select("td").get(5).text());
+                        System.out.print(result.select("td").get(headerMap.get("NAME")).text() + " - ");
+                        System.out.print(result.select("td").get(headerMap.get("TIME")).text());
                         System.out.println();
                     }
                 }
             }
 
-        }else{ //There was merely a women's race and men's race
+        }else{ //There was merely a women's race and men's race, no jv or varsity
 
         }
     }
