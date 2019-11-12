@@ -91,6 +91,7 @@ public class Performance{
                 return ret.substring(1);
             return ret;
         }
+
         // (god forbid we get here)
         // concatenates on number of days
         ret = String.format("%1d", timeSeconds/86400) + ":" + ret;

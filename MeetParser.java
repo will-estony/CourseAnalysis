@@ -3,6 +3,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MeetParser{
 
@@ -29,23 +30,33 @@ public class MeetParser{
         }
     }
 
-    public void parseTables(){
-        for(Element t: tables){
-            System.out.println(t.select("thead").select("tr").select("th").text());
-        }
-    }
-
-    public void parseHeaders(){
-        for(int i = 0; i < headers.size(); i++){
-            if(headers.get(i).text().toLowerCase().contains("8k") && headers.get(i).text().toLowerCase().contains("individual")){
-                System.out.println(tables.get(i).text());
-            }
-        }
-    }
-    //col-lg-12
+    //Tables and titles combined found in div tag: col-lg-12
+    //Just the titles are found in div tag: custom-table-title.custom-table-title-xc
     public void parseRows(){
-        for(Element r : rows){
-            System.out.println(r);
+        ArrayList<String> raceTitles = new ArrayList<>();
+        for(Element race : doc.select("div.col-lg-12")){
+            String raceTitle = race.select("div.custom-table-title.custom-table-title-xc").text();
+            if(raceTitle.contains("Men") || raceTitle.contains("Women")){
+                raceTitles.add(raceTitle);
+            }
+            
+        }
+        //There was some sort of JV/Varsity race distinction
+        if(raceTitles.size() > 4){
+            for(Element race : doc.select("div.col-lg-12")){
+                String raceTitle = race.select("div.custom-table-title.custom-table-title-xc").text();
+                if(raceTitle.contains("Men") && raceTitle.contains("Varsity") && raceTitle.contains("Individual")){
+                    Elements results = race.select("tbody.color-xc");
+                    for(Element result: results.select("tr")){
+                        System.out.print(result.select("td").get(1).text() + " - ");
+                        System.out.print(result.select("td").get(5).text());
+                        System.out.println();
+                    }
+                }
+            }
+
+        }else{ //There was merely a women's race and men's race
+
         }
     }
 }
