@@ -40,7 +40,6 @@ public class TeamParser{
                 for(Element td: table.select("td")){
                     if(!td.select("a").attr("href").equals("")){
 
-                        
                         Long id = Athlete.urlToLong("http:" + td.select("a").attr("href"));
 
                         //TODO Change false to variable!
@@ -49,7 +48,7 @@ public class TeamParser{
                         t.addTeammate(id, a);
                         for(Performance p: a.getPerformances()){
 
-                            t.addMeetUrl(p.getMeet().getUrl());
+                            t.addMeet(p.getMeet());
                         }
                     }
                 }

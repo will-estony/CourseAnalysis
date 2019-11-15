@@ -58,7 +58,6 @@ public class AthleteParser{
                     String split[] = info.split("\\s+");
                     
                     // creates a new Meet passing it the tfrrs URL and the date of the meet
-                    System.out.println(table.select("span").text());
                     Meet m = new Meet(
                     		"http:" + table.select("a").attr("href"),
                     		table.select("span").text());
@@ -89,7 +88,6 @@ public class AthleteParser{
         */
         
         Element careerBests = doc.select("table").get(0);
-        //System.out.println("SIZE" + careerBests.select("td").size());
         for(int i = 0; i < careerBests.select("td").size()-1; i+=2){
             if(!careerBests.select("td").get(i).text().equals("")){
                 a.addPR(careerBests.select("td").get(i).text(), careerBests.select("td").get(i+1).text());

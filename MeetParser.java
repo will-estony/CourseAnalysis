@@ -35,10 +35,11 @@ public class MeetParser{
 
     //Tables and titles combined found in div tag: col-lg-12
     //Just the titles are found in div tag: custom-table-title.custom-table-title-xc
-    public void parseMeet(){
+    public parseMeet(){
 
         HashMap<String, Integer> headerMap = new HashMap<>();
         ArrayList<String> raceTitles = new ArrayList<>();
+        Meet meet;
 
         for(Element race : doc.select("div.col-lg-12")){
             String raceTitle = race.select("div.custom-table-title.custom-table-title-xc").text();
@@ -95,8 +96,8 @@ public class MeetParser{
                     Athlete a = new Athlete(id, false);
                     Performance p = new Performance("8K", time, meet);
                     a.addPerformance(p);
-                    meet.addCompetitor(a);
-                }
+                    meet.addCompetitor(id, a);
+                    }
                 }
             }
         }

@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Team{
+    
     private HashMap<Long, Athlete> teammates;
     private HashMap<Long, Athlete> competitors;
     private ArrayList<String> meetUrls; //Contains a unique list of urls to meets that have been competed in by a team
