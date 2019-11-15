@@ -17,7 +17,7 @@ public class Performance{
     
 
     
-    // converts String of the form hh:mm:ss.ms to a double
+    // converts String of the form dd:hh:mm:ss.ms to a double
     public static double timeStringToDouble(String timeString) {
     	// if the mark was a DNF or a DNS store the result as a -1 or -2 respectively
     	if (timeString.equals("DNF"))
@@ -41,25 +41,53 @@ public class Performance{
         
         // convert decimal digits to float
         timeSecondsDouble = Double.parseDouble("0" + timeString.substring(indexOfFirstDecimal, indexOfFirstDecimal + 1 + numDecimalDigits));
+        
         if (indexOfFirstDecimal < 1)    // if no ones digit present in string
-            return timeSecondsDouble;
+            return timeSecondsDouble; 
         // add on the ones digit value
         timeSecondsDouble += Character.getNumericValue(timeString.charAt(indexOfFirstDecimal - 1));
+       
         // get tens digit
         if (indexOfFirstDecimal < 2)    // if no tens digit present in string
             return timeSecondsDouble;
         // add on the tens digit value
         timeSecondsDouble += 10 * Character.getNumericValue(timeString.charAt(indexOfFirstDecimal - 2));
+        
         // get ones minute digit
-        if (indexOfFirstDecimal < 3)    // if no ones minute digit present in string
+        if (indexOfFirstDecimal < 4)    // if no ones minute digit present in string
             return timeSecondsDouble;
         // add on the ones minute digit value
         timeSecondsDouble += 60 * Character.getNumericValue(timeString.charAt(indexOfFirstDecimal - 4));
+        
         // get tens minute digit
         if (indexOfFirstDecimal < 5)    // if no tens minute digit present in string
             return timeSecondsDouble;
         // add on the tens minute digit value
         timeSecondsDouble += 600 * Character.getNumericValue(timeString.charAt(indexOfFirstDecimal - 5));
+        
+        // get ones hour digit
+        if (indexOfFirstDecimal < 7)    // if no ones hour digit present in string
+            return timeSecondsDouble;
+        // add on the ones hour digit value
+        timeSecondsDouble += 3600 * Character.getNumericValue(timeString.charAt(indexOfFirstDecimal - 7));
+        
+        // get tens hour digit
+        if (indexOfFirstDecimal < 8)    // if no tens hour digit present in string
+            return timeSecondsDouble;
+        // add on the tens hour digit value
+        timeSecondsDouble += 36000 * Character.getNumericValue(timeString.charAt(indexOfFirstDecimal - 8));
+        
+        // get ones day digit
+        if (indexOfFirstDecimal < 10)    // if no ones day digit present in string
+            return timeSecondsDouble;
+        // add on the ones day digit value
+        timeSecondsDouble += 3600 * 24 * Character.getNumericValue(timeString.charAt(indexOfFirstDecimal - 10));
+        
+        // get tens day digit
+        if (indexOfFirstDecimal < 11)    // if no tens days digit present in string
+            return timeSecondsDouble;
+        // add on the tens day digit value
+        timeSecondsDouble += 36000 * 240 * Character.getNumericValue(timeString.charAt(indexOfFirstDecimal - 11));
         return timeSecondsDouble;
     }
     
