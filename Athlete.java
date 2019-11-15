@@ -49,6 +49,7 @@ public class Athlete {
 		seasonBests.put(year, p);
 	}
 	
+	// returns season best Performance for a given year
 	public Performance getSeasonBest(int year) {
 		return seasonBests.get(year);
 	}
