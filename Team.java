@@ -10,6 +10,8 @@ public class Team{
 
     public Team(String name, String tfrrsURL){
         teammates = new ArrayList<>();
+        competitors = new ArrayList<>();
+
         meetUrls = new ArrayList<>();
         this.name = name;
         this.tfrrsURL = tfrrsURL;
@@ -24,6 +26,10 @@ public class Team{
 
     public ArrayList<String> getMeetUrls(){ return meetUrls; }
     
+    public void addTeammate(long id, Athlete a){
+        //if()
+    }
+
     public void addAthlete(Athlete a){
         teammates.add(a);
     }

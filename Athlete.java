@@ -26,6 +26,14 @@ public class Athlete {
 
 	}
 
+	public static String idToUrl(long l){ return "https://xc.tfrrs.org/athletes/" + l + ".html"; }
+	public String getUrl() { return "https://xc.tfrrs.org/athletes/" + tfrrsID + ".html"; }
+	public static long urlToLong(String url){ 
+		url = url.replace(".html","");
+		url = url.replace("https://xc.tfrrs.org/athletes/","");
+		return Long.parseLong(url);
+	}
+
 	public ArrayList<Performance> getPerformances(){ return performances; }
 
 	public void addPerformance(Performance p) {

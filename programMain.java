@@ -20,6 +20,8 @@ public class programMain {
 		//MeetParser mp = new MeetParser("https://www.tfrrs.org/results/xc/15464/TriState_Invitational_at_CCRI", m);
 		//mp.parseMeet();
 		//mp.parseTables();
+		//Athlete.urlToLong("https://xc.tfrrs.org/athletes/6891464.html");		
+
 		long l = 6891464;
 		Athlete a = new Athlete(l, true);
 		a.printPRs();

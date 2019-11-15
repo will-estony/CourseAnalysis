@@ -39,9 +39,9 @@ public class TeamParser{
             if(table.select("thead").select("tr").select("th").text().contains("NAME")){
                 for(Element td: table.select("td")){
                     if(!td.select("a").attr("href").equals("")){
-                        String url = "http:" + td.select("a").attr("href");
+                        Long id = Athlete.urlToLong("http:" + td.select("a").attr("href"));
                         //TODO Change false to variable!
-                        Athlete a = new Athlete(1, false);
+                        Athlete a = new Athlete(id, false);
 
                         t.addAthlete(a);
                         for(Performance p: a.getPerformances()){

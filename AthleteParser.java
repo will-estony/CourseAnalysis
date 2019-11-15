@@ -21,7 +21,7 @@ public class AthleteParser{
         this.a = a;
         try {
 
-            this.url = "https://xc.tfrrs.org/athletes/6891464.html";
+            this.url = a.getUrl();
             System.out.println("Connecting to athlete page " + this.url + "...");
             doc = Jsoup.connect(this.url).timeout(0).get();
             System.out.println("Connected");
