@@ -31,13 +31,10 @@ public class programMain {
 		
 		
 		*/
-	
 		
-		
-		
-		
-		Athlete a = new Athlete(5997232, true);
+		Athlete a = new Athlete(7421730, true);
+		a.printPerformances();
 		a.printSeasonBests();
-		
+	
 	}
 }

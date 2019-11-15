@@ -12,6 +12,7 @@ public class AthleteParser{
     
     private Elements tables;
     private Elements headers;
+    private Elements divs;
     private Athlete a;
     Document doc;
     
@@ -28,6 +29,7 @@ public class AthleteParser{
         
             
             tables = doc.select("table");
+            divs = doc.select("div#meet-results");
         
             headers = doc.select("h1,h2,h3,h4,h5,h6");
 
@@ -47,12 +49,12 @@ public class AthleteParser{
         Element secondTable = doc.select("table").get(1); //outdoor bests
         Element thirdTable = doc.select("table").get(2); //indoor bests
         Element fourthTable = doc.select("table").get(3); //xc bests
-
         
-        for(Element table: tables){
+        for(Element table: divs.select("table")){
             if(!table.equals(firstTable) && !table.equals(secondTable) && !table.equals(thirdTable) && !table.equals(fourthTable)){
-                if(table.select("td").text().contains("8K")){
-                    String info = table.select("td").text();
+                if(table.select("tbody").text().contains("8K")){
+                    
+                    String info = table.select("tbody").text();
                     String split[] = info.split("\\s+");
                     
                     // creates a new Meet passing it the tfrrs URL and the date of the meet
