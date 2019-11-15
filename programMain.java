@@ -16,7 +16,8 @@ public class programMain {
 
 		//a.printPerformances();
 
-		MeetParser mp = new MeetParser("http://www.tfrrs.org/results/xc/9693/NEICAAA_XC_Championship");
+		Meet m = new Meet("", "");
+		MeetParser mp = new MeetParser("https://www.tfrrs.org/results/xc/15464/TriState_Invitational_at_CCRI", m);
 		mp.parseMeet();
 		//mp.parseTables();
 

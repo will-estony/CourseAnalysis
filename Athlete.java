@@ -50,8 +50,12 @@ public class Athlete {
 	private void parseStats(){
 		AthleteParser ap = new AthleteParser(this);
 		ap.parseBests();
-		ap.parsePerformances();
+	}
 
+	/* Should only get called on an athlete that's a member of a team*/
+	public void parsePerformances(){
+		AthleteParser ap = new AthleteParser(this);
+		ap.parsePerformances();
 	}
 
 	public String getUrl(){ return tfrrsURL; }

@@ -41,6 +41,7 @@ public class TeamParser{
                     if(!td.select("a").attr("href").equals("")){
                         
                         Athlete a = new Athlete(scrubName(td.text()), "http:" + td.select("a").attr("href"));
+                        a.parsePerformances();
                         t.addAthlete(a);
                         for(Meet m: a.getMeets()){
                             t.addMeetUrl(m.getUrl());

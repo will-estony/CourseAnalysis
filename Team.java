@@ -35,7 +35,7 @@ public class Team{
     private void parseMeets(){
         MeetParser mp;
         for(String s : meetUrls){
-            mp = new MeetParser(s);
+            //mp = new MeetParser(s);
             //mp.parseMeets();
         }
 
