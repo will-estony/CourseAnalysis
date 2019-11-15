@@ -14,10 +14,12 @@ public class MeetParser{
     private Elements rows;
     private Document doc;
     private Meet meet;
+    private Team team;
 
-    public MeetParser(String url, Meet m){
+    public MeetParser(String url, Meet m, Team t){
         this.url = url;
         this.meet = m;
+        this.team = t;
         try{
             System.out.println("Establishing a connection to the website...");
             doc = Jsoup.connect(url).timeout(0).get();
@@ -64,10 +66,12 @@ public class MeetParser{
                     Elements results = race.select("tbody.color-xc");
 
                     for(Element result: results.select("tr")){
-                        String name = result.select("td").get(headerMap.get("NAME")).text();
                         String url = "http:" + result.select("td").select("a").attr("href");
                         String time = result.select("td").get(headerMap.get("TIME")).text();
-                        Athlete a = new Athlete(name, url);
+                        
+                        //TODO change this to a variable! 
+                        Athlete a = new Athlete(url, false); 
+                        //////////////////////////////////////////
                         Performance p = new Performance("8K", time, meet);
                         a.addPerformance(p);
                         meet.addCompetitor(a);
@@ -90,10 +94,9 @@ public class MeetParser{
                 Elements results = race.select("tbody.color-xc");
 
                 for(Element result: results.select("tr")){
-                    String name = result.select("td").get(headerMap.get("NAME")).text();
                     String url = "http:" + result.select("td").select("a").attr("href");
                     String time = result.select("td").get(headerMap.get("TIME")).text();
-                    Athlete a = new Athlete(name, url);
+                    Athlete a = new Athlete(url, false);
                     Performance p = new Performance("8K", time, meet);
                     a.addPerformance(p);
                     meet.addCompetitor(a);

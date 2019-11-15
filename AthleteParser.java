@@ -72,6 +72,8 @@ public class AthleteParser{
         }
     }
 
+    public String getName(){ return headers.get(0).text(); }
+
     public void parseBests(){
 
         /*

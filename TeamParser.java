@@ -40,8 +40,9 @@ public class TeamParser{
                 for(Element td: table.select("td")){
                     if(!td.select("a").attr("href").equals("")){
                         
-                        Athlete a = new Athlete(scrubName(td.text()), "http:" + td.select("a").attr("href"));
-                        a.parsePerformances();
+                        //TODO Change false to variable!
+                        Athlete a = new Athlete("http:" + td.select("a").attr("href"), false);
+
                         t.addAthlete(a);
                         for(Meet m: a.getMeets()){
                             t.addMeetUrl(m.getUrl());
@@ -50,12 +51,5 @@ public class TeamParser{
                 }
             }
         }
-    }
-
-    
-    private String scrubName(String name){
-        name = name.replace(",", "");
-        String lastFirst[] = name.split("\\s");
-        return lastFirst[1] + " " + lastFirst[0];
     }
 }

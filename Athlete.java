@@ -29,34 +29,33 @@ public class Athlete {
 	private HashMap<String,String> careerBests;
 	private ArrayList<Meet> meets;
 	private ArrayList<Performance> performances;
+	private HashMap<Integer, Performance> seasonBests;
+
 
 	private String name, tfrrsURL;
 	private double [] PR, seasonalPR;
 	private int tfrrsValue;
 	
 	
-	public Athlete(String name, String tfrrsURL) {
+	public Athlete(String tfrrsURL, boolean isTeammate) {
 		
-		this.name = name;
 		this.tfrrsURL = tfrrsURL;
 		this.meets = new ArrayList<>(); 
 		this.performances = new ArrayList<>();
 		this.careerBests = new HashMap<>();
-
-		parseStats();
-	
-	}
-
-	private void parseStats(){
+		
 		AthleteParser ap = new AthleteParser(this);
-		ap.parseBests();
+		this.name = ap.getName();
+
+		if (isTeammate) {
+			ap.parseBests();
+			ap.parsePerformances();
+		}
+		//ap.parseSeasonBests();
+
 	}
 
-	/* Should only get called on an athlete that's a member of a team*/
-	public void parsePerformances(){
-		AthleteParser ap = new AthleteParser(this);
-		ap.parsePerformances();
-	}
+
 
 	public String getUrl(){ return tfrrsURL; }
 
@@ -74,6 +73,10 @@ public class Athlete {
 
 	public void addPR(String event, String time){
 		careerBests.put(event, time);
+	}
+
+	public void addSeasonBest(int year, Performance p){
+		seasonBests.put(year, p);
 	}
 
 	public void printPerformances(){
@@ -94,9 +97,5 @@ public class Athlete {
 		for(String event: careerBests.keySet()){
 			System.out.println(event + " - " + careerBests.get(event));
 		}
-	}
-
-	public void printAthlete(){
-		System.out.println(name + " - " + tfrrsURL);
 	}
 }
