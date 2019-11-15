@@ -19,5 +19,28 @@ public class Meet{
     public String getDate() { return date; }
     public String getUrl(){ return url; }
 
+    // TODO: Get the year from the private date Object
+    // so that we can use that year in the .getSeasonBest(int year) call down below
     
+    // temp
+    final static int year = 2019;
+    
+    
+    // Creates and returns a results matrix for this meet
+    public double [][] getResultsMatrix() {
+    	// initializes return matrix
+    	int numCols = 2;
+    	int numRows = competitors.size();
+    	double [][] returnMatrix = new double[numRows][numCols];
+    	
+    	// iterates along each athlete putting their season best in the first column
+    	// and their time at this meet in the second column
+    	for (int i = 0; i < numRows; i++) {
+    		Athlete currCompetitor = competitors.get(i);
+//    		returnMatrix[0][i] = currCompetitor.getSeasonBest(year);	// season best
+//    		returnMatrix[1][i] = currCompetitor.getPerformance(this).getTime();	// time at this meet
+    	}
+    	
+    	return returnMatrix;
+    }
 }
