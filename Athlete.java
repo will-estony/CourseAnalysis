@@ -3,44 +3,15 @@ import java.util.HashMap;
 
 public class Athlete {
 	
-	public enum Distance {
-		XC,
-		outdoor_1500m, outdoor_800m,
-		indoor_mile, indoor_600m;
-		
-		public String getDistanceString() {
-			switch (this) {
-			case XC:
-				return "XC";
-			case outdoor_1500m:
-				return "1500 Meters";
-			case outdoor_800m:
-				return "800 Meters";
-			case indoor_mile:
-				return "mile";
-			case indoor_600m:
-				return "600 Meters";
-			}
-			return "";
-		}
-	};
-	public final short numDistances = 5;
-
 	private HashMap<String,String> careerBests;
-	private ArrayList<Meet> meets;
 	private ArrayList<Performance> performances;
 	private HashMap<Integer, Performance> seasonBests;
-
-
-	private String name, tfrrsURL;
-	private double [] PR, seasonalPR;
-	private int tfrrsValue;
+	private String name;
+	private long tfrrsID;
 	
-	
-	public Athlete(String tfrrsURL, boolean isTeammate) {
+	public Athlete(long tffrsID, boolean isTeammate) {
 		
-		this.tfrrsURL = tfrrsURL;
-		this.meets = new ArrayList<>(); 
+		this.tfrrsID = tffrsID;
 		this.performances = new ArrayList<>();
 		this.careerBests = new HashMap<>();
 		
@@ -55,20 +26,10 @@ public class Athlete {
 
 	}
 
-
-
-	public String getUrl(){ return tfrrsURL; }
+	public ArrayList<Performance> getPerformances(){ return performances; }
 
 	public void addPerformance(Performance p) {
 		performances.add(p);
-	}
-	
-	public void addMeet(Meet m){
-		meets.add(m);
-	}
-
-	public ArrayList<Meet> getMeets(){
-		return meets;
 	}
 
 	public void addPR(String event, String time){
