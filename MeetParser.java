@@ -66,12 +66,10 @@ public class MeetParser{
                     Elements results = race.select("tbody.color-xc");
 
                     for(Element result: results.select("tr")){
-                       // String url = "http:" + result.select("td").select("a").attr("href");
+
                         String time = result.select("td").get(headerMap.get("TIME")).text();
-                        
-                        //TODO change this to a variable! 
-                        Athlete a = new Athlete(1, false); 
-                        //////////////////////////////////////////
+                        Long id = Athlete.urlToLong("http:" + result.select("td").select("a").attr("href"));
+                        Athlete a = new Athlete(id, false); 
                         Performance p = new Performance("8K", time, meet);
                         a.addPerformance(p);
                         meet.addCompetitor(a);
@@ -99,6 +97,7 @@ public class MeetParser{
                     Athlete a = new Athlete(id, false);
                     Performance p = new Performance("8K", time, meet);
                     a.addPerformance(p);
+                    team.addCompetitor(id, a);
                     meet.addCompetitor(a);
                 }
             }

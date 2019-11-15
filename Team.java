@@ -1,18 +1,18 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Team{
-
-    private ArrayList<Athlete> teammates;
-    private ArrayList<Athlete> competitors; //Athletes not on the team
+    private HashMap<Long, Athlete> teammates;
+    private HashMap<Long, Athlete> competitors;
     private ArrayList<String> meetUrls; //Contains a unique list of urls to meets that have been competed in by a team
     private String tfrrsURL; //The url to a teams XC tffrs page
     private String name;     //The name of an xc team
 
     public Team(String name, String tfrrsURL){
-        teammates = new ArrayList<>();
-        competitors = new ArrayList<>();
-
+        teammates = new HashMap<>();
+        competitors = new HashMap<>();
         meetUrls = new ArrayList<>();
+        
         this.name = name;
         this.tfrrsURL = tfrrsURL;
 
@@ -27,11 +27,13 @@ public class Team{
     public ArrayList<String> getMeetUrls(){ return meetUrls; }
     
     public void addTeammate(long id, Athlete a){
-        //if()
+        teammates.put(id, a);
     }
 
-    public void addAthlete(Athlete a){
-        teammates.add(a);
+    public void addCompetitor(long id, Athlete a){
+        if(!competitors.containsKey(id)){
+            competitors.put(id, a);
+        }
     }
 
     private void parseAthletes(){
@@ -48,8 +50,6 @@ public class Team{
 
     }
 
-    public boolean isTeammate(Athlete a){ return teammates.contains(a);}
-
     public void addMeetUrl(String m){
         if(!meetUrls.contains(m))
             meetUrls.add(m);
@@ -62,7 +62,7 @@ public class Team{
     }
 
     public void printTeam(){
-        for(Athlete a: teammates){
+        for(Athlete a: teammates.values()){
             a.printPerformances();
             System.out.println();
             a.printPRs();

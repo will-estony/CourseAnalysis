@@ -14,15 +14,14 @@ public class Athlete {
 		this.tfrrsID = tffrsID;
 		this.performances = new ArrayList<>();
 		this.careerBests = new HashMap<>();
-		
+		this.seasonBests = new HashMap<>();
 		AthleteParser ap = new AthleteParser(this);
 		this.name = ap.getName();
 
 		if (isTeammate) {
 			ap.parseBests();
-			ap.parsePerformances();
 		}
-		//ap.parseSeasonBests();
+		ap.parsePerformances();
 
 	}
 
@@ -64,7 +63,11 @@ public class Athlete {
 	}
 
 	public void addSeasonBest(int year, Performance p){
-		seasonBests.put(year, p);
+		if(!seasonBests.containsKey(year)){		
+			seasonBests.put(year, p);
+		}else if(seasonBests.get(year).getTime() > p.getTime()){
+			seasonBests.put(year, p);
+		}
 	}
 	
 	// returns season best Performance for a given year
@@ -89,6 +92,12 @@ public class Athlete {
 
 		for(String event: careerBests.keySet()){
 			System.out.println(event + " - " + careerBests.get(event));
+		}
+	}
+
+	public void printSeasonBests(){
+		for(int i : seasonBests.keySet()){
+			System.out.println(i + " - " + seasonBests.get(i));
 		}
 	}
 }

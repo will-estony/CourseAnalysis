@@ -3,7 +3,7 @@ public class programMain {
 
 	public static void main(String[] args) {
 		//System.out.println(Performance.timeDoubleToString(3* 3600*24 + 27*60 + 34.23));		
-		Team t = new Team("Browdies", "https://www.tfrrs.org/teams/xc/CT_college_m_Trinity_CT.html");
+		//Team t = new Team("Browdies", "https://www.tfrrs.org/teams/xc/CT_college_m_Trinity_CT.html");
 		//t.printTeam();
 
 		//MeetParser mp = new MeetParser("https://www.tfrrs.org/results/xc/15785/Connecticut_College_XC_Invitational");
@@ -16,23 +16,28 @@ public class programMain {
 
 		//a.printPerformances();
 
-		Meet m = new Meet("", "");
-		MeetParser mp = new MeetParser("https://www.tfrrs.org/results/xc/15464/TriState_Invitational_at_CCRI", m, t);
-		mp.parseMeet();
+		//Meet m = new Meet("", "");
+		//MeetParser mp = new MeetParser("https://www.tfrrs.org/results/xc/15464/TriState_Invitational_at_CCRI", m, t);
+		//mp.parseMeet();
 		//mp.parseTables();
-		m.getResultsMatrix();
+		//m.getResultsMatrix();
 		//System.out.println(Athlete.urlToLong("https://www.tfrrs.org/athletes/5997232/Trinity_CT/Timothy_Bogomolov.html"));
 		/*long l = 6891464;
 		Athlete a = new Athlete(l, true);
 		a.printPRs();
 		System.out.println();
-		a.printPerformances();*/
+		a.printPerformances();
+
+		
+		
+		*/
 	
 		
 		
 		
 		
-		
+		Athlete a = new Athlete(5997232, true);
+		a.printSeasonBests();
 		
 	}
 }

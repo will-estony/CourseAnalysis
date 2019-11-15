@@ -48,6 +48,7 @@ public class AthleteParser{
         Element thirdTable = doc.select("table").get(2); //indoor bests
         Element fourthTable = doc.select("table").get(3); //xc bests
 
+        
         for(Element table: tables){
             if(!table.equals(firstTable) && !table.equals(secondTable) && !table.equals(thirdTable) && !table.equals(fourthTable)){
                 if(table.select("td").text().contains("8K")){
@@ -64,7 +65,8 @@ public class AthleteParser{
                     
                     // creates a new performance passing it the Event, the event time (as a String), and the meet it occurred at
                     Performance p = new Performance(split[0], split[1], m);
-                    
+                    a.addSeasonBest(m.getYear(), p);
+
                     // adds performance to athlete
                     a.addPerformance(p);
                 }    
