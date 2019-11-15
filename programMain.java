@@ -1,3 +1,4 @@
+import java.util.HashMap;
 
 public class programMain {
 
@@ -19,9 +20,13 @@ public class programMain {
 		Meet m = new Meet("", "2019");
 		MeetParser mp = new MeetParser("https://www.tfrrs.org/results/xc/15464/TriState_Invitational_at_CCRI", m);
 		mp.parseMeet();
-		m.getResultsMatrix();
-
-
+		//m.getResultsMatrix();
+		
+		System.out.println("Predicting results for browdies at CCRI meet");
+		Predictor p = new Predictor();
+		HashMap<Athlete, Double> estimatedResults = p.meetPrediction(m, t, 2019);
+		for (Athlete a : estimatedResults.keySet())
+			System.out.println("Athlete " + a.getName() + ":\t" + Performance.timeDoubleToString(estimatedResults.get(a)));
 		
 		//System.out.println(Athlete.urlToLong("https://www.tfrrs.org/athletes/5997232/Trinity_CT/Timothy_Bogomolov.html"));
 		/*long l = 6891464;

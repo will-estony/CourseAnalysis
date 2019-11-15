@@ -25,6 +25,7 @@ public class Athlete {
 
 	}
 
+	public String getName() { return name; }
 	public static String idToUrl(long l){ return "https://xc.tfrrs.org/athletes/" + l + ".html"; }
 	public String getUrl() { return "https://xc.tfrrs.org/athletes/" + tfrrsID + ".html"; }
 	

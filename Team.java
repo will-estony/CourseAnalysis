@@ -30,6 +30,10 @@ public class Team{
     public void addTeammate(long id, Athlete a){
         teammates.put(id, a);
     }
+    
+    public ArrayList<Athlete> getTeammates() {
+    	return new ArrayList<Athlete>(teammates.values());
+    }
 
     public void addCompetitor(long id, Athlete a){
         if(!competitors.containsKey(id)){
