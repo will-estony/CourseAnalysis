@@ -25,7 +25,6 @@ public class Meet{
     // temp
     final static int year = 2019;
     
-    
     // Creates and returns a results matrix for this meet
     public double [][] getResultsMatrix() {
     	// initializes return matrix
@@ -37,8 +36,11 @@ public class Meet{
     	// and their time at this meet in the second column
     	for (int i = 0; i < numRows; i++) {
     		Athlete currCompetitor = competitors.get(i);
-//    		returnMatrix[0][i] = currCompetitor.getSeasonBest(year);	// season best
-//    		returnMatrix[1][i] = currCompetitor.getPerformance(this).getTime();	// time at this meet
+    		returnMatrix[0][i] = currCompetitor.getSeasonBest(year).getTime();	// season best
+    		returnMatrix[1][i] = currCompetitor.getPerformance(this).getTime();	// time at this meet
+    		//debugging
+    		System.out.println("| " + Performance.timeDoubleToString(returnMatrix[0][i]) + 
+    				"  " + Performance.timeDoubleToString(returnMatrix[1][i]) + " |");
     	}
     	
     	return returnMatrix;
