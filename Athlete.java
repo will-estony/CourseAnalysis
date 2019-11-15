@@ -31,6 +31,15 @@ public class Athlete {
 	public void addPerformance(Performance p) {
 		performances.add(p);
 	}
+	
+	// returns the performance that occurred at the given meet
+	public Performance getPerformance(Meet goalMeet) {
+		// searches through performances to find the given meet
+		for (int i = 0; i < performances.size(); i++)
+			if (performances.get(i).getMeet().equals(goalMeet))
+				return performances.get(i);
+		return null;	// if no performance associated with given meet return null
+	}
 
 	public void addPR(String event, String time){
 		careerBests.put(event, time);
