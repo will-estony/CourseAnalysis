@@ -32,15 +32,12 @@ public class programMain {
 		
 		*/
 		
-<<<<<<< HEAD
 		Athlete a = new Athlete(7421730, true);
 		a.printPerformances();
 		a.printSeasonBests();
 	
-=======
 		//Athlete a = new Athlete(5997232, true);
 		//a.printSeasonBests();
 		
->>>>>>> a333c9570bbabd54db534b7768f753ced9b93c1f
 	}
 }
