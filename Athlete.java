@@ -48,6 +48,10 @@ public class Athlete {
 	public void addSeasonBest(int year, Performance p){
 		seasonBests.put(year, p);
 	}
+	
+	public Performance getSeasonBest(int year) {
+		return seasonBests.get(year);
+	}
 
 	public void printPerformances(){
 		System.out.println(name + " has entered " + performances.size() + " 8k's in their career.");

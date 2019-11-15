@@ -37,7 +37,7 @@ public class Meet{
     	// and their time at this meet in the second column
     	for (int i = 0; i < numRows; i++) {
     		Athlete currCompetitor = competitors.get(i);
-//    		returnMatrix[0][i] = currCompetitor.getSeasonBest(year);	// season best
+    		returnMatrix[0][i] = currCompetitor.getSeasonBest(year).getTime();	// season best
     		returnMatrix[1][i] = currCompetitor.getPerformance(this).getTime();	// time at this meet
     	}
     	
