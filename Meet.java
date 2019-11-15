@@ -41,8 +41,8 @@ public class Meet{
     		returnMatrix[i][0] = currCompetitor.getSeasonBest(year).getTime();	// season best
     		returnMatrix[i][1] = currCompetitor.getPerformance(this).getTime();	// time at this meet
     		//debugging
-    		System.out.println("| " + Performance.timeDoubleToString(returnMatrix[i][0]) + 
-    				"\t" + Performance.timeDoubleToString(returnMatrix[i][1]) + " |");
+    		System.out.println(Performance.timeDoubleToString(returnMatrix[i][0]) + 
+    				" " + Performance.timeDoubleToString(returnMatrix[i][1]));
     	}
     	
     	return returnMatrix;
