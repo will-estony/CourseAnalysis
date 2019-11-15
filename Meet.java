@@ -38,11 +38,11 @@ public class Meet{
     	// and their time at this meet in the second column
     	for (int i = 0; i < numRows; i++) {
     		Athlete currCompetitor = competitors.get(i);
-    		returnMatrix[0][i] = currCompetitor.getSeasonBest(year).getTime();	// season best
-    		returnMatrix[1][i] = currCompetitor.getPerformance(this).getTime();	// time at this meet
+    		returnMatrix[i][0] = currCompetitor.getSeasonBest(year).getTime();	// season best
+    		returnMatrix[i][1] = currCompetitor.getPerformance(this).getTime();	// time at this meet
     		//debugging
-    		System.out.println("| " + Performance.timeDoubleToString(returnMatrix[0][i]) + 
-    				"  " + Performance.timeDoubleToString(returnMatrix[1][i]) + " |");
+    		System.out.println(Performance.timeDoubleToString(returnMatrix[i][0]) + 
+    				" " + Performance.timeDoubleToString(returnMatrix[i][1]));
     	}
     	
     	return returnMatrix;
