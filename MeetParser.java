@@ -14,12 +14,10 @@ public class MeetParser{
     private Elements rows;
     private Document doc;
     private Meet meet;
-    private Team team;
 
-    public MeetParser(String url, Meet m, Team t){
+    public MeetParser(String url, Meet m){
         this.url = url;
         this.meet = m;
-        this.team = t;
         try{
             System.out.println("Establishing a connection to the website...");
             doc = Jsoup.connect(url).timeout(0).get();
@@ -97,10 +95,9 @@ public class MeetParser{
                     Athlete a = new Athlete(id, false);
                     Performance p = new Performance("8K", time, meet);
                     a.addPerformance(p);
-                    team.addCompetitor(id, a);
                     meet.addCompetitor(a);
                 }
-            }
+                }
             }
         }
     }

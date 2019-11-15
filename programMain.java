@@ -17,9 +17,11 @@ public class programMain {
 		//a.printPerformances();
 
 		Meet m = new Meet("", "2019");
-		MeetParser mp = new MeetParser("https://www.tfrrs.org/results/xc/15464/TriState_Invitational_at_CCRI", m, t);
+		MeetParser mp = new MeetParser("https://www.tfrrs.org/results/xc/15464/TriState_Invitational_at_CCRI", m);
 		mp.parseMeet();
 		m.getResultsMatrix();
+
+
 		
 		//System.out.println(Athlete.urlToLong("https://www.tfrrs.org/athletes/5997232/Trinity_CT/Timothy_Bogomolov.html"));
 		/*long l = 6891464;
