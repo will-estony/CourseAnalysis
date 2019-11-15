@@ -26,5 +26,11 @@ public class programMain {
 		System.out.println();
 		a.printPerformances();
 	
+		
+		
+		
+		
+		
+		
 	}
 }
