@@ -28,10 +28,20 @@ public class Athlete {
 
 	public static String idToUrl(long l){ return "https://xc.tfrrs.org/athletes/" + l + ".html"; }
 	public String getUrl() { return "https://xc.tfrrs.org/athletes/" + tfrrsID + ".html"; }
+	
 	public static long urlToLong(String url){ 
-		url = url.replace(".html","");
-		url = url.replace("https://xc.tfrrs.org/athletes/","");
-		return Long.parseLong(url);
+		// remove https's
+		url = url.replace("https://","");
+		url = url.replace("http://","");
+		// remove the url up to the ID num
+		url = url.replace("www.tfrrs.org/athletes/","");
+		url = url.replace("xc.tfrrs.org/athletes/","");
+	
+		int i = 0;
+		while(Character.isDigit(url.charAt(i))){
+			i++;
+		}
+		return Long.parseLong(url.substring(0,i));
 	}
 
 	public ArrayList<Performance> getPerformances(){ return performances; }
