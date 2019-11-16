@@ -7,26 +7,29 @@ public class Meet{
 	
 	private String date;  //the date the meet took place on ex. 1/8/19 This should be a date object. 
     private String url;   //the url to the meet stats on tffrs
+    private String name; //The name of the meet as listed on tffrs
     private HashMap<Long, Athlete> competitors;
     
     private int year;
 
-    private Meet(String url, String date){
+    private Meet(String url){
         this.url = url;
-        this.date = date;
+        this.date = "2019";
         competitors = new HashMap<>();
+        MeetParser mp = new MeetParser(this);
+        System.out.println(mp.getDate());
         this.year = Integer.parseInt(date.substring(date.length() - 4, date.length()));
     }
     
     // static factory method pattern
     // forces meets to be created through this static factory method,
     // thus preventing duplicate meets from being created
-    public static Meet createMeet(String url, String date) {
+    public static Meet createMeet(String url) {
     	// test if meet exists already
     	if (allMeets.containsKey(url))
     		return allMeets.get(url);
     	// if the meet doesnt exist yet: create it, add it to allMeets, and return it
-    	Meet newMeet = new Meet(url, date);
+    	Meet newMeet = new Meet(url);
     	allMeets.put(url, newMeet);
     	return newMeet;
     }
@@ -37,9 +40,6 @@ public class Meet{
     public String getDate() { return date; }
     public String getUrl(){ return url; }
 
-    // TODO: Get the year from the private date Object
-    // so that we can use that year in the .getSeasonBest(int year) call down below
-    
     // Creates and returns a results matrix for this meet
     public double [][] getResultsMatrix() {
     	// initializes return matrix

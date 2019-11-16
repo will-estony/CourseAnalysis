@@ -60,8 +60,7 @@ public class AthleteParser{
                     // creates a new Meet passing it the tfrrs URL and the date of the meet
                     //System.out.println(table.select("span").text());
                     Meet m = Meet.createMeet(
-                    		"http:" + table.select("a").attr("href"),
-                    		table.select("span").text());
+                    		"http:" + table.select("a").attr("href"));
                     
                     // creates a new performance passing it the Event, the event time (as a String), and the meet it occurred at
                     Performance p = new Performance(split[0], split[1], m);

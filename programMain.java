@@ -17,7 +17,7 @@ public class programMain {
 
 		//a.printPerformances();
 
-		Meet m = Meet.createMeet("https://www.tfrrs.org/results/xc/15464/TriState_Invitational_at_CCRI", "2019");
+		/*Meet m = Meet.createMeet("https://www.tfrrs.org/results/xc/15464/TriState_Invitational_at_CCRI", "2019");
 		MeetParser mp = new MeetParser("https://www.tfrrs.org/results/xc/15464/TriState_Invitational_at_CCRI", m);
 		mp.parseMeet();
 		//m.getResultsMatrix();
@@ -37,14 +37,16 @@ public class programMain {
 
 		
 		
-		*/
+		
 		
 		Athlete a = new Athlete(7421730, true);
 		a.printPerformances();
-		a.printSeasonBests();
+		a.printSeasonBests();*/
 	
 		//Athlete a = new Athlete(5997232, true);
 		//a.printSeasonBests();
+
+		Meet m = Meet.createMeet("https://www.tfrrs.org/results/xc/16670/NESCAC_Cross_Country_Championships");
 		
 	}
 }

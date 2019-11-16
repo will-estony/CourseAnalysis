@@ -15,8 +15,8 @@ public class MeetParser{
     private Document doc;
     private Meet meet;
 
-    public MeetParser(String url, Meet m){
-        this.url = url;
+    public MeetParser(Meet m){
+        this.url = m.getUrl();
         this.meet = m;
         try{
             System.out.println("Establishing a connection to the website...");
@@ -31,6 +31,10 @@ public class MeetParser{
         }catch(IOException e){
             e.printStackTrace();
         }
+    }
+
+    public String getDate(){
+        return "bob";
     }
 
     //Tables and titles combined found in div tag: col-lg-12
