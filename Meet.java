@@ -32,15 +32,19 @@ public class Meet{
     	int numRows = competitors.size();
     	double [][] returnMatrix = new double[numRows][numCols];
     	
+    	// DEBUGGING
+    	//System.out.println("Number of competitors: " + numRows);
+    	
     	// iterates along each athlete putting their season best in the first column
     	// and their time at this meet in the second column
-    	for (int i = 0; i < numRows; i++) {
-    		Athlete currCompetitor = competitors.get(i);
-    		returnMatrix[i][0] = currCompetitor.getSeasonBest(year).getTime();	// season best
-    		returnMatrix[i][1] = currCompetitor.getPerformance(this).getTime();	// time at this meet
+    	int i = 0;
+    	for (Athlete a : competitors.values()) {
+    		returnMatrix[i][0] = a.getSeasonBest(year).getTime();	// season best
+    		returnMatrix[i][1] = a.getPerformance(this).getTime();	// time at this meet
     		//debugging
     		System.out.println(Performance.timeDoubleToString(returnMatrix[i][0]) + 
     				" " + Performance.timeDoubleToString(returnMatrix[i][1]));
+    		i++;
     	}
     	
     	return returnMatrix;

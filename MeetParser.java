@@ -39,7 +39,7 @@ public class MeetParser{
 
         HashMap<String, Integer> headerMap = new HashMap<>();
         ArrayList<String> raceTitles = new ArrayList<>();
-        Meet meet;
+        //Meet meet;
 
         for(Element race : doc.select("div.col-lg-12")){
             String raceTitle = race.select("div.custom-table-title.custom-table-title-xc").text();

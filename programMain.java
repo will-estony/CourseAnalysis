@@ -17,7 +17,7 @@ public class programMain {
 
 		//a.printPerformances();
 
-		Meet m = new Meet("", "2019");
+		Meet m = new Meet("https://www.tfrrs.org/results/xc/15464/TriState_Invitational_at_CCRI", "2019");
 		MeetParser mp = new MeetParser("https://www.tfrrs.org/results/xc/15464/TriState_Invitational_at_CCRI", m);
 		mp.parseMeet();
 		//m.getResultsMatrix();
