@@ -68,7 +68,6 @@ public class AthleteParser{
                     
                     // creates a new performance passing it the Event, the event time (as a String), and the meet it occurred at
                     Performance p = new Performance(split[0], split[1], m);
-                    a.addSeasonBest(m.getYear(), p);
 
                     // adds performance to athlete
                     a.addPerformance(p);

@@ -47,7 +47,14 @@ public class Athlete {
 	public ArrayList<Performance> getPerformances(){ return performances; }
 
 	public void addPerformance(Performance p) {
-		performances.add(p);
+		performances.add(p);	// adds to total list of performances
+		// adds to season bests if it is a season best for the year it occurred in
+		int year = p.getYear();
+		if (!seasonBests.containsKey(year)){		
+			seasonBests.put(year, p);
+		} else if(seasonBests.get(year).getTime() > p.getTime()){
+			seasonBests.put(year, p);
+		}
 	}
 	
 	// returns the performance that occurred at the given meet
@@ -61,14 +68,6 @@ public class Athlete {
 
 	public void addPR(String event, String time){
 		careerBests.put(event, time);
-	}
-
-	public void addSeasonBest(int year, Performance p){
-		if(!seasonBests.containsKey(year)){		
-			seasonBests.put(year, p);
-		}else if(seasonBests.get(year).getTime() > p.getTime()){
-			seasonBests.put(year, p);
-		}
 	}
 	
 	// returns season best Performance for a given year
