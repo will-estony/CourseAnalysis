@@ -14,10 +14,10 @@ public class Meet{
 
     private Meet(String url){
         this.url = url;
-        this.date = "2019";
         competitors = new HashMap<>();
         MeetParser mp = new MeetParser(this);
-        System.out.println(mp.getDate());
+        this.date = mp.getDate();
+        this.name = mp.getName();
         this.year = Integer.parseInt(date.substring(date.length() - 4, date.length()));
     }
     

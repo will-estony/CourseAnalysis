@@ -42,12 +42,10 @@ public class TeamParser{
 
                         Long id = Athlete.urlToLong("http:" + td.select("a").attr("href"));
 
-                        //TODO Change false to variable!
                         Athlete a = new Athlete(id, true);
-
+                        System.out.println(a.getName());
                         t.addTeammate(id, a);
                         for(Performance p: a.getPerformances()){
-
                             t.addMeet(p.getMeet());
                         }
                     }

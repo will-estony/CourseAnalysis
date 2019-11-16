@@ -46,7 +46,7 @@ public class programMain {
 		//Athlete a = new Athlete(5997232, true);
 		//a.printSeasonBests();
 
-		Meet m = Meet.createMeet("https://www.tfrrs.org/results/xc/16670/NESCAC_Cross_Country_Championships");
+		//Meet m = Meet.createMeet("https://www.tfrrs.org/results/xc/16670/NESCAC_Cross_Country_Championships");
 		
 	}
 }

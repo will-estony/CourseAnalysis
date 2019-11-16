@@ -34,8 +34,12 @@ public class MeetParser{
     }
 
     public String getDate(){
-        return "bob";
+        Elements e = doc.select("div.panel-second-title").select("div.col-lg-8").select("div.panel-heading-normal-text");
+
+        return e.get(0).text();
     }
+
+    public String getName(){ return doc.select("h3.panel-title").text(); }
 
     //Tables and titles combined found in div tag: col-lg-12
     //Just the titles are found in div tag: custom-table-title.custom-table-title-xc
