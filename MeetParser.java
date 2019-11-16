@@ -19,10 +19,9 @@ public class MeetParser{
         this.url = m.getUrl();
         this.meet = m;
         try{
-            System.out.println("Establishing a connection to the website...");
+            System.out.println("Establishing a connection to the meet data...");
             doc = Jsoup.connect(url).timeout(0).get();
-            System.out.println("Connected");
-            
+            System.out.println("Connected to the meet");
             
             tables = doc.select("table");
             rows = doc.select("row");
@@ -85,29 +84,29 @@ public class MeetParser{
             }
 
         }else{ //There was merely a women's race and men's race, no jv or varsity
-        for(Element race : doc.select("div.col-lg-12")){
-            String raceTitle = race.select("div.custom-table-title.custom-table-title-xc").text();
-            if(raceTitle.contains("Men") && raceTitle.contains("Individual")){
-                Elements headers = race.select("thead");
-                int i = 0;
+            for(Element race : doc.select("div.col-lg-12")){
+                String raceTitle = race.select("div.custom-table-title.custom-table-title-xc").text();
+                if(raceTitle.contains("Men") && raceTitle.contains("Individual")){
+                    Elements headers = race.select("thead");
+                    int i = 0;
 
-                for(Element head: headers.select("tr").select("th")){
-                    headerMap.put(head.text(),i);
-                    i++;
-                }
+                    for(Element head: headers.select("tr").select("th")){
+                        headerMap.put(head.text(),i);
+                        i++;
+                    }
 
-                Elements results = race.select("tbody.color-xc");
+                    Elements results = race.select("tbody.color-xc");
 
-                for(Element result: results.select("tr")){
-                    Long id = Athlete.urlToLong("http:" + result.select("td").select("a").attr("href"));
-                    String time = result.select("td").get(headerMap.get("TIME")).text();
-                    Athlete a = new Athlete(id, false);
-                    Performance p = new Performance("8K", time, meet);
-                    a.addPerformance(p);
-                    meet.addCompetitor(id, a);
+                    for(Element result: results.select("tr")){
+                        Long id = Athlete.urlToLong("http:" + result.select("td").select("a").attr("href"));
+                        String time = result.select("td").get(headerMap.get("TIME")).text();
+                        Athlete a = new Athlete(id, false);
+                        Performance p = new Performance("8K", time, meet);
+                        a.addPerformance(p);
+                        meet.addCompetitor(id, a);
+                        }
                     }
                 }
             }
         }
     }
-}
