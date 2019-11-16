@@ -1,19 +1,34 @@
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Meet{
-
+	
+	// static HashMap of all Meets in existence
+	private static HashMap<String, Meet> allMeets = new HashMap<String, Meet>();
+	
 	private String date;  //the date the meet took place on ex. 1/8/19 This should be a date object. 
     private String url;   //the url to the meet stats on tffrs
     private HashMap<Long, Athlete> competitors;
     
     private int year;
 
-    public Meet(String url, String date){
+    private Meet(String url, String date){
         this.url = url;
         this.date = date;
         competitors = new HashMap<>();
         this.year = Integer.parseInt(date.substring(date.length() - 4, date.length()));
+    }
+    
+    // static factory method pattern
+    // forces meets to be created through this static factory method,
+    // thus preventing duplicate meets from being created
+    public static Meet createMeet(String url, String date) {
+    	// test if meet exists already
+    	if (allMeets.containsKey(url))
+    		return allMeets.get(url);
+    	// if the meet doesnt exist yet: create it, add it to allMeets, and return it
+    	Meet newMeet = new Meet(url, date);
+    	allMeets.put(url, newMeet);
+    	return newMeet;
     }
 
     public int getYear(){ return year; }
@@ -40,7 +55,8 @@ public class Meet{
     	int i = 0;
     	for (Athlete a : competitors.values()) {
     		// debugging
-    		
+    		System.out.println(a.getSeasonBest(year).getTime());	// season best
+    		System.out.println(a.getPerformance(this).getTime());	// time at this meet)
     		
     		returnMatrix[i][0] = a.getSeasonBest(year).getTime();	// season best
     		returnMatrix[i][1] = a.getPerformance(this).getTime();	// time at this meet
@@ -49,7 +65,6 @@ public class Meet{
     				" " + Performance.timeDoubleToString(returnMatrix[i][1]));
     		i++;
     	}
-    	
     	return returnMatrix;
     }
 }
