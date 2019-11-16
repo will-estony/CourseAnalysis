@@ -50,18 +50,18 @@ public class Athlete {
 		performances.add(p);	// adds to total list of performances
 		// adds to season bests if it is a season best for the year it occurred in
 		int year = p.getYear();
-		if (!seasonBests.containsKey(year)){		
-			seasonBests.put(year, p);
-		} else if(seasonBests.get(year).getTime() > p.getTime()){
-			seasonBests.put(year, p);
-		}
+		double newPerfTime = p.getTime();
+		// if the new performance is legal (not a DNS or DNF) AND
+		// (there is no performance for the given year OR the new performance is faster)
+		if ((newPerfTime > 0) && ((!seasonBests.containsKey(year)) || (newPerfTime < seasonBests.get(year).getTime())))
+			seasonBests.put(year, p);	// then store/overwrite the given year's Season best
 	}
 	
 	// returns the performance that occurred at the given meet
 	public Performance getPerformance(Meet goalMeet) {
 		// searches through performances to find the given meet
 		for (Performance p : performances) 
-			if (p.equals(goalMeet))
+			if (p.getMeet().equals(goalMeet))
 				return p;
 		return null;	// if no performance associated with given meet return null
 	}

@@ -8,7 +8,6 @@ public class Performance{
     	this.event = event;
     	this.time = timeStringToDouble(time);	// converts time String to a double value
         this.meet = meet;
-        
     }
     // Getter and Setters
     public String getEvent() { return event; }
@@ -127,12 +126,14 @@ public class Performance{
     }
     
     public String toString(){
+    	String perfString;
     	// if the performance is a DNF or DNS
     	if (time == -1)
-    		return event + ": DNF";
+    		perfString = "DNF";
     	else if (time == -2)
-    		return event + ": DNS";
-    	// if it's a regular performance
-        return event + ": " + timeDoubleToString(time) + " - " + getDate();
+    		perfString = "DNS";
+    	else // if it's a normal performance
+    		perfString = timeDoubleToString(time);
+        return event + ": " + perfString + " - " + getDate();
     }
 }

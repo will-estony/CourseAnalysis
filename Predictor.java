@@ -46,8 +46,14 @@ public class Predictor {
 
 		HashMap<Athlete, Double> returnMap = new HashMap<Athlete, Double>();
 		// iterates along each athlete in the team, calculating and populating their estimates into the HashMap
-		for (Athlete a : team.getTeammates())
-			returnMap.put(a, md.estimatePerformance(a.getSeasonBest(year).getTime()));
+		for (Athlete athlete : team.getTeammates()) {
+			Performance seasonBest = athlete.getSeasonBest(year);
+			// if no race for the year, only a DNF, or only a DNS, then don't parse them
+			if (seasonBest == null || seasonBest.getTime() < 0) {
+				System.out.println(athlete.getName() + " has not completed a race in the goal year " + year);
+			} else
+				returnMap.put(athlete, md.estimatePerformance(athlete.getSeasonBest(year).getTime()));
+		}
 		return returnMap;
 	}
 	
