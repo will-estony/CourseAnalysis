@@ -10,7 +10,6 @@ public class Performance{
         this.meet = meet;
         
     }
-    
     // Getter and Setters
     public String getEvent() { return event; }
     public double getTime() { return time; }

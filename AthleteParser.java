@@ -63,9 +63,6 @@ public class AthleteParser{
                     		"http:" + table.select("a").attr("href"),
                     		table.select("span").text());
                     
-                    // TODO: ? test for meet uniqueness before passing it to the performance ?
-                    // maybe we don't need to do that here...
-                    
                     // creates a new performance passing it the Event, the event time (as a String), and the meet it occurred at
                     Performance p = new Performance(split[0], split[1], m);
 
@@ -93,8 +90,5 @@ public class AthleteParser{
                 a.addPR(careerBests.select("td").get(i).text(), careerBests.select("td").get(i+1).text());
             }
         }
-    
     }
-
-   // public String 
 }

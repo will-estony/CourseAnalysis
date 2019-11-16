@@ -74,6 +74,4 @@ public class Team{
             System.out.println("----------------------");
         }
     }
-
-    
 }
