@@ -2,7 +2,6 @@
  * 
  */
 
-
 import java.util.HashMap;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
