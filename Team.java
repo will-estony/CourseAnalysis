@@ -9,6 +9,7 @@ public class Team{
     private String tfrrsURL; //The url to a teams XC tffrs page
     private String name;     //The name of an xc team
 
+    //TODO get rid of this name attribute in the team
     public Team(String name, String tfrrsURL){
         teammates = new HashMap<>();
         competitors = new HashMap<>();
