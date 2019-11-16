@@ -59,7 +59,7 @@ public class AthleteParser{
                     
                     // creates a new Meet passing it the tfrrs URL and the date of the meet
                     //System.out.println(table.select("span").text());
-                    Meet m = new Meet(
+                    Meet m = Meet.createMeet(
                     		"http:" + table.select("a").attr("href"),
                     		table.select("span").text());
                     
