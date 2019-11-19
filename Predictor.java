@@ -2,6 +2,7 @@
  * 
  */
 
+import java.util.Collection;
 import java.util.HashMap;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
@@ -33,9 +34,10 @@ public class Predictor {
 		calculatedMeets = new HashMap<Meet,  MeetData>();
 	}
 	
+	
 	// calculates and returns a HashMap of given team athletes and their estimated times at the given meet
 	// for a given year
-	public HashMap<Athlete, Double> meetPrediction(Meet meet, Team team, int year) {
+	public HashMap<Athlete, Double> meetPrediction(Meet meet, Collection<Athlete> group, int year) {
 		// checks if we've already calculated meet data for the given meet
 		// if we haven't then calculate and save new meet data into 
 		// calculatedMeets HashMap
@@ -45,7 +47,7 @@ public class Predictor {
 
 		HashMap<Athlete, Double> returnMap = new HashMap<Athlete, Double>();
 		// iterates along each athlete in the team, calculating and populating their estimates into the HashMap
-		for (Athlete athlete : team.getTeammates()) {
+		for (Athlete athlete : group) {
 			Performance seasonBest = athlete.getSeasonBest(year);
 			// if no race for the year, only a DNF, or only a DNS, then don't parse them
 			if (seasonBest == null || seasonBest.getTime() < 0) {
@@ -54,6 +56,10 @@ public class Predictor {
 				returnMap.put(athlete, md.estimatePerformance(athlete.getSeasonBest(year).getTime()));
 		}
 		return returnMap;
+	}
+	// Allowing teams to be passed as well as Collections
+	public HashMap<Athlete, Double> meetPredictions(Meet meet, Team team, int year) {
+		return meetPrediction(meet, team.getTeammates(), year);
 	}
 	
 	// calculates and returns the estimated time a given athlete would run at a given meet
