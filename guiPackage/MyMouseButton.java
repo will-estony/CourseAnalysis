@@ -8,6 +8,8 @@ import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
 
+
+
 public class MyMouseButton extends MyTextBox {
 	
 	// instance variables for the button
@@ -19,6 +21,14 @@ public class MyMouseButton extends MyTextBox {
 	
 	// private boolean to know if button is pressed in or not
 	private boolean isPressed;
+	
+	/*
+	private interface actionEventListener {	
+		void actionMethod(); 
+	}
+	// function call to execute when the button is activated
+	private actionEventListener myListener;
+	*/
 	
 	public MyMouseButton(String textString, Font textFont, Color regularTextColor, Color highlightedTextColor,
 			Color boxColor, Color highlightedBoxColor, double xPos, double yPos, double width, double height) {

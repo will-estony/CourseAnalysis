@@ -12,6 +12,7 @@ import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 @SuppressWarnings("serial")
 class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
@@ -41,12 +42,19 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		
 		setBackground(Color.BLACK);	// sets the background color of the panel
 		
+		// creates all the buttons on the screen
 		menuButtons = new ArrayList<MyMouseButton>();
-		// creates a button that does nothing
-		menuButtons.add(new MyMouseButton("Quit", defaultFont, 300, 300, 80, 32));
+		menuButtons.add(new MyMouseButton("Quit", defaultFont, 0, 0, 80, 34));
+		menuButtons.add(new MyMouseButton("Read in team", defaultFont, 0, 0, 180, 34));
+		
+		// TESTING
+		JTextArea test = new JTextArea("testing");
+		
+		add(test);
 		
 	}
 	
+	private int lastScreenWidth, lastScreenHeight;
 	/* overriding paintComponent allows us to paint things to the screen */
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);	// passes g to overridden super method
@@ -54,10 +62,32 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		// access to specific painting methods
 		Graphics2D g2 = (Graphics2D) g;
 		
+		// if the screen size was changed then update all the component positions
+		if (gm.getWidth() != lastScreenWidth || gm.getHeight() != lastScreenHeight) {
+			lastScreenWidth = gm.getWidth();
+			lastScreenHeight = gm.getHeight();
+			updateComponentPositions();
+		}
+		
 		// draws every button in the array list
 		for (MyMouseButton button : menuButtons)
 			button.drawToGraphics(g2);
-		
+	}
+	
+	// updates the positions of all the components on the screen
+	private void updateComponentPositions() {
+		int screenWidth = lastScreenWidth;
+		int screenHeight = lastScreenHeight;
+		// iterates along each menu button updating their position
+		for (int i = 0; i < menuButtons.size(); i++)
+			switch (i) {
+				case 0: // the quit button
+					menuButtons.get(0).updatePos(screenWidth - 80, screenHeight - 80);
+					break;
+				case 1:	// test button
+					menuButtons.get(1).updatePos(120, 40);
+					break;
+			}
 	}
 	
 	@Override
@@ -115,7 +145,7 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 			// if each button is clicked then perform the button's action
 			if (menuButtons.get(i).mouseReleased(mouseX, mouseY))
 				switch (i) {
-					case 0:
+					case 0:	// if quit button is clicked
 						gm.quit();
 						break;
 				}
