@@ -1,9 +1,13 @@
 import java.util.HashMap;
 
+import guiPackage.guiManager;
+
 public class programMain {
 
 	public static void main(String[] args) {
-		//System.out.println(Performance.timeDoubleToString(3* 3600*24 + 27*60 + 34.23));		
+		
+		guiManager gm = new guiManager();
+		
 		
 		//t.printTeam();
 
@@ -13,6 +17,7 @@ public class programMain {
 		//t.printTeam();
 		//t.printMeets();
 		
+		/*
 		Team browdies = new Team("Browdies", "https://www.tfrrs.org/teams/xc/CT_college_m_Trinity_CT.html");
 		
 		
@@ -26,7 +31,7 @@ public class programMain {
 		HashMap<Athlete, Double> estimatedResults = p.meetPrediction(Regionals2018, browdies.getTeammates(), 2019);
 		for (Athlete a : estimatedResults.keySet())
 			System.out.println("Athlete " + a.getName() + ":\t" + Performance.timeDoubleToString(estimatedResults.get(a)));
-		
+		*/
 		
 	
 
