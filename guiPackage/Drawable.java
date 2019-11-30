@@ -8,6 +8,4 @@ import java.awt.Graphics2D;
 interface Drawable {
 	// method called to add object to Graphics2D object to make it visible
 	public void drawToGraphics(Graphics2D g2);
-	// allows us to reposition object when screen is resized
-	public void updatePos(double newX, double newY);
 }

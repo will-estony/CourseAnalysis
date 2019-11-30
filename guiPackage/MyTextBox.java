@@ -14,19 +14,20 @@ public class MyTextBox implements Drawable {
 	private String textString;
 	private float stringX, stringY;
 	private double centerX, centerY;
-	private boolean needsAdjusting = true;	// boolean tells us if text needs to be repositioned
 	
-	// Constructor that assigns default color
-	public MyTextBox(String textString, Font textFont, double xPos, double yPos) {
-		this(textString, textFont, defaultTextColor, xPos, yPos);
+	
+	private UIConstraintSet constraints = null;
+	
+	// Main Constructor that uses new Constraint system
+	public MyTextBox(String textString, Font textFont, UIConstraintSet constraints) {
+		this(textString, textFont, defaultTextColor, constraints);	// passes params with default color being passed
 	}
 	// Constructor that allows color to be set
-	public MyTextBox(String textString, Font textFont, Color textColor, double xPos, double yPos) {
+	public MyTextBox(String textString, Font textFont, Color textColor, UIConstraintSet constraints) {
 		this.textString = textString;
 		this.textFont = textFont;
+		this.constraints = constraints;
 		this.textColor = textColor;
-		centerX = xPos;
-		centerY = yPos;
 	}
 	
 	// allows super classes to change text color
@@ -34,25 +35,23 @@ public class MyTextBox implements Drawable {
 		textColor = c;
 	}
 	
-	// allows us to reposition text
-	public void updatePos(double newX, double newY) {
-		centerX = newX;
-		centerY = newY;
-		needsAdjusting = true;
-	}
-	
 	// draws text in the specified location, recalculating the location as needed
 	public void drawToGraphics(Graphics2D g2) {
-		// if string Location hasn't been calculated yet
-		if (needsAdjusting) {	// we do this each time we need some readjusting
-			// uses the font metrics of the supplied font and the string to calculate how
-			// to place the text in the center of the rectangle
-			FontMetrics fontMetrics = g2.getFontMetrics(textFont);
-			stringX = (float) (centerX - fontMetrics.stringWidth(textString)/2);
-			// TODO the Y value might not be perfect here...
-			stringY = (float) (centerY + (fontMetrics.getHeight())/2 - fontMetrics.getDescent());
-			needsAdjusting = false;
-		}
+		
+		// TODO: these calculations shouldn't have to happen every time, they should only have to happen 
+		// each time the screen size is changed
+		
+		centerX = constraints.getX();	// resets x position based on constraints and screen width
+		centerY = constraints.getY();	// resets y position based on constraints and screen height
+		// uses the font metrics of the supplied font and the string to calculate how
+		// to place the text in the center of the rectangle
+		FontMetrics fontMetrics = g2.getFontMetrics(textFont);
+		stringX = (float) (centerX - fontMetrics.stringWidth(textString)/2);
+		// TODO the Y value might not be perfect here...
+		stringY = (float) (centerY + (fontMetrics.getHeight())/2 - fontMetrics.getDescent());
+		
+		
+		
 		// Draws the String
 		g2.setFont(textFont);
 		g2.setColor(textColor);

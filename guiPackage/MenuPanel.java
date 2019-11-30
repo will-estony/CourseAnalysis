@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import guiPackage.UIConstraint.ConstraintType;
+
 @SuppressWarnings("serial")
 class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
 	/* Fonts */
@@ -27,6 +29,9 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 	
 	// ArrayList of buttons that appear on the menu
 	private ArrayList<MyMouseButton> menuButtons;
+	
+	// ArrayList of text boxes that appear on the menu
+	private ArrayList<MyTextBox> menuTextBoxes;
 	
 	// Constructor
 	public MenuPanel(guiManager gm) {
@@ -44,17 +49,28 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		
 		// creates all the buttons on the screen
 		menuButtons = new ArrayList<MyMouseButton>();
-		menuButtons.add(new MyMouseButton("Quit", defaultFont, 0, 0, 80, 34));
-		menuButtons.add(new MyMouseButton("Read in team", defaultFont, 0, 0, 180, 34));
+		menuButtons.add(new MyMouseButton("Quit", defaultFont, 80, 34,
+				new UIConstraintSet(gm,
+						new UIConstraint(ConstraintType.fixed, -75),
+						new UIConstraint(ConstraintType.fixed, -75))));
+		//menuButtons.add(new MyMouseButton("Read in team", defaultFont, 0, 0, 180, 34));
+		
+		// creates all the text boxes on this panel
+		menuTextBoxes = new ArrayList<MyTextBox>();
+		
+		// creates a text box with constraints on its positions
+		menuTextBoxes.add(new MyTextBox("Testing constraints", defaultFont, 
+				new UIConstraintSet(gm, 
+						new UIConstraint(ConstraintType.relative, 0.5),
+						new UIConstraint(ConstraintType.relative, 0.6))));
 		
 		// TESTING
 		JTextArea test = new JTextArea("testing");
 		
 		add(test);
-		
 	}
 	
-	private int lastScreenWidth, lastScreenHeight;
+	//private int lastScreenWidth, lastScreenHeight;
 	/* overriding paintComponent allows us to paint things to the screen */
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);	// passes g to overridden super method
@@ -62,32 +78,20 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		// access to specific painting methods
 		Graphics2D g2 = (Graphics2D) g;
 		
+		/*
 		// if the screen size was changed then update all the component positions
 		if (gm.getWidth() != lastScreenWidth || gm.getHeight() != lastScreenHeight) {
 			lastScreenWidth = gm.getWidth();
 			lastScreenHeight = gm.getHeight();
 			updateComponentPositions();
-		}
+		}*/
 		
 		// draws every button in the array list
 		for (MyMouseButton button : menuButtons)
 			button.drawToGraphics(g2);
-	}
-	
-	// updates the positions of all the components on the screen
-	private void updateComponentPositions() {
-		int screenWidth = lastScreenWidth;
-		int screenHeight = lastScreenHeight;
-		// iterates along each menu button updating their position
-		for (int i = 0; i < menuButtons.size(); i++)
-			switch (i) {
-				case 0: // the quit button
-					menuButtons.get(0).updatePos(screenWidth - 80, screenHeight - 80);
-					break;
-				case 1:	// test button
-					menuButtons.get(1).updatePos(120, 40);
-					break;
-			}
+		// draws every text box in the array list
+		for (MyTextBox textBox : menuTextBoxes)
+			textBox.drawToGraphics(g2);
 	}
 	
 	@Override
