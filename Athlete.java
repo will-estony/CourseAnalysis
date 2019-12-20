@@ -1,10 +1,12 @@
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 
 public class Athlete {
 	
 	private HashMap<String,String> careerBests;
 	private ArrayList<Performance> performances;
+	// seasonBests is hashmap of year and performance
 	private HashMap<Integer, Performance> seasonBests;
 	private String name;
 	private long tfrrsID;
@@ -24,10 +26,23 @@ public class Athlete {
 		ap.parsePerformances();
 
 	}
+	
+	// constructor that only takes ID num
+	public Athlete(long tfrrsID) {
+		this(tfrrsID, false);
+	}
+	
+	// constructor that only takes name and attempts to find athlete on TFRRS
+	public Athlete(String potentialName) {
+		
+	}
 
+	// Some getters
 	public String getName() { return name; }
+	public String getUrl() { return idToUrl(tfrrsID); }
+	public ArrayList<Performance> getPerformances(){ return performances; }
+	
 	public static String idToUrl(long l){ return "https://xc.tfrrs.org/athletes/" + l + ".html"; }
-	public String getUrl() { return "https://xc.tfrrs.org/athletes/" + tfrrsID + ".html"; }
 	
 	public static long urlToLong(String url){ 
 		// remove https's
@@ -44,8 +59,6 @@ public class Athlete {
 		return Long.parseLong(url.substring(0,i));
 	}
 
-	public ArrayList<Performance> getPerformances(){ return performances; }
-
 	public void addPerformance(Performance p) {
 		performances.add(p);	// adds to total list of performances
 		// adds to season bests if it is a season best for the year it occurred in
@@ -57,13 +70,19 @@ public class Athlete {
 			seasonBests.put(year, p);	// then store/overwrite the given year's Season best
 	}
 	
-	// returns the performance that occurred at the given meet
-	public Performance getPerformance(Meet goalMeet) {
-		// searches through performances to find the given meet
+	// returns a list of performances that happened at a given meet
+	// runs in O(n)
+	public List<Performance> getPerformances(Meet goalMeet) {
+		ArrayList<Performance> retList = new ArrayList<Performance>();
+		
+		// searches through performances to find ones that match the given meet
 		for (Performance p : performances) 
 			if (p.getMeet().equals(goalMeet))
-				return p;
-		return null;	// if no performance associated with given meet return null
+				retList.add(p);
+		
+		if (retList.size() == 0)
+			retList = null; // if no performance associated with given meet return null
+		return retList;	
 	}
 
 	public void addPR(String event, String time){
