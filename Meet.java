@@ -56,9 +56,10 @@ public class Meet{
     	for (Athlete a : competitors.values()) {
     		// if they have a completed a race for the given year AND
     		// they completed this meet's race
-    		if (a.getSeasonBest(year) != null && a.getPerformance(this).getTime() > 0) {
+    		if (a.getSeasonBest(year) != null && a.getPerformances(this).get(0).getTime() > 0) {
 	    		returnMatrix[i][0] = a.getSeasonBest(year).getTime();	// season best
-	    		returnMatrix[i][1] = a.getPerformance(this).getTime();	// time at this meet
+	    		returnMatrix[i][1] = a.getPerformances(this).get(0).getTime();	// time at this meet
+	    		
 	    		//debugging
 	    		System.out.println(Performance.timeDoubleToString(returnMatrix[i][0]) + 
 	    				" " + Performance.timeDoubleToString(returnMatrix[i][1]));

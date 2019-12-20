@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import guiPackage.UIConstraint.ConstraintType;
 
@@ -28,10 +29,10 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 	private guiManager gm;
 	
 	// ArrayList of buttons that appear on the menu
-	private ArrayList<MyMouseButton> menuButtons;
+	private ArrayList<MyMouseButton> buttons;
 	
 	// ArrayList of text boxes that appear on the menu
-	private ArrayList<MyTextBox> menuTextBoxes;
+	private ArrayList<MyTextBox> textBoxes;
 	
 	// Constructor
 	public MenuPanel(guiManager gm) {
@@ -48,26 +49,34 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		setBackground(Color.BLACK);	// sets the background color of the panel
 		
 		// creates all the buttons on the screen
-		menuButtons = new ArrayList<MyMouseButton>();
-		menuButtons.add(new MyMouseButton("Quit", defaultFont, 80, 34,
+		buttons = new ArrayList<MyMouseButton>();
+		// creates quit button
+		buttons.add(new MyMouseButton("Quit", defaultFont, 80, 34,
 				new UIConstraintSet(gm,
 						new UIConstraint(ConstraintType.fixed, -75),
 						new UIConstraint(ConstraintType.fixed, -75))));
+		// creates test button
+		buttons.add(new MyMouseButton("Read Team's page", defaultFont,
+				new UIConstraintSet(gm,
+						new UIConstraint(ConstraintType.relative, 0.2),
+						new UIConstraint(ConstraintType.fixed, 100))));
 		//menuButtons.add(new MyMouseButton("Read in team", defaultFont, 0, 0, 180, 34));
 		
 		// creates all the text boxes on this panel
-		menuTextBoxes = new ArrayList<MyTextBox>();
+		textBoxes = new ArrayList<MyTextBox>();
 		
-		// creates a text box with constraints on its positions
-		menuTextBoxes.add(new MyTextBox("Testing constraints", defaultFont, 
+		// creates a test text box with constraints on its positions
+		textBoxes.add(new MyTextBox("Testing constraints", defaultFont, 
 				new UIConstraintSet(gm, 
 						new UIConstraint(ConstraintType.relative, 0.5),
 						new UIConstraint(ConstraintType.relative, 0.6))));
 		
 		// TESTING
-		JTextArea test = new JTextArea("testing");
+		JTextField searchField = new JTextField("Enter team's TFRRS URL here", 50);
 		
-		add(test);
+		
+		
+		add(searchField);
 	}
 	
 	//private int lastScreenWidth, lastScreenHeight;
@@ -87,10 +96,10 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		}*/
 		
 		// draws every button in the array list
-		for (MyMouseButton button : menuButtons)
+		for (MyMouseButton button : buttons)
 			button.drawToGraphics(g2);
 		// draws every text box in the array list
-		for (MyTextBox textBox : menuTextBoxes)
+		for (MyTextBox textBox : textBoxes)
 			textBox.drawToGraphics(g2);
 	}
 	
@@ -106,7 +115,7 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		int mouseX = e.getX();
 		int mouseY = e.getY();
 		// iterates along each button
-		for (MyMouseButton button : menuButtons)
+		for (MyMouseButton button : buttons)
 			button.mouseMoved(mouseX, mouseY);
 	}
 
@@ -134,7 +143,7 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		int mouseX = e.getX();
 		int mouseY = e.getY();
 		// iterates along each button
-		for (MyMouseButton button : menuButtons)
+		for (MyMouseButton button : buttons)
 			button.mousePressed(mouseX, mouseY);
 
 	}
@@ -145,12 +154,15 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		int mouseX = e.getX();
 		int mouseY = e.getY();
 		// iterates along each button
-		for (int i = 0; i < menuButtons.size(); i++) {
+		for (int i = 0; i < buttons.size(); i++) {
 			// if each button is clicked then perform the button's action
-			if (menuButtons.get(i).mouseReleased(mouseX, mouseY))
+			if (buttons.get(i).mouseReleased(mouseX, mouseY))
 				switch (i) {
 					case 0:	// if quit button is clicked
 						gm.quit();
+						break;
+					case 1:	// if search button is clicked
+						
 						break;
 				}
 		}

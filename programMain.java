@@ -18,7 +18,7 @@ public class programMain {
 		//t.printMeets();
 		
 		/*
-		Team browdies = new Team("Browdies", "https://www.tfrrs.org/teams/xc/CT_college_m_Trinity_CT.html");
+		Team browdies = new Team("https://www.tfrrs.org/teams/xc/CT_college_m_Trinity_CT.html");
 		
 		
 		Meet Regionals2018 = Meet.createMeet("https://www.tfrrs.org/results/xc/14521/NCAA_Division_III_New_England_Region_Cross_Country_Championships");

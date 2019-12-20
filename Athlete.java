@@ -29,12 +29,7 @@ public class Athlete {
 	
 	// constructor that only takes ID num
 	public Athlete(long tfrrsID) {
-		this(tfrrsID, false);
-	}
-	
-	// constructor that only takes name and attempts to find athlete on TFRRS
-	public Athlete(String potentialName) {
-		
+		this(tfrrsID, true);
 	}
 
 	// Some getters
