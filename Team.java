@@ -9,13 +9,15 @@ public class Team{
     private String tfrrsURL; //The url to a teams XC tffrs page
     private String name;     //The name of an xc team
 
-    //TODO get rid of this name attribute in the team
-    public Team(String name, String tfrrsURL){
+    public Team(String tfrrsURL){
         teammates = new HashMap<>();
         competitors = new HashMap<>();
         meets = new ArrayList<>();
         
-        this.name = name;
+        
+        // saves the "name" of the team as the identifying section of the url
+        // - 5 at the end to get rid of ".html"
+        this.name = tfrrsURL.substring(tfrrsURL.indexOf("teams/"), tfrrsURL.length() - 5);
         this.tfrrsURL = tfrrsURL;
 
         parseAthletes();
