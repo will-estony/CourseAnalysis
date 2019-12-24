@@ -11,11 +11,10 @@ public class Meet implements Parsable {
 	// static HashMap of all Meets in existence
 	private static HashMap<String, Meet> allMeets = new HashMap<String, Meet>();
 	
-	private String date;  //the date the meet took place on ex. 1/8/19 This should be a date object. 
+	private Date date;  //the date the meet took place on ex. 1/8/19 This should be a date object. 
     private String url;   //the url to the meet stats on tffrs
     private String name; //The name of the meet as listed on tffrs
     private HashMap<Long, Athlete> competitors;
-    private int year;
     private MeetParser parser;
 
     private Meet(String url, MyTextBox statusObject) {
@@ -47,21 +46,16 @@ public class Meet implements Parsable {
     	if (!parser.connect())
     		return false;
     	
-    	this.date = parser.getDate();
+    	this.date = new Date(parser.getDateString());
         this.name = parser.getName();
-        this.year = Integer.parseInt(date.substring(date.length() - 4, date.length()));
     	parser.parseMeet();
     	return true;
     }
     
-    
-    
-    
-
-    public int getYear(){ return year; }
     public void addCompetitor(Long id, Athlete a){ competitors.put(id, a); }
 
-    public String getDate() { return date; }
+    public Date getDate() { return date; }
+    public String getName() { return name; }
     public String getURL(){ return url; }
 
     // Creates and returns a results matrix for this meet
@@ -80,8 +74,8 @@ public class Meet implements Parsable {
     	for (Athlete a : competitors.values()) {
     		// if they have a completed a race for the given year AND
     		// they completed this meet's race
-    		if (a.getSeasonBest(year) != null && a.getPerformances(this).get(0).getTime() > 0) {
-	    		returnMatrix[i][0] = a.getSeasonBest(year).getTime();	// season best
+    		if (a.getSeasonBest(date.getYear()) != null && a.getPerformances(this).get(0).getTime() > 0) {
+	    		returnMatrix[i][0] = a.getSeasonBest(date.getYear()).getTime();	// season best
 	    		returnMatrix[i][1] = a.getPerformances(this).get(0).getTime();	// time at this meet
 	    		
 	    		//debugging
@@ -122,7 +116,7 @@ public class Meet implements Parsable {
         	return false;
         }
         
-        public String getDate(){
+        public String getDateString(){
         	// makes sure we're connected before accessing webpage details
         	if (!isConnected)
         		connect();
@@ -136,14 +130,13 @@ public class Meet implements Parsable {
         		connect();
         	return doc.select("h3.panel-title").text();
     	}
-
+        
         //Tables and titles combined found in div tag: col-lg-12
         //Just the titles are found in div tag: custom-table-title.custom-table-title-xc
         public void parseMeet(){
 
             HashMap<String, Integer> headerMap = new HashMap<>();
             ArrayList<String> raceTitles = new ArrayList<>();
-            //Meet meet;
 
             for(Element race : doc.select("div.col-lg-12")){
                 String raceTitle = race.select("div.custom-table-title.custom-table-title-xc").text();
@@ -152,31 +145,16 @@ public class Meet implements Parsable {
                 }
                 
             }
+            
             //PL, NAME, YEAR, TEAM, Avg. Mile, TIME, SCORE
             //There was some sort of JV/Varsity race distinction
             if(raceTitles.size() > 4){
                 for(Element race : doc.select("div.col-lg-12")){
                     String raceTitle = race.select("div.custom-table-title.custom-table-title-xc").text();
                     if(raceTitle.contains("Men") && raceTitle.contains("Varsity") && raceTitle.contains("Individual")){
-                        Elements headers = race.select("thead");
-                        int i = 0;
-
-                        for(Element head: headers.select("tr").select("th")){
-                            headerMap.put(head.text(),i);
-                            i++;
-                        }
-
-                        Elements results = race.select("tbody.color-xc");
-
-                        for(Element result: results.select("tr")){
-
-                            String time = result.select("td").get(headerMap.get("TIME")).text();
-                            Long id = Athlete.urlToLong("http:" + result.select("td").select("a").attr("href"));
-                            Athlete a = new Athlete(id); 
-                            Performance p = new Performance("8K", time, meet);
-                            a.addPerformance(p);
-                            meet.addCompetitor(id, a);
-                        }
+                    	
+                    	parseRace(race, headerMap);
+                    	
                     }
                 }
 
@@ -184,26 +162,41 @@ public class Meet implements Parsable {
                 for(Element race : doc.select("div.col-lg-12")){
                     String raceTitle = race.select("div.custom-table-title.custom-table-title-xc").text();
                     if(raceTitle.contains("Men") && raceTitle.contains("Individual")){
-                        Elements headers = race.select("thead");
-                        int i = 0;
-
-                        for(Element head: headers.select("tr").select("th")){
-                            headerMap.put(head.text(),i);
-                            i++;
-                        }
-
-                        Elements results = race.select("tbody.color-xc");
-
-                        for(Element result: results.select("tr")){
-                            Long id = Athlete.urlToLong("http:" + result.select("td").select("a").attr("href"));
-                            String time = result.select("td").get(headerMap.get("TIME")).text();
-                            Athlete a = new Athlete(id);
-                            Performance p = new Performance("8K", time, meet);
-                            a.addPerformance(p);
-                            meet.addCompetitor(id, a);
-                        }
+                       
+                    	parseRace(race, headerMap);
+                    	
                     }
                 }
+            }
+        }
+        // parses given meet section (ex. JV race, varsity race, etc...)
+        private void parseRace(Element race, HashMap<String, Integer> headerMap) {
+
+        	Elements headers = race.select("thead");
+            int i = 0;
+
+            for(Element head: headers.select("tr").select("th"))
+                headerMap.put(head.text(), i++);
+
+            Elements results = race.select("tbody.color-xc");
+
+            for(Element result: results.select("tr")){
+
+            	// sometimes there is no "href" attribute if the athlete does not have a tfrrs page
+            	// in the case of alumni in a race this happens.
+            	// also there is sometimes a "href" attribute but only for team URL,
+            	// not for athlete URL.
+            	// So to overcome both of these at once we check to see if the "href" attribute
+            	// contains the word "athlete" (which is what all athlete URLs should)
+            	if (result.select("td").select("a").attr("href").contains("athlete")) {
+	                long id = Athlete.urlToLong("http:" + result.select("td").select("a").attr("href"));
+	                String time = result.select("td").get(headerMap.get("TIME")).text();
+	                Athlete a = new Athlete(id);
+	                Performance p = new Performance("8K", 
+	                		Performance.timeStringToDouble(time), meet.getDate(), meet);
+	                a.addPerformance(p);
+	                meet.addCompetitor(id, a);
+            	}
             }
         }
     }

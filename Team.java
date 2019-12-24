@@ -36,7 +36,7 @@ public class Team implements Parsable {
 
         parser = new TeamParser(this, statusObject);
         
-        parseAthletes();
+        //parseAthletes();
         //parseMeets();
 
     }
@@ -68,11 +68,6 @@ public class Team implements Parsable {
     	parser.parseAthletes();
     	return true;
     }
-    
-    private void parseAthletes(){
-        TeamParser tp = new TeamParser(this);
-        tp.parseAthletes();
-    }
 
     // untested method
     private void parseMeets(){
@@ -96,8 +91,7 @@ public class Team implements Parsable {
     public void printTeam(){
         for(Athlete a: teammates.values()){
             a.printPerformances();
-            System.out.println();
-            a.printPRs();
+            a.printSeasonBests();
             System.out.println("----------------------");
         }
     }
@@ -130,29 +124,25 @@ public class Team implements Parsable {
         }
 
         public void parseAthletes() {
-        	// if connected: proceed
-        	// else, if not connected, attempt to connect and ONLY proceed if connection successful
-        	if (isConnected || connect()) {
-	            for(Element table: tables){
-	                //Get to the table on the page that contains the names
-	                if(table.select("thead").select("tr").select("th").text().contains("NAME")){
-	                    for(Element td: table.select("td")){
-	                        if(!td.select("a").attr("href").equals("")){
-	
-	                            Long id = Athlete.urlToLong("http:" + td.select("a").attr("href"));
-	
-	                            Athlete a = new Athlete(id);
-	                            System.out.println(a.getName());
-	                            team.addTeammate(id, a);
-	                            for(Performance p: a.getPerformances()){
-	                                team.addMeet(p.getMeet());
-	                            }
-	                        }
-	                    }
-	                }
-	            }
-        	}
+            for(Element table: tables){
+                //Get to the table on the page that contains the names
+                if(table.select("thead").select("tr").select("th").text().contains("NAME")){
+                    for(Element td: table.select("td")){
+                        if(!td.select("a").attr("href").equals("")){
+
+                            Long id = Athlete.urlToLong("http:" + td.select("a").attr("href"));
+
+                            Athlete a = new Athlete(id);
+                            a.parse();
+                            System.out.println(a.getName());
+                            team.addTeammate(id, a);
+                            for(Performance p: a.getPerformances()){
+                                team.addMeet(p.getMeet());
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
-// ^^^ have you ever seen a larger cascade of brackets?

@@ -44,14 +44,13 @@ public class Athlete implements Parsable {
 	// Some getters //
 	
 	// athlete must already be parsed to have a local name variable
-	public String getName() { 
-		return name; 
-	}
+	public String getName() { return name; }
 	public String getURL() { return idToUrl(tfrrsID); }
 	public ArrayList<Performance> getPerformances(){ return performances; }
 	
 	public static String idToUrl(long l){ return "https://xc.tfrrs.org/athletes/" + l + ".html"; }
 	
+	// requires a valid tfrrs athlete URL to work
 	public static long urlToLong(String url){ 
 		// remove https's
 		url = url.replace("https://","");
@@ -72,7 +71,7 @@ public class Athlete implements Parsable {
 	public void addPerformance(Performance p) {
 		performances.add(p);	// adds to total list of performances
 		// adds to season bests if it is a season best for the year it occurred in
-		int year = p.getYear();
+		int year = p.getDate().getYear();
 		double newPerfTime = p.getTime();
 		// if the new performance is legal (not a DNS or DNF) AND
 		// (there is no performance for the given year OR the new performance is faster)
@@ -112,11 +111,13 @@ public class Athlete implements Parsable {
 		for(Performance p: performances){
 			System.out.println(p);
 		}
+		System.out.println();
 	}
 
 	public void printPRs(){
 		System.out.println(name + " has competed in " + careerBests.size() + " different event(s) in their career.");
-		System.out.println("Here are their best times in each event");
+		if (careerBests.size() > 0)
+			System.out.println("Here are their best times in each event");
 		System.out.println();
 
 		for(String event: careerBests.keySet()){
@@ -125,9 +126,13 @@ public class Athlete implements Parsable {
 	}
 
 	public void printSeasonBests(){
-		for(int i : seasonBests.keySet()){
-			System.out.println(i + " - " + seasonBests.get(i));
+		System.out.println(name + " has competed for " + seasonBests.size() + " year(s).");
+		if (seasonBests.size() > 0)
+			System.out.println("Here are their season bests\n");
+		for(int year : seasonBests.keySet()){
+			System.out.println(year + " - " + seasonBests.get(year));
 		}
+		System.out.println();
 	}
 	
 	private class AthleteParser extends Parser {
@@ -185,14 +190,24 @@ public class Athlete implements Parsable {
 	                    String info = table.select("tbody").text();
 	                    String split[] = info.split("\\s+");
 	                    
-	                    // creates a new Meet passing it the tfrrs URL and the date of the meet
-	                    //System.out.println(table.select("span").text());
+	                    // creates a new Meet passing it the tfrrs URL
 	                    Meet m = Meet.createMeet(
 	                    		"http:" + table.select("a").attr("href"));
 	                    
-	                    // creates a new performance passing it the Event, the event time (as a String), and the meet it occurred at
-	                    Performance p = new Performance(split[0], split[1], m);
+	                    //m.parse();
+	                    
+	                    // creates a new performance passing it the Event, the event time (as a String), 
+	                    // the meet (as a Date), and the meet it occurred at
+	                    Performance p = new Performance(split[0], 
+	                    		Performance.timeStringToDouble(split[1]), 
+	                    		new Date(table.select("span").text()), m);
 
+	                    // in order for each performance to have a date, our old approach
+	                    // required the meet to be parsed first and then take the date from there.
+	                    // But by passing the date now instead of just the meet we don't
+	                    // have to parse every meet for every performance in order to get the date.
+	                    //System.out.println(table.select("span").text());	// the date of the performance
+	                    
 	                    // adds performance to athlete
 	                    athlete.addPerformance(p);
 	                }    

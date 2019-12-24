@@ -2,19 +2,19 @@ public class Performance{
 	private String event; //the event the athlete competed in ex. 8k
     private double time;  //the time the athlete completed the event in, in seconds
     private Meet meet;    //the meet the performance happened at
-    
+    private Date date;
 
-    public Performance(String event, String time, Meet meet){
+    public Performance(String event, double time, Date date, Meet meet){
     	this.event = event;
-    	this.time = timeStringToDouble(time);	// converts time String to a double value
+    	this.time = time;
+    	this.date = date;
         this.meet = meet;
     }
-    // Getter and Setters
+    // Getters
     public String getEvent() { return event; }
     public double getTime() { return time; }
     public Meet getMeet(){ return meet; }
-    public String getDate() { return meet.getDate(); }
-    public int getYear(){ return meet.getYear(); }
+    public Date getDate() { return date; }
     
     // converts String of the form dd:hh:mm:ss.ms to a double
     public static double timeStringToDouble(String timeString) {
@@ -134,6 +134,6 @@ public class Performance{
     		perfString = "DNS";
     	else // if it's a normal performance
     		perfString = timeDoubleToString(time);
-        return event + ": " + perfString + " - " + getDate();
+        return event + ": " + perfString + " - " + date;
     }
 }
