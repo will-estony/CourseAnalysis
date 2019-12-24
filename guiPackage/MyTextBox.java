@@ -35,6 +35,13 @@ public class MyTextBox implements Drawable {
 		textColor = c;
 	}
 	
+	// allows changing the text in this text box.
+	// text should be automatically re-centered as currently every call to drawToGraphics
+	// re-centers text.
+	public void setText(String newString) {
+		textString = newString;
+	}
+	
 	// draws text in the specified location, recalculating the location as needed
 	public void drawToGraphics(Graphics2D g2) {
 		

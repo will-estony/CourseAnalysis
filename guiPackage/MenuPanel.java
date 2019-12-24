@@ -34,6 +34,11 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 	// ArrayList of text boxes that appear on the menu
 	private ArrayList<MyTextBox> textBoxes;
 	
+	// search bar
+	private JTextField searchField;
+	// status text box
+	private MyTextBox statusText;
+	
 	// Constructor
 	public MenuPanel(guiManager gm) {
 		this.gm = gm;	// saves gui manager reference
@@ -65,19 +70,45 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		// creates all the text boxes on this panel
 		textBoxes = new ArrayList<MyTextBox>();
 		
-		// creates a test text box with constraints on its positions
-		textBoxes.add(new MyTextBox("Testing constraints", defaultFont, 
+		// creates a textBox to display the current status of the search
+		statusText = new MyTextBox("", defaultFont, 
 				new UIConstraintSet(gm, 
 						new UIConstraint(ConstraintType.relative, 0.5),
-						new UIConstraint(ConstraintType.relative, 0.6))));
+						new UIConstraint(ConstraintType.relative, 0.6)));
+		// adds status text box to global collection of text boxes
+		textBoxes.add(statusText);
 		
 		// TESTING
-		JTextField searchField = new JTextField("Enter team's TFRRS URL here", 50);
+		searchField = new JTextField("Enter athlete's TFRRS URL here", 50);
 		
 		
 		
 		add(searchField);
 	}
+	
+	
+	
+	// attempts to read in the team that is currently in the search bar
+	// CURRENTLY JUST TESTING NOT PERMANANT
+	private void attemptAthleteSearch() {
+		// saves current text box string	
+		String possibleURL = searchField.getText();
+		
+		// now we check to see if the string is even a valid URL
+		
+		
+		// now we create an athlete with the given URL
+		//Athlete potentialAthlete = new Athlete(Athlete.urlToLong(possibleURL), statusText);
+		
+		
+		
+		
+		
+		
+		
+		
+	}
+	
 	
 	//private int lastScreenWidth, lastScreenHeight;
 	/* overriding paintComponent allows us to paint things to the screen */
@@ -162,7 +193,7 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 						gm.quit();
 						break;
 					case 1:	// if search button is clicked
-						
+						attemptAthleteSearch();
 						break;
 				}
 		}
