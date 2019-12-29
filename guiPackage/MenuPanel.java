@@ -221,8 +221,12 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		int keyID = e.getKeyCode();	// saves the ID of the key pressed;
 		switch (keyID) {
 		case KeyEvent.VK_ESCAPE:
-			gm.quit();	// quits program if escape clicked
+			gm.quit();	// quits program if escape key pressed
 			break;
+		case KeyEvent.VK_ENTER:	// searches URL if enter is pressed
+			attemptURLParse();
+			break;
+			
 		}
 	}
 
