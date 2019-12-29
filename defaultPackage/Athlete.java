@@ -6,7 +6,7 @@ import java.util.List;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import guiPackage.MyTextBox;
+import guiPackage.StatusDisplay;
 
 public class Athlete implements Parsable {
 	
@@ -22,7 +22,7 @@ public class Athlete implements Parsable {
 	private long tfrrsID;
 	private AthleteParser parser;
 	
-	private Athlete(long tfrrsID, MyTextBox statusObject) {
+	private Athlete(long tfrrsID, StatusDisplay statusObject) {
 		this.tfrrsID = tfrrsID;
 		this.performances = new ArrayList<>();
 		this.careerBests = new HashMap<>();
@@ -33,7 +33,7 @@ public class Athlete implements Parsable {
 	// static factory method pattern
     // forces Athletes to be created through this static factory method,
     // thus preventing duplicate teams from being created
-    public static Athlete createNew(long tfrrsID, MyTextBox statusObject) {
+    public static Athlete createNew(long tfrrsID, StatusDisplay statusObject) {
     	// tests if Athlete exists already, and returns it if it does
     	Athlete newAthlete = allAthletes.get(tfrrsID);
     	if (newAthlete != null)
@@ -163,7 +163,7 @@ public class Athlete implements Parsable {
 	    public AthleteParser(Athlete a){
 	    	this(a, null);
 	    }
-        public AthleteParser(Athlete a, MyTextBox statusObject) {
+        public AthleteParser(Athlete a, StatusDisplay statusObject) {
 	        this.athlete = a;
 	        this.parsingObject = athlete;
             this.statusObject = statusObject;
@@ -210,8 +210,7 @@ public class Athlete implements Parsable {
 	                    String split[] = info.split("\\s+");
 	                    
 	                    // creates a new Meet passing it the tfrrs URL
-	                    Meet m = Meet.createNew(
-	                    		"http:" + table.select("a").attr("href"));
+	                    Meet m = Meet.createNew("http:" + table.select("a").attr("href"), statusObject);
 	                    
 	                    //m.parse();
 	                    

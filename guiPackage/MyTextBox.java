@@ -38,30 +38,30 @@ public class MyTextBox implements Drawable {
 	// allows changing the text in this text box.
 	// text should be automatically re-centered as currently every call to drawToGraphics
 	// re-centers text.
-	public void setText(String newString) {
-		textString = newString;
-	}
+	public void setText(String newString) {	textString = newString; }
+	public String getText() { return textString; }
 	
 	// draws text in the specified location, recalculating the location as needed
 	public void drawToGraphics(Graphics2D g2) {
-		
-		// TODO: these calculations shouldn't have to happen every time, they should only have to happen 
-		// each time the screen size is changed
-		
-		centerX = constraints.getX();	// resets x position based on constraints and screen width
-		centerY = constraints.getY();	// resets y position based on constraints and screen height
-		// uses the font metrics of the supplied font and the string to calculate how
-		// to place the text in the center of the rectangle
-		FontMetrics fontMetrics = g2.getFontMetrics(textFont);
-		stringX = (float) (centerX - fontMetrics.stringWidth(textString)/2);
-		// TODO the Y value might not be perfect here...
-		stringY = (float) (centerY + (fontMetrics.getHeight())/2 - fontMetrics.getDescent());
-		
-		
-		
-		// Draws the String
-		g2.setFont(textFont);
-		g2.setColor(textColor);
-		g2.drawString(textString, stringX, stringY);
+		if (textString != null) {	// only draw if string actually exists rn
+			// TODO: these calculations shouldn't have to happen every time, they should only have to happen 
+			// each time the screen size is changed
+			
+			centerX = constraints.getX();	// resets x position based on constraints and screen width
+			centerY = constraints.getY();	// resets y position based on constraints and screen height
+			// uses the font metrics of the supplied font and the string to calculate how
+			// to place the text in the center of the rectangle
+			FontMetrics fontMetrics = g2.getFontMetrics(textFont);
+			stringX = (float) (centerX - fontMetrics.stringWidth(textString)/2);
+			// TODO the Y value might not be perfect here...
+			stringY = (float) (centerY + (fontMetrics.getHeight())/2 - fontMetrics.getDescent());
+			
+			
+			
+			// Draws the String
+			g2.setFont(textFont);
+			g2.setColor(textColor);
+			g2.drawString(textString, stringX, stringY);
+		}
 	}
 }

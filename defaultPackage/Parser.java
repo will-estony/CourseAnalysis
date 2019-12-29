@@ -5,11 +5,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import guiPackage.MyTextBox;
+import guiPackage.StatusDisplay;
 
 public abstract class Parser {
 
 	protected Parsable parsingObject;
-	protected MyTextBox statusObject;	// should probably use interface instead of "MyTextBox"
+	protected StatusDisplay statusObject;	// should probably use interface instead of "MyTextBox"
 	protected String url;
 	protected Document doc;
     protected boolean isConnected = false;
@@ -41,7 +42,7 @@ public abstract class Parser {
 	// writes to status object if non-null, else writes to System.out
 	protected void updateStatus(String newStatus) {
 		if (statusObject != null)
-			statusObject.setText(newStatus);
+			statusObject.writeNewLine(newStatus);
 		else
 			System.out.println(newStatus);
 	}

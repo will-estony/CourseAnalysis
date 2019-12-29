@@ -41,8 +41,8 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 	
 	// search bar
 	private JTextField searchField;
-	// status text box
-	private MyTextBox statusText;
+	// status display
+	private StatusDisplay searchDisplay;
 	
 	// Constructor
 	public MenuPanel(guiManager gm) {
@@ -63,25 +63,24 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		// creates quit button
 		buttons.add(new MyMouseButton("Quit", defaultFont, 80, 34,
 				new UIConstraintSet(gm,
-						new UIConstraint(ConstraintType.fixed, -75),
-						new UIConstraint(ConstraintType.fixed, -75))));
+						new UIConstraint(-75, null),
+						new UIConstraint(-75, null))));
 		// creates test button
-		buttons.add(new MyMouseButton("Read TFRRS URL", defaultFont,
+		buttons.add(new MyMouseButton("Parse TFRRS URL", defaultFont,
 				new UIConstraintSet(gm,
-						new UIConstraint(ConstraintType.relative, 0.2),
-						new UIConstraint(ConstraintType.fixed, 100))));
+						new UIConstraint(0.2),
+						new UIConstraint(100, null))));
 		//menuButtons.add(new MyMouseButton("Read in team", defaultFont, 0, 0, 180, 34));
 		
 		// creates all the text boxes on this panel
 		textBoxes = new ArrayList<MyTextBox>();
 		
-		// creates a textBox to display the current status of the search
-		statusText = new MyTextBox("", defaultFont, 
+		// creates a StatusDiplay object to display the current status of the search
+		searchDisplay = new StatusDisplay(4, 40, defaultFont,
 				new UIConstraintSet(gm, 
-						new UIConstraint(ConstraintType.relative, 0.5),
-						new UIConstraint(ConstraintType.relative, 0.6)));
-		// adds status text box to global collection of text boxes
-		textBoxes.add(statusText);
+					new UIConstraint(0.5),
+					new UIConstraint(0.6)));
+		
 		
 		// TESTING
 		searchField = new JTextField("Enter TFRRS URL here", 50);
@@ -104,16 +103,16 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		Parsable urlObject = null;
 		switch (potentialURL.getType()){
 		case ATHLETE:
-			urlObject = Athlete.createNew(Athlete.urlToLong(potentialURL.getURLString()), statusText);
+			urlObject = Athlete.createNew(Athlete.urlToLong(potentialURL.getURLString()), searchDisplay);
 			break;
 		case TEAM:
-			urlObject = Team.createNew(potentialURL.getURLString(), statusText);
+			urlObject = Team.createNew(potentialURL.getURLString(), searchDisplay);
 			break;
 		case MEET:
-			urlObject = Meet.createNew(potentialURL.getURLString(), statusText);
+			urlObject = Meet.createNew(potentialURL.getURLString(), searchDisplay);
 			break;
 		case UNKNOWN:	// end function call if URL unknown
-			statusText.setText("URL type unknown.");
+			searchDisplay.writeNewLine("URL type unknown.");
 			return;
 		}
 		
@@ -144,6 +143,9 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		// draws every text box in the array list
 		for (MyTextBox textBox : textBoxes)
 			textBox.drawToGraphics(g2);
+		
+		// draws search status
+		searchDisplay.drawToGraphics(g2);
 	}
 	
 	@Override

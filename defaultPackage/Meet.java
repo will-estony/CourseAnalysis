@@ -5,7 +5,7 @@ import java.util.HashMap;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import guiPackage.MyTextBox;
+import guiPackage.StatusDisplay;
 
 public class Meet implements Parsable {
 	
@@ -19,7 +19,7 @@ public class Meet implements Parsable {
     private HashMap<Long, Athlete> competitors;
     private MeetParser parser;
 
-    private Meet(String url, MyTextBox statusObject) {
+    private Meet(String url, StatusDisplay statusObject) {
     	this.url = url;
     	competitors = new HashMap<>();
         parser = new MeetParser(this, statusObject);
@@ -28,7 +28,7 @@ public class Meet implements Parsable {
     // static factory method pattern
     // forces meets to be created through this static factory method,
     // thus preventing duplicate meets from being created
-    public static Meet createNew(String url, MyTextBox statusObject) {
+    public static Meet createNew(String url, StatusDisplay statusObject) {
     	// tests if Meet exists already, and returns it if it does
     	Meet newMeet = allMeets.get(url);
     	if (newMeet != null)
@@ -100,7 +100,7 @@ public class Meet implements Parsable {
         public MeetParser(Meet m){
         	this(m, null);
         }
-        public MeetParser(Meet m, MyTextBox statusObject) {
+        public MeetParser(Meet m, StatusDisplay statusObject) {
         	this.meet = m;
         	this.parsingObject = meet;
         	this.statusObject = statusObject; 
@@ -194,7 +194,7 @@ public class Meet implements Parsable {
             	if (result.select("td").select("a").attr("href").contains("athlete")) {
 	                long id = Athlete.urlToLong("http:" + result.select("td").select("a").attr("href"));
 	                String time = result.select("td").get(headerMap.get("TIME")).text();
-	                Athlete a = Athlete.createNew(id);
+	                Athlete a = Athlete.createNew(id, statusObject);
 	                Performance p = new Performance("8K", 
 	                		Performance.timeStringToDouble(time), meet.getDate(), meet);
 	                a.addPerformance(p);

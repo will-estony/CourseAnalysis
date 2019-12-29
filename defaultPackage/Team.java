@@ -6,7 +6,7 @@ import java.util.HashMap;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import guiPackage.MyTextBox;
+import guiPackage.StatusDisplay;
 
 public class Team implements Parsable {
 
@@ -25,7 +25,7 @@ public class Team implements Parsable {
 
     // status object is an object that the parser can write to as its parsing
     // to display the status of the parsing without writing to System.out
-    private Team(String tfrrsURL, MyTextBox statusObject){
+    private Team(String tfrrsURL, StatusDisplay statusObject){
         teammates = new HashMap<>();
         competitors = new HashMap<>();
         meets = new ArrayList<>();
@@ -44,7 +44,7 @@ public class Team implements Parsable {
     // static factory method pattern
     // forces teams to be created through this static factory method,
     // thus preventing duplicate teams from being created
-    public static Team createNew(String url, MyTextBox statusObject) {
+    public static Team createNew(String url, StatusDisplay statusObject) {
     	// tests if Team exists already, and returns it if it does
     	Team newTeam = allTeams.get(url);
     	if (newTeam != null)
@@ -123,7 +123,7 @@ public class Team implements Parsable {
         public TeamParser(Team t){
         	this(t, null);
         }
-        public TeamParser(Team t, MyTextBox statusObject) {
+        public TeamParser(Team t, StatusDisplay statusObject) {
         	this.team = t;
             this.parsingObject = team;
             this.statusObject = statusObject;
@@ -150,7 +150,7 @@ public class Team implements Parsable {
 
                             Long id = Athlete.urlToLong("http:" + td.select("a").attr("href"));
 
-                            Athlete a = Athlete.createNew(id);
+                            Athlete a = Athlete.createNew(id, statusObject);
                             a.parse();
                             System.out.println(a.getName());
                             team.addTeammate(id, a);
