@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 import defaultPackage.Athlete;
 import defaultPackage.Meet;
 import defaultPackage.Parsable;
+import defaultPackage.ParsingThread;
 import defaultPackage.Team;
 import defaultPackage.tfrrsURL;
 import guiPackage.UIConstraint.ConstraintType;
@@ -77,7 +78,7 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		
 		// creates a StatusDiplay object to display the current status of the search
 		searchDisplay = new StatusDisplay(6, 26, smallFont,
-				new UIConstraintSet(gm, 
+				new UIConstraintSet(gm,
 					new UIConstraint(0.5),
 					new UIConstraint(0.5)));
 		
@@ -117,7 +118,9 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		}
 		
 		// attempt to parse the object
-		urlObject.parse();
+		// starts a thread that will parse the object in the background
+		// while updating the status object
+		new ParsingThread(urlObject).start();
 	}
 	
 	
