@@ -83,8 +83,14 @@ public class Athlete implements Parsable {
 		while(Character.isDigit(url.charAt(i))){
 			i++;
 		}
-		// returns the sequential digit chars converted to Long
-		return Long.parseLong(url.substring(0,i));
+		try {
+			// returns the sequential digit chars converted to Long
+			return Long.parseLong(url.substring(0,i));
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+		// else we return error value
+		return -1;
 	}
 
 	public void addPerformance(Performance p) {

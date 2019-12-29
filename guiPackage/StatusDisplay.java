@@ -18,7 +18,7 @@ public class StatusDisplay implements Drawable {
 		// and centered at the given baseConstraints
 		for (int i = 0; i < numLines; i++) {
 			textBoxes[i] = new MyTextBox(null, font, baseConstraints.createOffsetContraintSet(
-					0, (numLines/2 - i)*lineHeights));
+					0, (numLines/2 - i)*((double) lineHeights)));
 		}
 	}
 	

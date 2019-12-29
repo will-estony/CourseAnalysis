@@ -76,10 +76,10 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		textBoxes = new ArrayList<MyTextBox>();
 		
 		// creates a StatusDiplay object to display the current status of the search
-		searchDisplay = new StatusDisplay(4, 40, defaultFont,
+		searchDisplay = new StatusDisplay(6, 26, smallFont,
 				new UIConstraintSet(gm, 
 					new UIConstraint(0.5),
-					new UIConstraint(0.6)));
+					new UIConstraint(0.5)));
 		
 		
 		// TESTING
@@ -112,7 +112,7 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 			urlObject = Meet.createNew(potentialURL.getURLString(), searchDisplay);
 			break;
 		case UNKNOWN:	// end function call if URL unknown
-			searchDisplay.writeNewLine("URL type unknown.");
+			searchDisplay.writeNewLine("\"" + searchField.getText() + "\" is not a valid tfrrs URL");
 			return;
 		}
 		

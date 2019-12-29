@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 
 @SuppressWarnings("serial")
 public class guiManager extends JFrame implements Runnable {
-	// default starting resolution
-	private static int startingWidth = 1024, startingHeight = 576;
+	// starting and minimum resolution
+	private static int startingWidth = 800, startingHeight = 600;
 
 	private JPanel activePanel;	// pointer to currently active JPanel
 	private boolean running;
