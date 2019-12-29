@@ -15,6 +15,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import defaultPackage.Athlete;
+import defaultPackage.Meet;
+import defaultPackage.Parsable;
+import defaultPackage.Team;
+import defaultPackage.tfrrsURL;
 import guiPackage.UIConstraint.ConstraintType;
 
 @SuppressWarnings("serial")
@@ -61,7 +66,7 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 						new UIConstraint(ConstraintType.fixed, -75),
 						new UIConstraint(ConstraintType.fixed, -75))));
 		// creates test button
-		buttons.add(new MyMouseButton("Read Team's page", defaultFont,
+		buttons.add(new MyMouseButton("Read TFRRS URL", defaultFont,
 				new UIConstraintSet(gm,
 						new UIConstraint(ConstraintType.relative, 0.2),
 						new UIConstraint(ConstraintType.fixed, 100))));
@@ -79,7 +84,7 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		textBoxes.add(statusText);
 		
 		// TESTING
-		searchField = new JTextField("Enter athlete's TFRRS URL here", 50);
+		searchField = new JTextField("Enter TFRRS URL here", 50);
 		
 		
 		
@@ -90,23 +95,30 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 	
 	// attempts to read in the team that is currently in the search bar
 	// CURRENTLY JUST TESTING NOT PERMANANT
-	private void attemptAthleteSearch() {
-		// saves current text box string	
-		String possibleURL = searchField.getText();
+	private void attemptURLParse() {
 		
-		// now we check to see if the string is even a valid URL
+		// we identify the URL
+		tfrrsURL potentialURL = new tfrrsURL(searchField.getText());
 		
+		// we create a different object depending on the type of url supplied
+		Parsable urlObject = null;
+		switch (potentialURL.getType()){
+		case ATHLETE:
+			urlObject = Athlete.createNew(Athlete.urlToLong(potentialURL.getURLString()), statusText);
+			break;
+		case TEAM:
+			urlObject = Team.createNew(potentialURL.getURLString(), statusText);
+			break;
+		case MEET:
+			urlObject = Meet.createNew(potentialURL.getURLString(), statusText);
+			break;
+		case UNKNOWN:	// end function call if URL unknown
+			statusText.setText("URL type unknown.");
+			return;
+		}
 		
-		// now we create an athlete with the given URL
-		//Athlete potentialAthlete = new Athlete(Athlete.urlToLong(possibleURL), statusText);
-		
-		
-		
-		
-		
-		
-		
-		
+		// attempt to parse the object
+		urlObject.parse();
 	}
 	
 	
@@ -193,7 +205,7 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 						gm.quit();
 						break;
 					case 1:	// if search button is clicked
-						attemptAthleteSearch();
+						attemptURLParse();
 						break;
 				}
 		}

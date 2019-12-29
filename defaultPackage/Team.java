@@ -1,3 +1,4 @@
+package defaultPackage;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -9,6 +10,10 @@ import guiPackage.MyTextBox;
 
 public class Team implements Parsable {
 
+	// static HashMap of all Teams in existence
+	// first entry is URL, second is the Team
+	private static HashMap<String, Team> allTeams = new HashMap<String, Team>();
+	
     private HashMap<Long, Athlete> teammates;
     private HashMap<Long, Athlete> competitors;
     private ArrayList<Meet> meets; //Contains a unique list of meets that have been competed in by a team
@@ -18,12 +23,9 @@ public class Team implements Parsable {
     // the team parser for this team
     private TeamParser parser;
 
-    public Team(String tfrrsURL) {
-    	this(tfrrsURL, null);
-    }
     // status object is an object that the parser can write to as its parsing
     // to display the status of the parsing without writing to System.out
-    public Team(String tfrrsURL, MyTextBox statusObject){
+    private Team(String tfrrsURL, MyTextBox statusObject){
         teammates = new HashMap<>();
         competitors = new HashMap<>();
         meets = new ArrayList<>();
@@ -36,9 +38,25 @@ public class Team implements Parsable {
 
         parser = new TeamParser(this, statusObject);
         
-        //parseAthletes();
-        //parseMeets();
 
+    }
+    
+    // static factory method pattern
+    // forces teams to be created through this static factory method,
+    // thus preventing duplicate teams from being created
+    public static Team createNew(String url, MyTextBox statusObject) {
+    	// tests if Team exists already, and returns it if it does
+    	Team newTeam = allTeams.get(url);
+    	if (newTeam != null)
+    		return newTeam;
+    	// if the team doesn't exist yet: create it, add it to allTeams, and return it
+    	newTeam = new Team(url, statusObject);
+    	allTeams.put(url, newTeam);
+    	return newTeam;
+    }
+    
+    public static Team createNew(String url) {
+    	return createNew(url, null);
     }
 
     public String getName(){ return name; }
@@ -132,7 +150,7 @@ public class Team implements Parsable {
 
                             Long id = Athlete.urlToLong("http:" + td.select("a").attr("href"));
 
-                            Athlete a = new Athlete(id);
+                            Athlete a = Athlete.createNew(id);
                             a.parse();
                             System.out.println(a.getName());
                             team.addTeammate(id, a);

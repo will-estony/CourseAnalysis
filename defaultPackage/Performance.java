@@ -1,3 +1,4 @@
+package defaultPackage;
 public class Performance{
 	private String event; //the event the athlete competed in ex. 8k
     private double time;  //the time the athlete completed the event in, in seconds

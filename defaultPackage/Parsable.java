@@ -1,3 +1,4 @@
+package defaultPackage;
 // interface for all objects that should be parsable
 // ex: athletes, meets, teams.
 

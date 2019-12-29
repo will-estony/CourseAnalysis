@@ -1,3 +1,4 @@
+package defaultPackage;
 import java.util.HashMap;
 
 import guiPackage.guiManager;
@@ -6,7 +7,7 @@ public class programMain {
 
 	public static void main(String[] args) {
 		
-		//guiManager gm = new guiManager();
+		guiManager gm = new guiManager();
 		
 		/*
 		Athlete a = new Athlete(7421730);
@@ -26,7 +27,7 @@ public class programMain {
 		
 		
 		//t.printTeam();
-
+		
 		//MeetParser mp = new MeetParser("https://www.tfrrs.org/results/xc/15785/Connecticut_College_XC_Invitational");
 		//mp.parseTables();
 		//mp.parseHeaders();
@@ -34,9 +35,15 @@ public class programMain {
 		//t.printMeets();
 		
 		
+		
+		/*
 		Team browdies = new Team("https://www.tfrrs.org/teams/xc/CT_college_m_Trinity_CT.html");
 		browdies.parse();
 		browdies.printTeam();
+		*/
+		
+		
+		
 		/*
 		Meet Regionals2018 = Meet.createMeet("https://www.tfrrs.org/results/xc/14521/NCAA_Division_III_New_England_Region_Cross_Country_Championships");
 		Regionals2018.parse();

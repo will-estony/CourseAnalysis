@@ -1,3 +1,4 @@
+package defaultPackage;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -9,6 +10,7 @@ import guiPackage.MyTextBox;
 public class Meet implements Parsable {
 	
 	// static HashMap of all Meets in existence
+	// first entry is URL, second is the Meet
 	private static HashMap<String, Meet> allMeets = new HashMap<String, Meet>();
 	
 	private Date date;  //the date the meet took place on ex. 1/8/19 This should be a date object. 
@@ -26,18 +28,19 @@ public class Meet implements Parsable {
     // static factory method pattern
     // forces meets to be created through this static factory method,
     // thus preventing duplicate meets from being created
-    public static Meet createMeet(String url, MyTextBox statusObject) {
-    	// test if meet exists already
-    	if (allMeets.containsKey(url))
-    		return allMeets.get(url);
+    public static Meet createNew(String url, MyTextBox statusObject) {
+    	// tests if Meet exists already, and returns it if it does
+    	Meet newMeet = allMeets.get(url);
+    	if (newMeet != null)
+    		return newMeet;
     	// if the meet doesn't exist yet: create it, add it to allMeets, and return it
-    	Meet newMeet = new Meet(url, statusObject);
+    	newMeet = new Meet(url, statusObject);
     	allMeets.put(url, newMeet);
     	return newMeet;
     }
     
-    public static Meet createMeet(String url) {
-    	return createMeet(url, null);
+    public static Meet createNew(String url) {
+    	return createNew(url, null);
     }
     
     public boolean parse() {
@@ -191,7 +194,7 @@ public class Meet implements Parsable {
             	if (result.select("td").select("a").attr("href").contains("athlete")) {
 	                long id = Athlete.urlToLong("http:" + result.select("td").select("a").attr("href"));
 	                String time = result.select("td").get(headerMap.get("TIME")).text();
-	                Athlete a = new Athlete(id);
+	                Athlete a = Athlete.createNew(id);
 	                Performance p = new Performance("8K", 
 	                		Performance.timeStringToDouble(time), meet.getDate(), meet);
 	                a.addPerformance(p);

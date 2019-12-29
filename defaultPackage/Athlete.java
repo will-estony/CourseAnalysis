@@ -1,3 +1,4 @@
+package defaultPackage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,10 @@ import guiPackage.MyTextBox;
 
 public class Athlete implements Parsable {
 	
+	// hashmap of all athletes ever created
+	// key is tfrrsID, value is Athlete
+	private static HashMap<Long, Athlete> allAthletes = new HashMap<Long, Athlete>();
+	
 	private HashMap<String,String> careerBests;
 	private ArrayList<Performance> performances;
 	// seasonBests is a hashmap of year and performance
@@ -17,17 +22,31 @@ public class Athlete implements Parsable {
 	private long tfrrsID;
 	private AthleteParser parser;
 	
-	public Athlete(long tfrrsID) {
-		this(tfrrsID, null);
-	}
-	
-	public Athlete(long tfrrsID, MyTextBox statusObject) {
+	private Athlete(long tfrrsID, MyTextBox statusObject) {
 		this.tfrrsID = tfrrsID;
 		this.performances = new ArrayList<>();
 		this.careerBests = new HashMap<>();
 		this.seasonBests = new HashMap<>();
 		parser = new AthleteParser(this, statusObject);
 	}
+	
+	// static factory method pattern
+    // forces Athletes to be created through this static factory method,
+    // thus preventing duplicate teams from being created
+    public static Athlete createNew(long tfrrsID, MyTextBox statusObject) {
+    	// tests if Athlete exists already, and returns it if it does
+    	Athlete newAthlete = allAthletes.get(tfrrsID);
+    	if (newAthlete != null)
+    		return newAthlete;
+    	// if the Athlete doesn't exist yet: create it, add it to allAthletes, and return it
+    	newAthlete = new Athlete(tfrrsID, statusObject);
+    	allAthletes.put(tfrrsID, newAthlete);
+    	return newAthlete;
+    }
+    
+    public static Athlete createNew(long tfrrsID) {
+    	return createNew(tfrrsID, null);
+    }
 	
 	public boolean parse() {
     	// attempts to connect to team's URL
@@ -191,7 +210,7 @@ public class Athlete implements Parsable {
 	                    String split[] = info.split("\\s+");
 	                    
 	                    // creates a new Meet passing it the tfrrs URL
-	                    Meet m = Meet.createMeet(
+	                    Meet m = Meet.createNew(
 	                    		"http:" + table.select("a").attr("href"));
 	                    
 	                    //m.parse();
