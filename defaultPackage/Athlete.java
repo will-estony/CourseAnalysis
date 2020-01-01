@@ -10,7 +10,7 @@ import org.jsoup.select.Elements;
 
 import guiPackage.StatusDisplay;
 
-public class Athlete implements Parsable {
+public class Athlete extends Parsable {
 	
 	// hashmap of all athletes ever created
 	// key is tfrrsID, value is Athlete
@@ -18,16 +18,15 @@ public class Athlete implements Parsable {
 	
 	private HashMap<String,String> careerBests;
 	// performances are stored in a binary tree ordered by Date
-	private TreeMap<Date, Performance> performances;
+	private TreeMap<Date, List<Performance>> performances;
 	private String name;
 	private long tfrrsID;
-	private AthleteParser parser;
 	
 	private Athlete(long tfrrsID, StatusDisplay statusObject) {
 		this.tfrrsID = tfrrsID;
-		this.performances = new TreeMap<Date, Performance>();
+		this.performances = new TreeMap<Date, List<Performance>>();
 		this.careerBests = new HashMap<>();
-		parser = new AthleteParser(this, statusObject);
+		super.parser = new AthleteParser(this, statusObject);
 	}
 	
 	// static factory method pattern
@@ -49,46 +48,54 @@ public class Athlete implements Parsable {
     }
 	
 	public boolean parse() {
-    	// attempts to connect to team's URL
-    	// if connection is unsuccessful, return false
-    	if (!parser.connect())
-    		return false;
+		// casts parser to this specific objects parser type
+		AthleteParser thisParser = (AthleteParser) super.parser;
+		if (!super.parse())
+			return false;
     	
-    	this.name = parser.getName();
-    	parser.parseBests();
-    	parser.parsePerformances();
+    	this.name = thisParser.getName();
+    	thisParser.parseBests();
+    	thisParser.parsePerformances();
+    	
+    	super.isParsed = true;
     	// dereferences parser for cleanup as its not needed anymore
-    	parser = null;
+    	super.parser = thisParser = null;
     	return true;
     }
-
+	
 	// Some getters //
 	
 	// athlete must already be parsed to have a local name variable
 	public String getName() { return name; }
 	public String getURL() { return idToUrl(tfrrsID); }
-	public void addPerformance(Performance p) {	performances.put(p.getDate(), p); }
-	public TreeMap<Date, Performance> getPerformances(){ return performances; }
+	// adds performance to collection
+	public void addPerformance(Performance p) {
+		// if there is already a performance for this date, and they're not the same performance, then append it to list
+		if (performances.containsKey(p.getDate()) && !performances.get(p.getDate()).contains(p))
+			performances.get(p.getDate()).add(p);
+		else {	// else create a new list containing the performance and add that
+			List<Performance> newList = new ArrayList<Performance>();
+			newList.add(p);
+			performances.put(p.getDate(), newList);
+		}
+	}
+	public TreeMap<Date, List<Performance>> getPerformances(){ return performances; }
 	// returns a list of performances that happened at a given meet
-	// runs in O(n)
+	// runs in O(log(n))
 	public List<Performance> getPerformances(Meet goalMeet) {
-		List<Performance> retList = new ArrayList<Performance>();
-		
-		// searches through performances to find ones that match the given meet
-		for (Performance p : performances.values()) 
-			if (p.getMeet().equals(goalMeet))
-				retList.add(p);
-		
-		if (retList.size() == 0)
-			retList = null; // if no performance associated with given meet return null
-		return retList;	
+		// gets the list of performances that happened on the same date
+		List<Performance> retList = performances.get(goalMeet.getDate());
+		// checks if the meets are actually the same
+		if (retList.get(0).getMeet().equals(goalMeet))
+			return retList;
+		return null;	// if this athlete didn't perform at this meet then return null
 	}
 	
 	
-	public static String idToUrl(long l){ return "https://xc.tfrrs.org/athletes/" + l + ".html"; }
+	public static String idToUrl(long l){ return "https://www.tfrrs.org/athletes/" + l; }
 	
 	// requires a valid tfrrs athlete URL to work
-	public static long urlToLong(String url){ 
+	public static long urlToID(String url){ 
 		// remove https's
 		url = url.replace("https://","");
 		url = url.replace("http://","");
@@ -116,13 +123,14 @@ public class Athlete implements Parsable {
 	public Performance findFastestInRange(Date start, Date end) {
 		
 		// gets all of an athletes performances from start to finish, inclusively, into a Map
-		Map<Date, Performance> subPerformances = performances.subMap(start, true, end, true);
+		Map<Date, List<Performance>> subPerformances = performances.subMap(start, true, end, true);
 		
-		// then we iterate along the subPerformances and find fastest
+		// then we iterate along the subPerformances and find fastest valid performance
 		Performance fastestInRange = null;
-		for (Performance p : subPerformances.values())
-			if (fastestInRange == null || fastestInRange.getTime() > p.getTime())
-				fastestInRange = p;
+		for (List<Performance> perfList : subPerformances.values())
+			for (Performance p : perfList)
+				if (fastestInRange == null || (p.getTime() > 0 && fastestInRange.getTime() > p.getTime()))
+					fastestInRange = p;
 		return fastestInRange;	// and return it
 	}
 	
@@ -135,9 +143,9 @@ public class Athlete implements Parsable {
 		System.out.println();
 
 		// prints every performance
-		for(Performance p: performances.values()){
-			System.out.println(p);
-		}
+		for (List<Performance> perfList : performances.values())
+			for (Performance p: perfList)
+				System.out.println(p);
 		System.out.println();
 	}
 
