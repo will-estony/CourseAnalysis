@@ -7,17 +7,17 @@ public class programMain {
 
 	public static void main(String[] args) {
 		
-		guiManager gm = new guiManager();
+		//guiManager gm = new guiManager();
 		
 		/*
-		Athlete a = new Athlete(7421730);
+		Athlete a = Athlete.createNew(7421730);
 		a.parse();
 		a.printPRs();
 		a.printPerformances();
 		
 		
 		long l = 6891464;
-		Athlete a1 = new Athlete(l);
+		Athlete a1 = Athlete.createNew(l);
 		a1.parse();
 		a1.printPRs();
 		System.out.println();
@@ -36,16 +36,12 @@ public class programMain {
 		
 		
 		
-		/*
-		Team browdies = new Team("https://www.tfrrs.org/teams/xc/CT_college_m_Trinity_CT.html");
+		
+		Team browdies = Team.createNew("https://www.tfrrs.org/teams/xc/CT_college_m_Trinity_CT.html");
 		browdies.parse();
 		browdies.printTeam();
-		*/
 		
-		
-		
-		/*
-		Meet Regionals2018 = Meet.createMeet("https://www.tfrrs.org/results/xc/14521/NCAA_Division_III_New_England_Region_Cross_Country_Championships");
+		Meet Regionals2018 = Meet.createNew("https://www.tfrrs.org/results/xc/14521/NCAA_Division_III_New_England_Region_Cross_Country_Championships");
 		Regionals2018.parse();
 		
 		System.out.println("Predicting results for browdies at REGIONALS 2018 meet");
@@ -53,7 +49,7 @@ public class programMain {
 		HashMap<Athlete, Double> estimatedResults = p.meetPrediction(Regionals2018, browdies.getTeammates(), 2019);
 		for (Athlete a : estimatedResults.keySet())
 			System.out.println("Athlete " + a.getName() + ":\t" + Performance.timeDoubleToString(estimatedResults.get(a)));
-		*/
+		
 		
 		
 		/*Meet NESCACs2019 = Meet.createMeet("https://www.tfrrs.org/results/xc/16670/NESCAC_Cross_Country_Championships");

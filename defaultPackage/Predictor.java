@@ -47,14 +47,18 @@ public class Predictor {
 		MeetData md = calculatedMeets.get(meet);	// saves local reference to meet data
 
 		HashMap<Athlete, Double> returnMap = new HashMap<Athlete, Double>();
+		// the start of the season is defined as September 1st on the given year
+		// the end of the season is defined as November 30th on the given year
+		Date startOfSeason = new Date((byte) 9, (byte) 1, (short) year);
+		Date endOfSeason = new Date((byte) 11, (byte) 30, (short) year);
 		// iterates along each athlete in the team, calculating and populating their estimates into the HashMap
-		for (Athlete athlete : group) {
-			Performance seasonBest = athlete.getSeasonBest(year);
+		for (Athlete a : group) {
+			Performance seasonBest = a.findFastestInRange(startOfSeason, endOfSeason);
 			// if no race for the year, only a DNF, or only a DNS, then don't parse them
 			if (seasonBest == null || seasonBest.getTime() < 0) {
-				System.out.println(athlete.getName() + " has not completed a race in the goal year " + year);
+				System.out.println(a.getName() + " has not completed a race in the goal year " + year);
 			} else
-				returnMap.put(athlete, md.estimatePerformance(athlete.getSeasonBest(year).getTime()));
+				returnMap.put(a, md.estimatePerformance(seasonBest.getTime()));
 		}
 		return returnMap;
 	}
@@ -64,15 +68,19 @@ public class Predictor {
 	}
 	
 	// calculates and returns the estimated time a given athlete would run at a given meet
-	public double meetPrediction(Meet meet, Athlete athlete, int year) {
+	public double meetPrediction(Meet meet, Athlete a, int year) {
 		// checks if we've already calculated meet data for the given meet
 		// if we haven't then calculate and save new meet data into 
 		// calculatedMeets HashMap
 		if (!calculatedMeets.containsKey(meet))
 			calculatedMeets.put(meet, new MeetData(meet));
 		MeetData md = calculatedMeets.get(meet);	// saves local reference to meet data
+		// the start of the season is defined as September 1st on the given year
+		// the end of the season is defined as November 30th on the given year
+		Date startOfSeason = new Date((byte) 9, (byte) 1, (short) year);
+		Date endOfSeason = new Date((byte) 11, (byte) 30, (short) year);
 		// uses the meet data to estimate the athlete's performance at the meet using a given 
 		// year's season best for that athlete
-		return md.estimatePerformance(athlete.getSeasonBest(year).getTime());
+		return md.estimatePerformance(a.findFastestInRange(startOfSeason, endOfSeason).getTime());
 	}
 }

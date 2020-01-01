@@ -70,7 +70,7 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		buttons.add(new MyMouseButton("Parse TFRRS URL", defaultFont,
 				new UIConstraintSet(gm,
 						new UIConstraint(0.2),
-						new UIConstraint(100, null))));
+						new UIConstraint(80, null))));
 		//menuButtons.add(new MyMouseButton("Read in team", defaultFont, 0, 0, 180, 34));
 		
 		// creates all the text boxes on this panel
