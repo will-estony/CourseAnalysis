@@ -8,37 +8,40 @@ import org.jsoup.select.Elements;
 
 import guiPackage.StatusDisplay;
 
-public class Meet implements Parsable {
+public class Meet extends Parsable {
 	
 	// static HashMap of all Meets in existence
 	// first entry is URL, second is the Meet
-	private static HashMap<String, Meet> allMeets = new HashMap<String, Meet>();
+	private static HashMap<Long, Meet> allMeets = new HashMap<Long, Meet>();
 	
-	private Date date;  //the date the meet took place on ex. 1/8/19 This should be a date object. 
-    private String url;   //the url to the meet stats on tffrs
-    private String name; //The name of the meet as listed on tffrs
+	private Date date;		//the date the meet took place on as a date object. 
+    private long tfrrsID; 	//the id num of the meet stats on tffrs
+    private boolean isXC;	// is this an XC meet or not
+    private String name;	//The name of the meet as listed on tffrs
     private HashMap<Long, Athlete> competitors;
     private MeetParser parser;
 
-    private Meet(String url, StatusDisplay statusObject) {
-    	this.url = url;
+    private Meet(long tfrrsID, boolean isXC, StatusDisplay statusObject) {
+    	this.tfrrsID = tfrrsID;
+    	this.isXC = isXC;
     	competitors = new HashMap<>();
-        parser = new MeetParser(this, statusObject);
+        super.parser = new MeetParser(this, statusObject);
     }
     
     // static factory method pattern
     // forces meets to be created through this static factory method,
     // thus preventing duplicate meets from being created
     public static Meet createNew(String url, StatusDisplay statusObject) {
-    	// removes difference between http and https urls
-		url = url.replace("http://","https://");
+
+    	long id = urlToID(url);
+    	
     	// tests if Meet exists already, and returns it if it does
-    	Meet newMeet = allMeets.get(url);
+    	Meet newMeet = allMeets.get(id);
     	if (newMeet != null)
     		return newMeet;
     	// if the meet doesn't exist yet: create it, add it to allMeets, and return it
-    	newMeet = new Meet(url, statusObject);
-    	allMeets.put(url, newMeet);
+    	newMeet = new Meet(id, url.contains("xc/"), statusObject);
+    	allMeets.put(id, newMeet);
     	return newMeet;
     }
     
@@ -46,18 +49,60 @@ public class Meet implements Parsable {
     	return createNew(url, null);
     }
     
-    public boolean parse() {
-    	// attempts to connect to meet's URL
-    	// if connection is unsuccessful, return false
-    	if (!parser.connect())
-    		return false;
+	// requires a valid tfrrs URL to work
+	public static long urlToID(String url){ 
+		
+		// removes xc section
+		url = url.replace("xc/", "");
+		
+		// this method works for both tfrrs AND directathletics links
+		// looks for "results/" in url and skips to end of that
+		url = url.substring(url.indexOf("results/") + 8);
+		
+		/*
+		// remove https's
+		url = url.replace("https://","");
+		url = url.replace("http://","");
+		// remove the url up to the ID num
+		
+		url = url.replace("www.tfrrs.org/results/","");
+		url = url.replace("xc.tfrrs.org/results/","");
+	
+		// special case if the saved meet url is from directathletics.come
+		if (url.contains("directathletics")) {
+			url.substring(url.indexOf(""))
+		}
+		*/
+		// counts how many sequential chars are digits
+		int i = 0;
+		while(Character.isDigit(url.charAt(i)))
+			i++;
+		try {
+			// returns the sequential digit chars converted to Long
+			return Long.parseLong(url.substring(0,i));
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			// prints erroneous url for debugging help
+			System.out.println("Error: " + url);
+		}
+		// else we return error value
+		return -1;
+	}
+	public boolean parse() {
+		// casts parser to this specific objects parser type
+		MeetParser thisParser = (MeetParser) super.parser;
+		// attempts to connect to URL
+		if (!super.parse())
+			return false;
     	
-    	this.date = new Date(parser.getDateString());
-        this.name = parser.getName();
+		this.date = new Date(thisParser.getDateString());
+        this.name = thisParser.getName();
         
-    	parser.parseMeet();
+        thisParser.parseMeet();
+    	
+        super.isParsed = true;
     	// dereferences parser for cleanup as its not needed anymore
-    	parser = null;
+    	super.parser = thisParser = null;
     	return true;
     }
     
@@ -65,7 +110,12 @@ public class Meet implements Parsable {
 
     public Date getDate() { return date; }
     public String getName() { return name; }
-    public String getURL(){ return url; }
+    public String getURL(){
+		String ret = "https://www.tfrrs.org/results/";
+		if (isXC)	// if the meet is an xc meet we need to add this little piece
+			ret+= "xc/";
+		return ret + tfrrsID; 
+	}
 
     // Creates and returns a results matrix for this meet
     // WARNING: parses all athletes as it builds the results matrix so might take a while
@@ -97,22 +147,36 @@ public class Meet implements Parsable {
     			// parses athlete first to get all their times and build their performance lists
     			a.parse();
 
-    			// we build the results matrix
-	    		returnMatrix[i][0] = a.findFastestInRange(startOfSeason, dayBeforeThisMeet).getTime();	// fastest time of the season prior to this meet
-	    		// DEBUGGING
-	    		List<Performance> temp2 = a.getPerformances(this);
-	    		System.out.println(temp2.get(0).getTime());
-	    		returnMatrix[i][1] = a.getPerformances(this).get(0).getTime();	// time at this meet
-	    		
-	    		//debugging
-	    		System.out.println(Performance.timeDoubleToString(returnMatrix[i][0]) + 
-	    				" " + Performance.timeDoubleToString(returnMatrix[i][1]));
-	    		i++;
+    			// we get their fastest time of the season prior to this meet
+    			Performance p = a.findFastestInRange(startOfSeason, dayBeforeThisMeet);
+    			// and we make sure that they did a run in the range requested
+    			if (p != null) {
+	    			// then we build the results matrix
+		    		returnMatrix[i][0] = p.getTime();	// fastest time of the season prior to this meet
+		    		// DEBUGGING
+		    		List<Performance> temp2 = a.getPerformances(this);
+		    		System.out.println(temp2.get(0).getTime());
+		    		returnMatrix[i][1] = a.getPerformances(this).get(0).getTime();	// time at this meet
+		    		
+		    		//debugging
+		    		System.out.println(Performance.timeDoubleToString(returnMatrix[i][0]) + 
+		    				" " + Performance.timeDoubleToString(returnMatrix[i][1]));
+		    		i++;
+    			}
     		}
     	}
     	return returnMatrix;
     }
     
+    // override super.equals to be a little more lenient
+    public boolean equals(Object o) {
+    	if (o instanceof Meet) {
+    		Meet m = (Meet) o;
+    		// if isXC and tfrrsID are the same 
+    		return m.tfrrsID == tfrrsID && m.isXC == isXC;
+    	} else
+    		return super.equals(o);
+    }
     
     private class MeetParser extends Parser {
         private Elements tables;
@@ -215,7 +279,7 @@ public class Meet implements Parsable {
             	// So to overcome both of these at once we check to see if the "href" attribute
             	// contains the word "athlete" (which is what all athlete URLs should)
             	if (result.select("td").select("a").attr("href").contains("athlete")) {
-	                long id = Athlete.urlToLong("https:" + result.select("td").select("a").attr("href"));
+	                long id = Athlete.urlToID("https:" + result.select("td").select("a").attr("href"));
 	                String time = result.select("td").get(headerMap.get("TIME")).text();
 	                Athlete a = Athlete.createNew(id, statusObject);
 	                Performance p = new Performance("8K", 
