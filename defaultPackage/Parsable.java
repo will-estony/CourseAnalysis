@@ -12,14 +12,15 @@ import guiPackage.StatusDisplay;
 public abstract class Parsable {
 	
 	protected Parser parser;
+	protected boolean isParsed;
 
 	public abstract String getURL();
 	
 	// attempts to parse the current object and return true or false based on success of operation
 	public boolean parse() {
-    	// if already parsed, return true
-		if (parser == null)
-			return true;
+    	// if already parsed, return false
+		if (isParsed)
+			return false;
 		
     	// attempts to connect to team's URL
     	// if connection is unsuccessful, return false
