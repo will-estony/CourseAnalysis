@@ -8,6 +8,8 @@ public class tfrrsURL {
 		ATHLETE, TEAM, MEET, UNKNOWN
 	}
 	
+	// boolean isXCMeet = url.contains("xc/");	// the way to know if the meet is an xc meet or not
+	
 	private TYPE urlType;
 	private String rawURL;
 	
