@@ -1,14 +1,14 @@
 package defaultPackage;
 import java.util.ArrayList;
 import java.util.HashMap;
-
+import java.util.List;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import guiPackage.StatusDisplay;
 
-public class Team implements Parsable {
+public class Team extends Parsable {
 
 	// static HashMap of all Teams in existence
 	// first entry is URL, second is the Team
@@ -19,9 +19,6 @@ public class Team implements Parsable {
     private ArrayList<Meet> meets; //Contains a unique list of meets that have been competed in by a team
     private String tfrrsURL; //The url to a teams XC tffrs page
     private String name;     //The name of an xc team
-    
-    // the team parser for this team
-    private TeamParser parser;
 
     // status object is an object that the parser can write to as its parsing
     // to display the status of the parsing without writing to System.out
@@ -36,7 +33,7 @@ public class Team implements Parsable {
         this.name = tfrrsURL.substring(tfrrsURL.indexOf("teams/"), tfrrsURL.length() - 5);
         this.tfrrsURL = tfrrsURL;
 
-        parser = new TeamParser(this, statusObject);
+        super.parser = new TeamParser(this, statusObject);
         
 
     }
@@ -80,14 +77,17 @@ public class Team implements Parsable {
     }
 
     public boolean parse() {
-    	// attempts to connect to team's URL
-    	// if connection is unsuccessful, return false
-    	if (!parser.connect())
-    		return false;
+		// casts parser to this specific objects parser type
+		TeamParser thisParser = (TeamParser) super.parser;
+		// attempts to connect to URL
+		if (!super.parse())
+			return false;
     	
-    	parser.parseAthletes();
+		thisParser.parseAthletes();
+    	
+		super.isParsed = true;
     	// dereferences parser for cleanup as its not needed anymore
-    	parser = null;
+    	super.parser = thisParser = null;
     	return true;
     }
 
@@ -151,14 +151,16 @@ public class Team implements Parsable {
                     for(Element td: table.select("td")){
                         if(!td.select("a").attr("href").equals("")){
 
-                            Long id = Athlete.urlToLong("https:" + td.select("a").attr("href"));
+                            Long id = Athlete.urlToID("https:" + td.select("a").attr("href"));
 
                             Athlete a = Athlete.createNew(id, statusObject);
                             a.parse();
                             System.out.println(a.getName());
                             team.addTeammate(id, a);
-                            for(Performance p: a.getPerformances().values()){
-                                team.addMeet(p.getMeet());
+                            // iterate along all performance lists for the current athlete
+                            for(List<Performance> perfList : a.getPerformances().values()){
+                            	// adds the meet that the current list of performances occurred at
+                                team.addMeet(perfList.get(0).getMeet());
                             }
                         }
                     }
