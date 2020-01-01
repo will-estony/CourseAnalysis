@@ -127,6 +127,16 @@ public class Performance{
         return ret; // returns string with format dd:hh:mm:ss.ms
     }
     
+    // override super.equals to be a little more lenient
+    public boolean equals(Object o) {
+    	if (o instanceof Performance) {
+    		Performance p = (Performance) o;
+    		return (time == p.time) && (meet.equals(p.meet));
+
+    	} else
+    		return super.equals(o);
+    }
+    
     public String toString(){
     	String perfString;
     	// if the performance is a DNF or DNS
