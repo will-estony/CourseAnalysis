@@ -1,13 +1,71 @@
 package defaultPackage;
-// interface for all objects that should be parsable
+// abstract class for all objects that should be parsable
 // ex: athletes, meets, teams.
 
+import java.io.IOException;
 
-public interface Parsable {
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
-	public String getURL();
-	// attempts to parse the current object and return true or false based on success of operation
-	public boolean parse();
+import guiPackage.StatusDisplay;
+
+public abstract class Parsable {
 	
-	//public boolean isParsed();
+	protected Parser parser;
+
+	public abstract String getURL();
+	
+	// attempts to parse the current object and return true or false based on success of operation
+	public boolean parse() {
+    	// if already parsed, return true
+		if (parser == null)
+			return true;
+		
+    	// attempts to connect to team's URL
+    	// if connection is unsuccessful, return false
+    	if (!parser.connect())
+    		return false;
+    	return true;
+    }
+	
+	protected abstract class Parser {
+
+		protected Parsable parsingObject;
+		protected StatusDisplay statusObject;
+		protected String url;
+		protected Document doc;
+	    protected boolean isConnected = false;
+		
+	    // attempts to connect to URL of parsingObject
+		protected boolean connect() {
+			if (isConnected) {	// if already connected
+				updateStatus("Already connected to " + url);
+				return true;
+			}
+			try {	// else: attempt connection
+	            this.url = parsingObject.getURL();
+	            updateStatus("Attempting connection to " + url + "...");
+	            
+	            // attempts to connect to URL
+	            doc = Jsoup.connect(this.url).timeout(0).get();
+	            
+	            // connection successful
+	            updateStatus("Connected.");
+	            isConnected = true;
+	            return true;
+	        } catch(IOException e) { // unsuccessful connection
+	            e.printStackTrace();
+	            updateStatus("Connection unsuccessful.");
+	            return false;	
+	        }
+		}
+		
+		// writes to status object if non-null, else writes to System.out
+		protected void updateStatus(String newStatus) {
+			if (statusObject != null)
+				statusObject.writeNewLine(newStatus);
+			else
+				System.out.println(newStatus);
+		}
+	}
 }
