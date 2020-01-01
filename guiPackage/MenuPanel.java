@@ -104,7 +104,7 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		Parsable urlObject = null;
 		switch (potentialURL.getType()){
 		case ATHLETE:
-			urlObject = Athlete.createNew(Athlete.urlToLong(potentialURL.getURLString()), searchDisplay);
+			urlObject = Athlete.createNew(Athlete.urlToID(potentialURL.getURLString()), searchDisplay);
 			break;
 		case TEAM:
 			urlObject = Team.createNew(potentialURL.getURLString(), searchDisplay);

@@ -51,9 +51,12 @@ public class Predictor {
 		// the end of the season is defined as November 30th on the given year
 		Date startOfSeason = new Date((byte) 9, (byte) 1, (short) year);
 		Date endOfSeason = new Date((byte) 11, (byte) 30, (short) year);
+		Date dayBeforeMeet = new Date(meet.getDate().getMonth(), (byte) (meet.getDate().getDay() - 1), (short) year);
 		// iterates along each athlete in the team, calculating and populating their estimates into the HashMap
 		for (Athlete a : group) {
-			Performance seasonBest = a.findFastestInRange(startOfSeason, endOfSeason);
+			
+			// can use end of season or meets up until the day before, up to how you want to predict
+			Performance seasonBest = a.findFastestInRange(startOfSeason, dayBeforeMeet);
 			// if no race for the year, only a DNF, or only a DNS, then don't parse them
 			if (seasonBest == null || seasonBest.getTime() < 0) {
 				System.out.println(a.getName() + " has not completed a race in the goal year " + year);
