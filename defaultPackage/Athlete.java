@@ -2,6 +2,8 @@ package defaultPackage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -15,18 +17,16 @@ public class Athlete implements Parsable {
 	private static HashMap<Long, Athlete> allAthletes = new HashMap<Long, Athlete>();
 	
 	private HashMap<String,String> careerBests;
-	private ArrayList<Performance> performances;
-	// seasonBests is a hashmap of year and performance
-	private HashMap<Integer, Performance> seasonBests;
+	// performances are stored in a binary tree ordered by Date
+	private TreeMap<Date, Performance> performances;
 	private String name;
 	private long tfrrsID;
 	private AthleteParser parser;
 	
 	private Athlete(long tfrrsID, StatusDisplay statusObject) {
 		this.tfrrsID = tfrrsID;
-		this.performances = new ArrayList<>();
+		this.performances = new TreeMap<Date, Performance>();
 		this.careerBests = new HashMap<>();
-		this.seasonBests = new HashMap<>();
 		parser = new AthleteParser(this, statusObject);
 	}
 	
@@ -57,6 +57,8 @@ public class Athlete implements Parsable {
     	this.name = parser.getName();
     	parser.parseBests();
     	parser.parsePerformances();
+    	// dereferences parser for cleanup as its not needed anymore
+    	parser = null;
     	return true;
     }
 
@@ -65,7 +67,23 @@ public class Athlete implements Parsable {
 	// athlete must already be parsed to have a local name variable
 	public String getName() { return name; }
 	public String getURL() { return idToUrl(tfrrsID); }
-	public ArrayList<Performance> getPerformances(){ return performances; }
+	public void addPerformance(Performance p) {	performances.put(p.getDate(), p); }
+	public TreeMap<Date, Performance> getPerformances(){ return performances; }
+	// returns a list of performances that happened at a given meet
+	// runs in O(n)
+	public List<Performance> getPerformances(Meet goalMeet) {
+		List<Performance> retList = new ArrayList<Performance>();
+		
+		// searches through performances to find ones that match the given meet
+		for (Performance p : performances.values()) 
+			if (p.getMeet().equals(goalMeet))
+				retList.add(p);
+		
+		if (retList.size() == 0)
+			retList = null; // if no performance associated with given meet return null
+		return retList;	
+	}
+	
 	
 	public static String idToUrl(long l){ return "https://xc.tfrrs.org/athletes/" + l + ".html"; }
 	
@@ -93,39 +111,23 @@ public class Athlete implements Parsable {
 		return -1;
 	}
 
-	public void addPerformance(Performance p) {
-		performances.add(p);	// adds to total list of performances
-		// adds to season bests if it is a season best for the year it occurred in
-		int year = p.getDate().getYear();
-		double newPerfTime = p.getTime();
-		// if the new performance is legal (not a DNS or DNF) AND
-		// (there is no performance for the given year OR the new performance is faster)
-		if ((newPerfTime > 0) && ((!seasonBests.containsKey(year)) || (newPerfTime < seasonBests.get(year).getTime())))
-			seasonBests.put(year, p);	// then store/overwrite the given year's Season best
+	
+	// finds and returns the fastest performance within the given date range (inclusive)
+	public Performance findFastestInRange(Date start, Date end) {
+		
+		// gets all of an athletes performances from start to finish, inclusively, into a Map
+		Map<Date, Performance> subPerformances = performances.subMap(start, true, end, true);
+		
+		// then we iterate along the subPerformances and find fastest
+		Performance fastestInRange = null;
+		for (Performance p : subPerformances.values())
+			if (fastestInRange == null || fastestInRange.getTime() > p.getTime())
+				fastestInRange = p;
+		return fastestInRange;	// and return it
 	}
 	
-	// returns a list of performances that happened at a given meet
-	// runs in O(n)
-	public List<Performance> getPerformances(Meet goalMeet) {
-		ArrayList<Performance> retList = new ArrayList<Performance>();
-		
-		// searches through performances to find ones that match the given meet
-		for (Performance p : performances) 
-			if (p.getMeet().equals(goalMeet))
-				retList.add(p);
-		
-		if (retList.size() == 0)
-			retList = null; // if no performance associated with given meet return null
-		return retList;	
-	}
-
 	public void addPR(String event, String time){
 		careerBests.put(event, time);
-	}
-	
-	// returns season best Performance for a given year
-	public Performance getSeasonBest(int year) {
-		return seasonBests.get(year);
 	}
 
 	public void printPerformances(){
@@ -133,7 +135,7 @@ public class Athlete implements Parsable {
 		System.out.println();
 
 		// prints every performance
-		for(Performance p: performances){
+		for(Performance p: performances.values()){
 			System.out.println(p);
 		}
 		System.out.println();
@@ -150,15 +152,6 @@ public class Athlete implements Parsable {
 		}
 	}
 
-	public void printSeasonBests(){
-		System.out.println(name + " has competed for " + seasonBests.size() + " year(s).");
-		if (seasonBests.size() > 0)
-			System.out.println("Here are their season bests\n");
-		for(int year : seasonBests.keySet()){
-			System.out.println(year + " - " + seasonBests.get(year));
-		}
-		System.out.println();
-	}
 	
 	private class AthleteParser extends Parser {
 	    private Elements tables;
@@ -216,7 +209,7 @@ public class Athlete implements Parsable {
 	                    String split[] = info.split("\\s+");
 	                    
 	                    // creates a new Meet passing it the tfrrs URL
-	                    Meet m = Meet.createNew("http:" + table.select("a").attr("href"), statusObject);
+	                    Meet m = Meet.createNew("https:" + table.select("a").attr("href"), statusObject);
 	                    
 	                    //m.parse();
 	                    

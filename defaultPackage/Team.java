@@ -45,6 +45,8 @@ public class Team implements Parsable {
     // forces teams to be created through this static factory method,
     // thus preventing duplicate teams from being created
     public static Team createNew(String url, StatusDisplay statusObject) {
+    	// removes difference between http and https urls
+		url = url.replace("http://","https://");
     	// tests if Team exists already, and returns it if it does
     	Team newTeam = allTeams.get(url);
     	if (newTeam != null)
@@ -84,6 +86,8 @@ public class Team implements Parsable {
     		return false;
     	
     	parser.parseAthletes();
+    	// dereferences parser for cleanup as its not needed anymore
+    	parser = null;
     	return true;
     }
 
@@ -109,7 +113,6 @@ public class Team implements Parsable {
     public void printTeam(){
         for(Athlete a: teammates.values()){
             a.printPerformances();
-            a.printSeasonBests();
             System.out.println("----------------------");
         }
     }
@@ -148,13 +151,13 @@ public class Team implements Parsable {
                     for(Element td: table.select("td")){
                         if(!td.select("a").attr("href").equals("")){
 
-                            Long id = Athlete.urlToLong("http:" + td.select("a").attr("href"));
+                            Long id = Athlete.urlToLong("https:" + td.select("a").attr("href"));
 
                             Athlete a = Athlete.createNew(id, statusObject);
                             a.parse();
                             System.out.println(a.getName());
                             team.addTeammate(id, a);
-                            for(Performance p: a.getPerformances()){
+                            for(Performance p: a.getPerformances().values()){
                                 team.addMeet(p.getMeet());
                             }
                         }

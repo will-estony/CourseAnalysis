@@ -1,6 +1,7 @@
 package defaultPackage;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -29,6 +30,8 @@ public class Meet implements Parsable {
     // forces meets to be created through this static factory method,
     // thus preventing duplicate meets from being created
     public static Meet createNew(String url, StatusDisplay statusObject) {
+    	// removes difference between http and https urls
+		url = url.replace("http://","https://");
     	// tests if Meet exists already, and returns it if it does
     	Meet newMeet = allMeets.get(url);
     	if (newMeet != null)
@@ -51,7 +54,10 @@ public class Meet implements Parsable {
     	
     	this.date = new Date(parser.getDateString());
         this.name = parser.getName();
+        
     	parser.parseMeet();
+    	// dereferences parser for cleanup as its not needed anymore
+    	parser = null;
     	return true;
     }
     
@@ -62,6 +68,7 @@ public class Meet implements Parsable {
     public String getURL(){ return url; }
 
     // Creates and returns a results matrix for this meet
+    // WARNING: parses all athletes as it builds the results matrix so might take a while
     public double [][] getResultsMatrix() {
     	// initializes return matrix
     	int numCols = 2;
@@ -71,14 +78,30 @@ public class Meet implements Parsable {
     	// DEBUGGING
     	System.out.println("Number of competitors: " + numRows);
     	
-    	// iterates along each athlete putting their season best in the first column
+    	// the start of the season is defined as September 1st on the given year
+		Date startOfSeason = new Date((byte) 9, (byte) 1, date.getYear());
+		Date dayBeforeThisMeet = new Date(date.getMonth(), (byte) (date.getDay() - 1), date.getYear());	// the day before this meet 
+		// we don't need to worry about the case where the day decrements to zero
+		// because we're only using this day to compare with and a day of zero doesn't mess up the comparisons
+		
+    	// iterates along each athlete putting their season best UP TO BUT EXCLUDING this meet
     	// and their time at this meet in the second column
     	int i = 0;
     	for (Athlete a : competitors.values()) {
-    		// if they have a completed a race for the given year AND
-    		// they completed this meet's race
-    		if (a.getSeasonBest(date.getYear()) != null && a.getPerformances(this).get(0).getTime() > 0) {
-	    		returnMatrix[i][0] = a.getSeasonBest(date.getYear()).getTime();	// season best
+    		// DEBUGGING
+    		List<Performance> temp1 = a.getPerformances(this);
+    		System.out.println(temp1.get(0).getTime());
+    		
+    		// only continues for athletes that completed this race
+    		if (a.getPerformances(this).get(0).getTime() > 0) {
+    			// parses athlete first to get all their times and build their performance lists
+    			a.parse();
+
+    			// we build the results matrix
+	    		returnMatrix[i][0] = a.findFastestInRange(startOfSeason, dayBeforeThisMeet).getTime();	// fastest time of the season prior to this meet
+	    		// DEBUGGING
+	    		List<Performance> temp2 = a.getPerformances(this);
+	    		System.out.println(temp2.get(0).getTime());
 	    		returnMatrix[i][1] = a.getPerformances(this).get(0).getTime();	// time at this meet
 	    		
 	    		//debugging
@@ -192,7 +215,7 @@ public class Meet implements Parsable {
             	// So to overcome both of these at once we check to see if the "href" attribute
             	// contains the word "athlete" (which is what all athlete URLs should)
             	if (result.select("td").select("a").attr("href").contains("athlete")) {
-	                long id = Athlete.urlToLong("http:" + result.select("td").select("a").attr("href"));
+	                long id = Athlete.urlToLong("https:" + result.select("td").select("a").attr("href"));
 	                String time = result.select("td").get(headerMap.get("TIME")).text();
 	                Athlete a = Athlete.createNew(id, statusObject);
 	                Performance p = new Performance("8K", 
