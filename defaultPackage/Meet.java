@@ -19,7 +19,6 @@ public class Meet extends Parsable {
     private boolean isXC;	// is this an XC meet or not
     private String name;	//The name of the meet as listed on tffrs
     private HashMap<Long, Athlete> competitors;
-    private MeetParser parser;
 
     private Meet(long tfrrsID, boolean isXC, StatusDisplay statusObject) {
     	this.tfrrsID = tfrrsID;
