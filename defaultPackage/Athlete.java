@@ -210,7 +210,7 @@ public class Athlete extends Parsable {
 	        
 	        for(Element table: divs.select("table")){
 	            if(!table.equals(firstTable) && !table.equals(secondTable) && !table.equals(thirdTable) && !table.equals(fourthTable)){
-	                if(table.select("tbody").text().contains("8K")){
+	                if(table.select("tbody").text().contains("8K") || table.select("tbody").text().contains("5M")){
 	                    
 	                    String info = table.select("tbody").text();
 	                    String split[] = info.split("\\s+");
