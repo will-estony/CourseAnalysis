@@ -7,7 +7,7 @@ public class programMain {
 
 	public static void main(String[] args) {
 		
-		//guiManager gm = new guiManager();
+		guiManager gm = new guiManager();
 		
 		/*
 		Athlete a = Athlete.createNew(7421730);
@@ -37,7 +37,7 @@ public class programMain {
 		
 		
 		
-		Team browdies = Team.createNew("https://www.tfrrs.org/teams/xc/CT_college_m_Trinity_CT.html");
+		/*Team browdies = Team.createNew("https://www.tfrrs.org/teams/xc/CT_college_m_Trinity_CT.html");
 		browdies.parse();
 		browdies.printTeam();
 		

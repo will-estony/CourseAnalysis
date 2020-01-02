@@ -5,7 +5,7 @@ package guiPackage;
 
 import java.awt.Graphics2D;
 
-interface Drawable {
+public interface Drawable {
 	// method called to add object to Graphics2D object to make it visible
 	public void drawToGraphics(Graphics2D g2);
 }

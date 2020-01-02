@@ -30,7 +30,6 @@ public class StatusDisplay implements Drawable {
 		textBoxes[0].setText(newLine);
 	}
 	
-	
 	// draws all text boxes
 	public void drawToGraphics(Graphics2D g2) {
 		for (MyTextBox textBox : textBoxes)

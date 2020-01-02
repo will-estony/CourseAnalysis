@@ -189,7 +189,6 @@ public class Athlete extends Parsable {
         	return false;
         }
         
-        
         public String getName(){
         	// makes sure we're connected before accessing webpage details
         	if (!isConnected)
@@ -239,8 +238,6 @@ public class Athlete extends Parsable {
 	            }
 	        }
 	    }
-	    
-
 	    public void parseBests(){
 
 	        /*
