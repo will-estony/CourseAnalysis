@@ -251,16 +251,38 @@ public class Meet extends Parsable {
                 for(Element race : doc.select("div.col-lg-12")){
                     String raceTitle = race.select("div.custom-table-title.custom-table-title-xc").text();
                     if(raceTitle.contains("Men") && raceTitle.contains("Individual")){
-                       
+                        getNumCompetitors(race, headerMap);
                     	parseRace(race, headerMap);
                     	
                     }
                 }
             }
+		}
+		
+		private int getNumCompetitors(Element race, HashMap<String, Integer> headerMap) {
+			int j = 0;
+        	Elements headers = race.select("thead");
+            int i = 0;
+
+            for(Element head: headers.select("tr").select("th"))
+                headerMap.put(head.text(), i++);
+
+            Elements results = race.select("tbody.color-xc");
+
+            for(Element result: results.select("tr")){
+
+        
+            	if (result.select("td").select("a").attr("href").contains("athlete")) {
+					j++;
+            	}
+			}
+			return j;
         }
         // parses given meet section (ex. JV race, varsity race, etc...)
         private void parseRace(Element race, HashMap<String, Integer> headerMap) {
-
+			metrics.setcurrentItem(0.0);
+			int numCompetitors = getNumCompetitors(race, headerMap);
+			metrics.setNumItems((double)numCompetitors);
         	Elements headers = race.select("thead");
             int i = 0;
 
@@ -279,12 +301,15 @@ public class Meet extends Parsable {
             	// contains the word "athlete" (which is what all athlete URLs should)
             	if (result.select("td").select("a").attr("href").contains("athlete")) {
 	                long id = Athlete.urlToID("https:" + result.select("td").select("a").attr("href"));
-	                String time = result.select("td").get(headerMap.get("TIME")).text();
-	                Athlete a = Athlete.createNew(id, statusObject);
+					String time = result.select("td").get(headerMap.get("TIME")).text();
+					System.out.println(time);
+					Athlete a = Athlete.createNew(id, statusObject);
+					
 	                Performance p = new Performance("8K", 
 	                		Performance.timeStringToDouble(time), meet.getDate(), meet);
 	                a.addPerformance(p);
-	                meet.addCompetitor(id, a);
+					meet.addCompetitor(id, a);
+					metrics.setcurrentItem(metrics.getCurrentItem() + 1.0);
             	}
             }
         }

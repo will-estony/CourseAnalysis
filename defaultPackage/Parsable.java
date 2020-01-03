@@ -11,6 +11,7 @@ import guiPackage.StatusDisplay;
 
 public abstract class Parsable {
 	
+	protected Metrics metrics = new Metrics();
 	protected Parser parser;
 	protected boolean isParsed;
 
@@ -27,7 +28,9 @@ public abstract class Parsable {
     	if (!parser.connect())
     		return false;
     	return true;
-    }
+	}
+	
+	public void setMetrics(Metrics m){ this.metrics = m; }
 	
 	protected abstract class Parser {
 

@@ -50,16 +50,17 @@ public class Athlete extends Parsable {
 	public boolean parse() {
 		// casts parser to this specific objects parser type
 		AthleteParser thisParser = (AthleteParser) super.parser;
-		if (!super.parse())
+		if (!super.parse()){
 			return false;
+		}
     	
     	this.name = thisParser.getName();
     	thisParser.parseBests();
-    	thisParser.parsePerformances();
+		thisParser.parsePerformances();
     	
     	super.isParsed = true;
     	// dereferences parser for cleanup as its not needed anymore
-    	super.parser = thisParser = null;
+		super.parser = thisParser = null;
     	return true;
     }
 	
@@ -159,21 +160,26 @@ public class Athlete extends Parsable {
 			System.out.println(event + " - " + careerBests.get(event));
 		}
 	}
+	
+	public Metrics getMetrics(){  return this.metrics; }
+
+	
 
 	
 	private class AthleteParser extends Parser {
 	    private Elements tables;
 	    private Elements headers;
 	    private Elements divs;
-	    private Athlete athlete;
+		private Athlete athlete;
 
 	    public AthleteParser(Athlete a){
-	    	this(a, null);
+			this(a, null);
+			
 	    }
         public AthleteParser(Athlete a, StatusDisplay statusObject) {
 	        this.athlete = a;
 	        this.parsingObject = athlete;
-            this.statusObject = statusObject;
+			this.statusObject = statusObject;
         }
 	    
 	    // attempts to connect to the athlete's URL
@@ -195,9 +201,25 @@ public class Athlete extends Parsable {
         		connect();
     		return headers.get(0).text();
 		}
-        
+		
+		public int getNumPerformances(){
+			int numMeets = 0;
+			Element firstTable = doc.select("table").get(0); //overall bests
+	        Element secondTable = doc.select("table").get(1); //outdoor bests
+	        Element thirdTable = doc.select("table").get(2); //indoor bests
+	        Element fourthTable = doc.select("table").get(3); //xc bests
+			for(Element table: divs.select("table")){
+				if(!table.equals(firstTable) && !table.equals(secondTable) && !table.equals(thirdTable) && !table.equals(fourthTable)){
+	                if(table.select("tbody").text().contains("8K") || table.select("tbody").text().contains("5M")){
+						numMeets++;
+					}
+				}
+			}
+			return numMeets;
+		}
+		
 	    public void parsePerformances(){
-
+			
 	        /*We want to skip over these when we parse an athlete.
 	        It seems like these are baked into every athlete (including track only) so no matter
 	        if for example they are a freshmen who hasn't had a track season yet,
@@ -207,18 +229,21 @@ public class Athlete extends Parsable {
 	        Element secondTable = doc.select("table").get(1); //outdoor bests
 	        Element thirdTable = doc.select("table").get(2); //indoor bests
 	        Element fourthTable = doc.select("table").get(3); //xc bests
-	        
+			metrics.setcurrentItem(1.0);
+			int numPerformances = getNumPerformances();
+			metrics.setNumItems((double)numPerformances);
 	        for(Element table: divs.select("table")){
 	            if(!table.equals(firstTable) && !table.equals(secondTable) && !table.equals(thirdTable) && !table.equals(fourthTable)){
 	                if(table.select("tbody").text().contains("8K") || table.select("tbody").text().contains("5M")){
-	                    
+						
+						
 	                    String info = table.select("tbody").text();
 	                    String split[] = info.split("\\s+");
 	                    
 	                    // creates a new Meet passing it the tfrrs URL
 	                    Meet m = Meet.createNew("https:" + table.select("a").attr("href"), statusObject);
 	                    
-	                    //m.parse();
+	                    m.parse();
 	                    
 	                    // creates a new performance passing it the Event, the event time (as a String), 
 	                    // the meet (as a Date), and the meet it occurred at
@@ -230,10 +255,14 @@ public class Athlete extends Parsable {
 	                    // required the meet to be parsed first and then take the date from there.
 	                    // But by passing the date now instead of just the meet we don't
 	                    // have to parse every meet for every performance in order to get the date.
-	                    //System.out.println(table.select("span").text());	// the date of the performance
+	                   
 	                    
 	                    // adds performance to athlete
-	                    athlete.addPerformance(p);
+						athlete.addPerformance(p);
+						metrics.setcurrentItem(metrics.getCurrentItem() + 1.0);
+						
+						
+					
 	                }    
 	            }
 	        }

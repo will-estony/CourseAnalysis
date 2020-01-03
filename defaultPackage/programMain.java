@@ -9,13 +9,13 @@ public class programMain {
 		
 		guiManager gm = new guiManager();
 		
+		
+		//Athlete a = Athlete.createNew(5984486);
+		//a.parse();
+		//a.printPRs();
+		//a.printPerformances();
+		
 		/*
-		Athlete a = Athlete.createNew(7421730);
-		a.parse();
-		a.printPRs();
-		a.printPerformances();
-		
-		
 		long l = 6891464;
 		Athlete a1 = Athlete.createNew(l);
 		a1.parse();
@@ -25,25 +25,20 @@ public class programMain {
 		a1.printSeasonBests();
 		*/
 		
-		
-		//t.printTeam();
-		
-		//MeetParser mp = new MeetParser("https://www.tfrrs.org/results/xc/15785/Connecticut_College_XC_Invitational");
-		//mp.parseTables();
-		//mp.parseHeaders();
-		//t.printTeam();
-		//t.printMeets();
+
 		
 		
 		
 		
-		/*Team browdies = Team.createNew("https://www.tfrrs.org/teams/xc/CT_college_m_Trinity_CT.html");
-		browdies.parse();
-		browdies.printTeam();
+		//Team browdies = Team.createNew("https://www.tfrrs.org/teams/xc/CT_college_m_Trinity_CT.html");
+		//browdies.parse();
+		//browdies.printTeam();
+
 		
-		Meet Regionals2018 = Meet.createNew("https://www.tfrrs.org/results/xc/14521/NCAA_Division_III_New_England_Region_Cross_Country_Championships");
-		Regionals2018.parse();
+		//Meet Regionals2018 = Meet.createNew("https://www.tfrrs.org/results/xc/14521/NCAA_Division_III_New_England_Region_Cross_Country_Championships");
+		//Regionals2018.parse();
 		
+		/*
 		System.out.println("Predicting results for browdies at REGIONALS 2018 meet");
 		Predictor p = new Predictor();
 		HashMap<Athlete, Double> estimatedResults = p.meetPrediction(Regionals2018, browdies.getTeammates(), 2019);

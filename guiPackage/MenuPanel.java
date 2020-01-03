@@ -9,6 +9,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
@@ -21,10 +23,12 @@ import defaultPackage.Parsable;
 import defaultPackage.ParsingThread;
 import defaultPackage.Team;
 import defaultPackage.tfrrsURL;
+import defaultPackage.Metrics;
 import guiPackage.UIConstraint.ConstraintType;
 
+
 @SuppressWarnings("serial")
-class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
+public class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
 	/* Fonts */
 	private static final Font comicSans = new Font("Comic Sans MS", Font.PLAIN, 24);
 	private static final Font headerFont = new Font("TimeRoman", Font.PLAIN, 42);
@@ -44,10 +48,18 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 	private JTextField searchField;
 	// status display
 	private StatusDisplay searchDisplay;
+	// loading bar
+	private MyLoadingBar load;
+
+	private static boolean loading;
+
+	private Metrics metrics;
 	
 	// Constructor
 	public MenuPanel(guiManager gm) {
 		this.gm = gm;	// saves gui manager reference
+		this.metrics = new Metrics();
+		
 		
 		// needed to make the keyboard/mouse inputs apply to this
 		setFocusable(true);
@@ -56,9 +68,13 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		addKeyListener(this);
 		addMouseListener(this);
 		addMouseMotionListener(this);
-		
+		loading = false;
 		setBackground(Color.BLACK);	// sets the background color of the panel
 		
+		load = new MyLoadingBar("", defaultFont, 250, 10, new UIConstraintSet(gm,
+		new UIConstraint(0.5),
+		new UIConstraint(0.75)));
+
 		// creates all the buttons on the screen
 		buttons = new ArrayList<MyMouseButton>();
 		// creates quit button
@@ -71,7 +87,6 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 				new UIConstraintSet(gm,
 						new UIConstraint(0.2),
 						new UIConstraint(80, null))));
-		//menuButtons.add(new MyMouseButton("Read in team", defaultFont, 0, 0, 180, 34));
 		
 		// creates all the text boxes on this panel
 		textBoxes = new ArrayList<MyTextBox>();
@@ -85,13 +100,28 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		
 		// TESTING
 		searchField = new JTextField("Enter TFRRS URL here", 50);
+		searchField.addFocusListener(new FocusListener(){
+			@Override
+            public void focusGained(FocusEvent e) {
+				//This clears the textfield when the user clicks on it
+				//the first time
+                if(searchField.getText().equals("Enter TFRRS URL here")){
+					searchField.setText("");
+				}
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                
+            }
+        });
 		
 		
 		
 		add(searchField);
 	}
 	
-	
+	public static void setLoading(boolean b){ loading = b;}
 	
 	// attempts to read in the team that is currently in the search bar
 	// CURRENTLY JUST TESTING NOT PERMANANT
@@ -102,9 +132,10 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		
 		// we create a different object depending on the type of url supplied
 		Parsable urlObject = null;
+		
 		switch (potentialURL.getType()){
 		case ATHLETE:
-			urlObject = Athlete.createNew(Athlete.urlToID(potentialURL.getURLString()), searchDisplay);
+			urlObject = (Athlete)Athlete.createNew(Athlete.urlToID(potentialURL.getURLString()), searchDisplay);
 			break;
 		case TEAM:
 			urlObject = Team.createNew(potentialURL.getURLString(), searchDisplay);
@@ -116,11 +147,14 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 			searchDisplay.writeNewLine("\"" + searchField.getText() + "\" is not a valid tfrrs URL");
 			return;
 		}
+		metrics.setNumItems(100.0);
+		urlObject.setMetrics(metrics);
 		
+
 		// attempt to parse the object
 		// starts a thread that will parse the object in the background
 		// while updating the status object
-		new ParsingThread(urlObject).start();
+		new ParsingThread(urlObject);
 	}
 	
 	
@@ -146,8 +180,11 @@ class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotio
 		// draws every text box in the array list
 		for (MyTextBox textBox : textBoxes)
 			textBox.drawToGraphics(g2);
-		
-		// draws search status
+		// draws search status and loading bar
+		if(loading){
+			load.drawToGraphics(g2,metrics.getCurrentItem(), metrics.getNumItems());
+			
+		}
 		searchDisplay.drawToGraphics(g2);
 	}
 	

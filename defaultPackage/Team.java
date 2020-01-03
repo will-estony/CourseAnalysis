@@ -46,8 +46,10 @@ public class Team extends Parsable {
 		url = url.replace("http://","https://");
     	// tests if Team exists already, and returns it if it does
     	Team newTeam = allTeams.get(url);
-    	if (newTeam != null)
-    		return newTeam;
+        if (newTeam != null){
+            System.out.println("Team has already been created.");
+            return newTeam;
+        }
     	// if the team doesn't exist yet: create it, add it to allTeams, and return it
     	newTeam = new Team(url, statusObject);
     	allTeams.put(url, newTeam);
@@ -57,7 +59,7 @@ public class Team extends Parsable {
     public static Team createNew(String url) {
     	return createNew(url, null);
     }
-
+    public Metrics getMetrics(){  return this.metrics; }
     public String getName(){ return name; }
     public String getURL(){ return tfrrsURL; }
     public ArrayList<Meet> getMeets(){ return meets; }
@@ -87,7 +89,8 @@ public class Team extends Parsable {
     	
 		super.isParsed = true;
     	// dereferences parser for cleanup as its not needed anymore
-    	super.parser = thisParser = null;
+        super.parser = thisParser = null;
+        //System.out.println("TEAM PARSED!");
     	return true;
     }
 
@@ -144,13 +147,32 @@ public class Team extends Parsable {
         	return false;
         }
 
-        public void parseAthletes() {
+        public int getNumAthletes(){
+            int numAthletes = 0;
             for(Element table: tables){
                 //Get to the table on the page that contains the names
                 if(table.select("thead").select("tr").select("th").text().contains("NAME")){
                     for(Element td: table.select("td")){
                         if(!td.select("a").attr("href").equals("")){
+                            numAthletes++;
+                        }
+                    }
+                }
+            }
+            return numAthletes;
+        }
 
+        public void parseAthletes() {
+            metrics.setcurrentItem(1.0);
+            int numItems = getNumAthletes();
+            metrics.setNumItems((double)numItems);
+            int numAthletes = getNumAthletes();
+            for(Element table: tables){
+                //Get to the table on the page that contains the names
+                if(table.select("thead").select("tr").select("th").text().contains("NAME")){
+                    for(Element td: table.select("td")){
+                        if(!td.select("a").attr("href").equals("")){
+                            
                             Long id = Athlete.urlToID("https:" + td.select("a").attr("href"));
 
                             Athlete a = Athlete.createNew(id, statusObject);
@@ -162,6 +184,9 @@ public class Team extends Parsable {
                             	// adds the meet that the current list of performances occurred at
                                 team.addMeet(perfList.get(0).getMeet());
                             }
+
+                            metrics.setcurrentItem(metrics.getCurrentItem() + 1.0);
+                           
                         }
                     }
                 }

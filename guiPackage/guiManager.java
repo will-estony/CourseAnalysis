@@ -95,5 +95,4 @@ public class guiManager extends JFrame implements Runnable {
 		    }
 		}
 	}
-
 }

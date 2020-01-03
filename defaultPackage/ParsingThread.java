@@ -1,5 +1,7 @@
 package defaultPackage;
 
+import guiPackage.MenuPanel;
+
 // I wrote this class while drunk...
 
 public class ParsingThread extends Thread {
@@ -8,10 +10,16 @@ public class ParsingThread extends Thread {
 	
 	public ParsingThread(Parsable parsingObject) {
 		this.parsingObject = parsingObject;
+		MenuPanel.setLoading(true);
+		this.start();
 	}
 	
 	public void run() {
-		parsingObject.parse();
+		if(parsingObject.parse() || !parsingObject.parse()){
+			MenuPanel.setLoading(false);
+			parsingObject.metrics.setNumItems(0.0);
+			parsingObject.metrics.setcurrentItem(0.0);
+		}
 	}
 	
 	
