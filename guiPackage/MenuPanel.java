@@ -65,9 +65,10 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		setFocusable(true);
 		
 		// adds this class' listeners to this class' JPanel
-		addKeyListener(this);
-		addMouseListener(this);
-		addMouseMotionListener(this);
+		this.addKeyListener(this);
+		this.addMouseListener(this);
+		this.addMouseMotionListener(this);
+
 		loading = false;
 		setBackground(Color.BLACK);	// sets the background color of the panel
 		
@@ -100,6 +101,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		
 		// TESTING
 		searchField = new JTextField("Enter TFRRS URL here", 50);
+		searchField.addKeyListener(this);
 		searchField.addFocusListener(new FocusListener(){
 			@Override
             public void focusGained(FocusEvent e) {
