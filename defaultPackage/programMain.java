@@ -7,8 +7,8 @@ public class programMain {
 
 	public static void main(String[] args) {
 		
-		guiManager gm = new guiManager();
-		
+		//guiManager gm = new guiManager();
+		new AllTeamParser().parseAllTeams();
 		
 		//Athlete a = Athlete.createNew(5984486);
 		//a.parse();

@@ -163,9 +163,6 @@ public class Athlete extends Parsable {
 	
 	public Metrics getMetrics(){  return this.metrics; }
 
-	
-
-	
 	private class AthleteParser extends Parser {
 	    private Elements tables;
 	    private Elements headers;

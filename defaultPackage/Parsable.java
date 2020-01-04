@@ -52,7 +52,6 @@ public abstract class Parsable {
 	            
 	            // attempts to connect to URL
 	            doc = Jsoup.connect(this.url).timeout(0).get();
-	            
 	            // connection successful
 	            updateStatus("Connected.");
 	            isConnected = true;
