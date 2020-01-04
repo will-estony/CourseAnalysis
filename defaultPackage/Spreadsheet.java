@@ -12,24 +12,26 @@ import java.awt.Desktop;
 import java.io.File; 
 import java.io.IOException; 
 import java.util.HashSet;
+import java.util.HashMap;
 
 public class Spreadsheet{
     public Spreadsheet(HashSet<String> set){
-        exportToSpreadSheet(set);
+        export(set);
     }
     
-    public void exportToSpreadSheet(HashSet<String> set){
+    public void export(HashSet<String> set){
         //Blank workbook
         XSSFWorkbook workbook = new XSSFWorkbook(); 
          
         //Create a blank sheet
         XSSFSheet sheet = workbook.createSheet("Teams");
 
-        int rownum = 0;
+        int rowNum = 0;
         for (String name : set){
-            Row row = sheet.createRow(rownum++);
+            Row row = sheet.createRow(rowNum);
             Cell cell = row.createCell(0);
             cell.setCellValue(name);
+            rowNum++;
         }
         try{
             //Write the workbook in file system
@@ -43,4 +45,5 @@ public class Spreadsheet{
             e.printStackTrace();
         }
     }
+    public void export(Hash)
 }

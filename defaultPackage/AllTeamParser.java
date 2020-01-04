@@ -6,7 +6,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class AllTeamParser{
 
@@ -23,8 +22,9 @@ public class AllTeamParser{
         populateDivisions();
     }
 
-    public HashSet<String> parseAllTeams(){
-        HashSet<String> teams = new HashSet<>();
+    public HashMap<String,HashMap<String,String>> parseAllTeams(){
+
+        HashMap<String, HashMap<String, String>> teams = new HashMap<>();
         Elements tables;
         Elements headers;
         Document doc;
@@ -38,9 +38,25 @@ public class AllTeamParser{
                 for(Element t: tables){
                     Elements tableHead = t.select("thead").select("tr").select("th");
                     if(tableHead.text().equals("MEN'S TEAM WOMEN'S TEAM")){
-                        for(Element data: t.select("tbody").select("tr").select("td")){
-                            if(!teams.contains(data.text()))
-                                teams.add(data.text());
+                        for(int i = 0; i <=1; i++){
+                            for(Element data: t.select("tbody").select("tr")){
+                                Elements d = data.select("td");
+                                
+                                //First we loop over the men's teams, then the women's
+                                //d.get(0) - men's team
+                                //d.get(1) - women's team
+                                if(teams.containsKey(d.get(i).text())){
+                                    teams.get(d.get(i).text()).put("Women's Url", d.get(i).select("a").attr("href"));
+                                }else{
+                                    HashMap<String, String> urls = new HashMap<>();
+                                    if(i == 0){ 
+                                        urls.put("Men's Url", d.get(i).select("a").attr("href"));
+                                    }else{
+                                        urls.put("Women's Url", d.get(i).select("a").attr("href"));
+                                    }
+                                    teams.put(d.get(i).text(), urls);
+                                }
+                            }
                         }
                     }
                 }
@@ -51,6 +67,7 @@ public class AllTeamParser{
         }
         return teams;
     }
+
     private void populateDivisions(){
         divisions.put("NCAA Division 1", 49);
         divisions.put("NCAA Division 2", 50);
