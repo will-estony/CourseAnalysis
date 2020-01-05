@@ -9,6 +9,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
@@ -30,7 +32,7 @@ import defaultPackage.Metrics;
 
 
 @SuppressWarnings("serial")
-public class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
+public class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener, ComponentListener {
 	/* Fonts */
 	private static final Font comicSans = new Font("Comic Sans MS", Font.PLAIN, 24);
 	private static final Font headerFont = new Font("TimeRoman", Font.PLAIN, 42);
@@ -57,6 +59,8 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 
 	private Metrics metrics;
 	
+	private JScrollPane listScrollPane;
+	
 	// Constructor
 	public MenuPanel(guiManager gm) {
 		this.setLayout(null);	// removes layout
@@ -71,6 +75,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		this.addKeyListener(this);
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
+		this.addComponentListener(this);
 
 		loading = false;
 		setBackground(Color.BLACK);	// sets the background color of the panel
@@ -97,8 +102,8 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		// creates test button
 		buttons.add(new MyMouseButton("Parse TFRRS URL", defaultFont,
 				new UIConstraintSet(gm,
-						new UIConstraint(450, null),
-						new UIConstraint(32, null))));
+						new UIConstraint(129, null),
+						new UIConstraint(72, null))));
 		
 		// creates all the text boxes on this panel
 		textBoxes = new ArrayList<MyTextBox>();
@@ -110,7 +115,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 					new UIConstraint(0.5)));
 		
 		
-		// TESTING
+		
 		searchField = new JTextField("Enter TFRRS URL here", 50);
 		searchField.setBounds(20, 20, 300, 25);	// sets location/size
 		searchField.addKeyListener(this);
@@ -166,10 +171,13 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		
 		list.setVisibleRowCount(5);
 		// and puts it in a scroll pane
-		JScrollPane listScrollPane = new JScrollPane(list);
-		
-		listScrollPane.setBounds(20, 125, 200, 400);
+		listScrollPane = new JScrollPane(list);
+		listScrollPane.setBounds(20, 175, 200, 350);
 		add(listScrollPane);
+		textBoxes.add(new MyTextBox("Teams", headerFont, 
+			new UIConstraintSet(gm,
+				new UIConstraint(120, null),
+				new UIConstraint(150, null))));
 	}
 	
 	public static void setLoading(boolean b){ loading = b;}
@@ -325,4 +333,24 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {}
+
+	@Override
+	public void componentHidden(ComponentEvent e) {}
+
+	@Override
+	public void componentMoved(ComponentEvent e) {}
+
+	// called every time the screen is resized
+	@Override
+	public void componentResized(ComponentEvent e) {
+		// updates height of list
+		listScrollPane.setBounds(20, 175, 200, (getHeight() - 200));
+		//list.setVisibleRowCount(5);
+		//listScrollPane
+		
+		
+	}
+
+	@Override
+	public void componentShown(ComponentEvent e) {}
 }
