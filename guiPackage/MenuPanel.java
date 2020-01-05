@@ -49,7 +49,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 	// status display
 	private StatusDisplay searchDisplay;
 	// loading bar
-	private MyLoadingBar load;
+	//private MyLoadingBar load;
 
 	private static boolean loading;
 
@@ -72,9 +72,9 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		loading = false;
 		setBackground(Color.BLACK);	// sets the background color of the panel
 		
-		load = new MyLoadingBar("", defaultFont, 250, 10, new UIConstraintSet(gm,
-		new UIConstraint(0.5),
-		new UIConstraint(0.75)));
+		//load = new MyLoadingBar("", defaultFont, 250, 10, new UIConstraintSet(gm,
+		//new UIConstraint(0.5),
+		//new UIConstraint(0.75)));
 
 		// creates all the buttons on the screen
 		buttons = new ArrayList<MyMouseButton>();
@@ -183,10 +183,9 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		for (MyTextBox textBox : textBoxes)
 			textBox.drawToGraphics(g2);
 		// draws search status and loading bar
-		if(loading){
-			load.drawToGraphics(g2,metrics.getCurrentItem(), metrics.getNumItems());
-			
-		}
+		//if(loading){
+		//	load.drawToGraphics(g2,metrics.getCurrentItem(), metrics.getNumItems());
+		//}
 		searchDisplay.drawToGraphics(g2);
 	}
 	
