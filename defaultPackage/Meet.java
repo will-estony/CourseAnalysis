@@ -73,9 +73,9 @@ public class Meet extends Parsable {
 			url.substring(url.indexOf(""))
 		}
 		*/
-		// counts how many sequential chars are digits
+		// counts how many remaining/sequential chars are digits
 		int i = 0;
-		while(Character.isDigit(url.charAt(i)))
+		while(i < url.length() && Character.isDigit(url.charAt(i)))
 			i++;
 		try {
 			// returns the sequential digit chars converted to Long
