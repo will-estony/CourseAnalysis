@@ -15,6 +15,7 @@ public class MyMouseButton extends MyTextBox {
 	private Color regularBoxColor, regularTextColor, highlightedBoxColor, highlightedTextColor, pressedBoxColor, pressedTextColor;
 	private Shape boxShape;
 	private UIConstraintSet constraints;
+	private boolean isEnabled = true;
 	
 	// private boolean to know if button is highlighted or not
 	private boolean isHighlighted;
@@ -55,18 +56,20 @@ public class MyMouseButton extends MyTextBox {
 		boxShape = new RoundRectangle2D.Double(0, 0, fm.stringWidth(textString)*1.05 + 6, fm.getHeight()*1.12, 20, 20);
 	}
 	
-	public void setIsPressed(boolean isPressed) {
-		this.isPressed = isPressed;
+	public void setEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
 	}
 	
 	/*
 	 * Highlights/un-highlights button if the mouse is/isn't over it
 	 */
 	public void mouseMoved(int mouseX, int mouseY) {
-		if (boxShape.contains(mouseX, mouseY))
-			isHighlighted = true;
-		else
-			isHighlighted = false;
+		if (isEnabled) {
+			if (boxShape.contains(mouseX, mouseY))
+				isHighlighted = true;
+			else
+				isHighlighted = false;
+		}
 	}
 	
 	/*
@@ -74,22 +77,26 @@ public class MyMouseButton extends MyTextBox {
 	 * @return	true if the x and y values are ontop of this button and this button was pressed in.
 	 */
 	public boolean mouseReleased(int mouseX, int mouseY) {
-		if (isPressed) {	// if the button is pressed
-			isPressed = false; // de-presses it
-			isHighlighted = false;	// un highlights it too
-			if (boxShape.contains(mouseX, mouseY))
-				return true;	// do action
-		} else if (boxShape.contains(mouseX, mouseY))	// if mouse released on a button that wasn't 
-			isHighlighted = true;	// highlight it
+		if (isEnabled) {
+			if (isPressed) {	// if the button is pressed
+				isPressed = false; // de-presses it
+				isHighlighted = false;	// un highlights it too
+				if (boxShape.contains(mouseX, mouseY))
+					return true;	// do action
+			} else if (boxShape.contains(mouseX, mouseY))	// if mouse released on a button that wasn't 
+				isHighlighted = true;	// highlight it
+		}
 		return false;	// do not do action
 	}
 	
 	// sets button to be pressed if given coords are ontop of it
 	public void mousePressed(int x, int y) {
-		if (boxShape.contains(x, y))
-			isPressed = true;
-		else
-			isPressed = false;
+		if (isEnabled) {
+			if (boxShape.contains(x, y))
+				isPressed = true;
+			else
+				isPressed = false;
+		}
 	}
 	
 	public void drawToGraphics(Graphics2D g2) {
@@ -97,6 +104,7 @@ public class MyMouseButton extends MyTextBox {
 		
 		
 		// TODO: we don't want to have to do this every frame update, only when frame size has changed
+		// add a boolean? componenetListener? static componentListener class?
 		
 		// rebuilds the box
 		double width = boxShape.getBounds2D().getWidth();
@@ -105,7 +113,7 @@ public class MyMouseButton extends MyTextBox {
 		
 		
 		
-		if (isPressed) {	// draws the button pressed in
+		if (isPressed || !isEnabled) {	// draws the button pressed in
 			g2.setColor(pressedBoxColor);
 			g2.fill(boxShape);
 			super.setTextColor(pressedTextColor);
