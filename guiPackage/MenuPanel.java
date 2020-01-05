@@ -80,9 +80,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		loading = false;
 		setBackground(Color.BLACK);	// sets the background color of the panel
 		
-		load = new MyLoadingBar("", defaultFont, 250, 10, new UIConstraintSet(gm,
-		new UIConstraint(0.5),
-		new UIConstraint(0.75)));
+		
 
 		// creates all the buttons on the screen
 		// creates quit button so that it is a fixed num of pixels from the bottom right corner
@@ -109,12 +107,14 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		textBoxes = new ArrayList<MyTextBox>();
 		
 		// creates a StatusDiplay object to display the current status of the search
-		searchDisplay = new StatusDisplay(6, 26, smallFont,
-				new UIConstraintSet(gm,
-					new UIConstraint(0.5),
-					new UIConstraint(0.5)));
+		searchDisplay = new StatusDisplay(5, 26, smallFont,
+			new UIConstraintSet(gm,
+				new UIConstraint(0.70),
+				new UIConstraint(75, null)));
 		
-		
+		// places the loading bar 100 pixels below the center of the searchDisplay
+		load = new MyLoadingBar("", defaultFont, 250, 10, 
+				searchDisplay.createOffsetContraintSet(0, 100));
 		
 		searchField = new JTextField("Enter TFRRS URL here", 50);
 		searchField.setBounds(20, 20, 300, 25);	// sets location/size
@@ -321,7 +321,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 	@Override
 	public void componentResized(ComponentEvent e) {
 		// updates height of list
-		listScrollPane.setBounds(20, 175, 200, (getHeight() - 200));
+		//listScrollPane.setBounds(20, 175, 200, (getHeight() - 200));
 		//list.setVisibleRowCount(5);
 		//listScrollPane
 	}
