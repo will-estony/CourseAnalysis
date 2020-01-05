@@ -2,6 +2,7 @@ package guiPackage;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -32,7 +33,7 @@ import defaultPackage.Metrics;
 
 
 @SuppressWarnings("serial")
-public class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener, ComponentListener {
+public class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
 	/* Fonts */
 	private static final Font comicSans = new Font("Comic Sans MS", Font.PLAIN, 24);
 	private static final Font headerFont = new Font("TimeRoman", Font.PLAIN, 42);
@@ -59,7 +60,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 
 	private Metrics metrics;
 	
-	private JScrollPane listScrollPane;
+	private TeamJList teamList;
 	
 	// Constructor
 	public MenuPanel(guiManager gm) {
@@ -75,7 +76,6 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		this.addKeyListener(this);
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
-		this.addComponentListener(this);
 
 		loading = false;
 		setBackground(Color.BLACK);	// sets the background color of the panel
@@ -150,18 +150,24 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 
 		
 		
-		textBoxes.add(new MyTextBox("Teams", headerFont, 
+		MyTextBox TeamHeader = new MyTextBox("Teams", headerFont, 
 			new UIConstraintSet(gm,
-				new UIConstraint(120, null),
-				new UIConstraint(150, null))));
+				new UIConstraint(125, null),
+				new UIConstraint(148, null)));
+		textBoxes.add(TeamHeader);
+		
+		
+		teamList = new TeamJList(this, searchField);
+		
 	}
+	
+	
 	
 	public static void setLoading(boolean b){ loading = b;}
 	
 	// attempts to read in the team that is currently in the search bar
 	// CURRENTLY JUST TESTING NOT PERMANANT
 	private void attemptURLParse() {
-		
 		// we identify the URL
 		tfrrsURL potentialURL = new tfrrsURL(searchField.getText());
 		
@@ -310,22 +316,4 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {}
-
-	@Override
-	public void componentHidden(ComponentEvent e) {}
-
-	@Override
-	public void componentMoved(ComponentEvent e) {}
-
-	// called every time the screen is resized
-	@Override
-	public void componentResized(ComponentEvent e) {
-		// updates height of list
-		//listScrollPane.setBounds(20, 175, 200, (getHeight() - 200));
-		//list.setVisibleRowCount(5);
-		//listScrollPane
-	}
-
-	@Override
-	public void componentShown(ComponentEvent e) {}
 }

@@ -30,7 +30,9 @@ public class Team extends Parsable {
         
         // saves the "name" of the team as the identifying section of the url
         // - 5 at the end to get rid of ".html"
-        this.name = tfrrsURL.substring(tfrrsURL.indexOf("teams/"), tfrrsURL.length() - 5);
+        this.name = tfrrsURL.substring(tfrrsURL.indexOf("teams/") + 6);
+        if (this.name.contains(".html"))
+        	this.name = this.name.substring(0, this.name.length()-5);
         this.tfrrsURL = tfrrsURL;
 
         super.parser = new TeamParser(this, statusObject);
@@ -119,6 +121,8 @@ public class Team extends Parsable {
             System.out.println("----------------------");
         }
     }
+    
+    public String toString() { return name; }
     
     // a team parser is not needed outside of the team class so this should be a private class to team
     private class TeamParser extends Parser {
