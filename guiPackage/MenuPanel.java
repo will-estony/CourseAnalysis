@@ -13,9 +13,12 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 
 import defaultPackage.Athlete;
 import defaultPackage.Meet;
@@ -24,7 +27,6 @@ import defaultPackage.ParsingThread;
 import defaultPackage.Team;
 import defaultPackage.tfrrsURL;
 import defaultPackage.Metrics;
-import guiPackage.UIConstraint.ConstraintType;
 
 
 @SuppressWarnings("serial")
@@ -57,6 +59,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 	
 	// Constructor
 	public MenuPanel(guiManager gm) {
+		this.setLayout(null);	// removes layout
 		this.gm = gm;	// saves gui manager reference
 		this.metrics = new Metrics();
 		
@@ -80,11 +83,11 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		// creates quit button so that it is a fixed num of pixels from the bottom right corner
 		MyMouseButton quitButton = new MyMouseButton("Quit", defaultFont, 66, 34,
 				new UIConstraintSet(gm,
-						new UIConstraint(-65, null),
-						new UIConstraint(-75, null)));
+						new UIConstraint(-60, null),
+						new UIConstraint(-70, null)));
 		// creates options button so tht it is 100 pixels to the left of the quit button
-		MyMouseButton optionsButton = new MyMouseButton("Options", defaultFont, 110, 34,
-				quitButton.createOffsetContraintSet(-100, 0));
+		MyMouseButton optionsButton = new MyMouseButton("Options", defaultFont, 100, 34,
+				quitButton.createOffsetContraintSet(-92, 0));
 		
 		// adds all buttons to list
 		buttons = new ArrayList<MyMouseButton>();
@@ -94,8 +97,8 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		// creates test button
 		buttons.add(new MyMouseButton("Parse TFRRS URL", defaultFont,
 				new UIConstraintSet(gm,
-						new UIConstraint(0.2),
-						new UIConstraint(80, null))));
+						new UIConstraint(450, null),
+						new UIConstraint(32, null))));
 		
 		// creates all the text boxes on this panel
 		textBoxes = new ArrayList<MyTextBox>();
@@ -109,6 +112,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		
 		// TESTING
 		searchField = new JTextField("Enter TFRRS URL here", 50);
+		searchField.setBounds(20, 20, 300, 25);	// sets location/size
 		searchField.addKeyListener(this);
 		searchField.addFocusListener(new FocusListener(){
 			@Override
@@ -121,14 +125,51 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
             }
 
             @Override
-            public void focusLost(FocusEvent e) {
-                
-            }
+            public void focusLost(FocusEvent e) {}
         });
-		
-		
-		
 		add(searchField);
+		
+		
+		
+		
+		/* Testing with a list */
+		
+		// create an action listener that fires when the screen resolution changes
+		// and that should be when the draw method is called, not 60 fps like rn?
+		// https://docs.oracle.com/javase/tutorial/uiswing/events/componentlistener.html
+		// tried that ^ and it worked but then other components like my mouse buttons stop working the same way
+		
+		// void ensureIndexIsVisible(int): Scroll so that the specified index 
+		// is visible within the viewport that this list is in.
+		
+
+		
+		DefaultListModel listModel = new DefaultListModel();
+		// i could write my own list model that adheres to ListModel interface
+		// using .insertElementAt() we can keep elements in alphabetical order
+		listModel.addElement("Jasmine Mehra");
+		listModel.addElement("Ankit Mishra");
+		listModel.addElement("Madhuri Sanghvi");
+		listModel.addElement("Alok Kumar");
+		listModel.addElement("Rohit Bothra");
+		listModel.addElement("Rahul Aggarwal");
+		 
+		 
+		//Create the list 
+		JList list = new JList(listModel);
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		list.setSelectedIndex(0);
+		
+		// fired whenever the selection changes
+		// for us: should change which team is being displayed
+		//list.addListSelectionListener(this);
+		
+		list.setVisibleRowCount(5);
+		// and puts it in a scroll pane
+		JScrollPane listScrollPane = new JScrollPane(list);
+		
+		listScrollPane.setBounds(20, 125, 200, 400);
+		add(listScrollPane);
 	}
 	
 	public static void setLoading(boolean b){ loading = b;}
@@ -249,13 +290,16 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		int mouseY = e.getY();
 		// iterates along each button
 		for (int i = 0; i < buttons.size(); i++) {
+			MyMouseButton currButton = buttons.get(i);
 			// if each button is clicked then perform the button's action
-			if (buttons.get(i).mouseReleased(mouseX, mouseY))
-				switch (i) {
-					case 0:	// if quit button is clicked
+			if (currButton.mouseReleased(mouseX, mouseY))
+				switch (currButton.getText()) {
+					case "Quit":	// if quit button is clicked
 						gm.quit();
 						break;
-					case 1:	// if search button is clicked
+					case "Options":	// if options button is clicked
+						break;
+					case "Parse TFRRS URL":	// if parse button clicked
 						attemptURLParse();
 						break;
 				}
