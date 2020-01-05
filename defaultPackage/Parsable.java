@@ -11,9 +11,14 @@ import guiPackage.StatusDisplay;
 
 public abstract class Parsable {
 	
+	protected StatusDisplay statusObject;
 	protected Metrics metrics = new Metrics();
 	protected Parser parser;
 	protected boolean isParsed;
+	
+	protected Parsable(StatusDisplay statusObject) {
+		this.statusObject = statusObject;
+	}
 
 	public abstract String getURL();
 	
@@ -34,12 +39,15 @@ public abstract class Parsable {
 	
 	protected abstract class Parser {
 
-		protected Parsable parsingObject;
-		protected StatusDisplay statusObject;
+		private Parsable parsingObject;
 		protected String url;
 		protected Document doc;
 	    protected boolean isConnected = false;
 		
+	    protected Parser(Parsable parsingObject) {
+	    	this.parsingObject = parsingObject;
+	    }
+	    
 	    // attempts to connect to URL of parsingObject
 		protected boolean connect() {
 			if (isConnected) {	// if already connected

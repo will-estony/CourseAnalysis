@@ -23,6 +23,8 @@ public class Team extends Parsable {
     // status object is an object that the parser can write to as its parsing
     // to display the status of the parsing without writing to System.out
     private Team(String tfrrsURL, StatusDisplay statusObject){
+    	super(statusObject);
+    	super.parser = new TeamParser(this);
         teammates = new HashMap<>();
         competitors = new HashMap<>();
         meets = new ArrayList<>();
@@ -34,10 +36,6 @@ public class Team extends Parsable {
         if (this.name.contains(".html"))
         	this.name = this.name.substring(0, this.name.length()-5);
         this.tfrrsURL = tfrrsURL;
-
-        super.parser = new TeamParser(this, statusObject);
-        
-
     }
     
     // static factory method pattern
@@ -130,13 +128,9 @@ public class Team extends Parsable {
         private Elements headers;
         private Team team;
         
-        public TeamParser(Team t){
-        	this(t, null);
-        }
-        public TeamParser(Team t, StatusDisplay statusObject) {
+        private TeamParser(Team t) {
+        	super(t);
         	this.team = t;
-            this.parsingObject = team;
-            this.statusObject = statusObject;
         }
         
         // attempts to connect to the team's URL and save tables and headers
