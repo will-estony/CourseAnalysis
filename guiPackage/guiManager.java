@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 public class guiManager extends JFrame implements Runnable {
 	// starting and minimum resolution
 	private static int startingWidth = 800, startingHeight = 600;
+	private final static double desiredFPS = 60;
 
 	private JPanel activePanel;	// pointer to currently active JPanel
 	private boolean running;
@@ -61,8 +62,8 @@ public class guiManager extends JFrame implements Runnable {
 	 */
 	@Override
 	public void run() {
-		final double desiredCalculationsPerSec = 60;
-		final double desiredFramesPerSecond = 60;
+		final double desiredCalculationsPerSec = desiredFPS;
+		final double desiredFramesPerSecond = desiredFPS;
 		long prev_frame_tick = System.nanoTime(), curr_frame_tick, timeElapsed,
 				prev_physics_tick = prev_frame_tick, prev_paint_tick = prev_physics_tick;
 		double ns = 1000000000 / desiredCalculationsPerSec;
