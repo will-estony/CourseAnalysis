@@ -2,7 +2,6 @@ package guiPackage;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -10,18 +9,12 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 
 import defaultPackage.Athlete;
 import defaultPackage.Meet;
@@ -45,6 +38,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 	
 	// ArrayList of buttons that appear on the menu
 	private ArrayList<MyMouseButton> buttons;
+	private MyMouseButton parsingButton;
 	
 	// ArrayList of text boxes that appear on the menu
 	private ArrayList<MyTextBox> textBoxes;
@@ -52,7 +46,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 	// search bar
 	private JTextField searchField;
 	// status display
-	private StatusDisplay searchDisplay;
+	private StatusDisplay statusDisplay;
 	// loading bar
 	private MyLoadingBar load;
 
@@ -92,29 +86,33 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		MyMouseButton optionsButton = new MyMouseButton("Options", defaultFont, 100, 34,
 				quitButton.createOffsetContraintSet(-92, 0));
 		
+		// temp until we make an options screen
+		optionsButton.setEnabled(false);
+		
 		// adds all buttons to list
 		buttons = new ArrayList<MyMouseButton>();
 		buttons.add(quitButton);
 		buttons.add(optionsButton);
 		
-		// creates test button
-		buttons.add(new MyMouseButton("Parse TFRRS URL", defaultFont,
+		// creates parse button
+		parsingButton = new MyMouseButton("Parse TFRRS URL", defaultFont,
 				new UIConstraintSet(gm,
 						new UIConstraint(129, null),
-						new UIConstraint(72, null))));
+						new UIConstraint(72, null)));
+		buttons.add(parsingButton);
 		
 		// creates all the text boxes on this panel
 		textBoxes = new ArrayList<MyTextBox>();
 		
 		// creates a StatusDiplay object to display the current status of the search
-		searchDisplay = new StatusDisplay(5, 26, smallFont,
+		statusDisplay = new StatusDisplay(5, 26, smallFont,
 			new UIConstraintSet(gm,
 				new UIConstraint(0.70),
-				new UIConstraint(75, null)));
+				new UIConstraint(70, null)));
 		
 		// places the loading bar 100 pixels below the center of the searchDisplay
 		load = new MyLoadingBar("", defaultFont, 250, 10, 
-				searchDisplay.createOffsetContraintSet(0, 100));
+				statusDisplay.createOffsetContraintSet(0, 100));
 		
 		searchField = new JTextField("Enter TFRRS URL here", 50);
 		searchField.setBounds(20, 20, 300, 25);	// sets location/size
@@ -158,7 +156,8 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		
 		
 		teamList = new TeamJList(this, searchField);
-		
+		teamList.add(Team.createNew("https://www.tfrrs.org/teams/CT_college_m_Trinity_CT.html", statusDisplay));
+		teamList.add(Team.createNew("https://www.tfrrs.org/teams/MA_college_m_Amherst.html", statusDisplay));
 	}
 	
 	
@@ -176,16 +175,16 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		
 		switch (potentialURL.getType()){
 		case ATHLETE:
-			urlObject = (Athlete)Athlete.createNew(Athlete.urlToID(potentialURL.getURLString()), searchDisplay);
+			urlObject = (Athlete)Athlete.createNew(Athlete.urlToID(potentialURL.getURLString()), statusDisplay);
 			break;
 		case TEAM:
-			urlObject = Team.createNew(potentialURL.getURLString(), searchDisplay);
+			urlObject = Team.createNew(potentialURL.getURLString(), statusDisplay);
 			break;
 		case MEET:
-			urlObject = Meet.createNew(potentialURL.getURLString(), searchDisplay);
+			urlObject = Meet.createNew(potentialURL.getURLString(), statusDisplay);
 			break;
 		case UNKNOWN:	// end function call if URL unknown
-			searchDisplay.writeNewLine("\"" + searchField.getText() + "\" is not a valid tfrrs URL");
+			statusDisplay.writeNewLine("\"" + searchField.getText() + "\" is not a valid tfrrs URL");
 			return;
 		}
 		metrics.setNumItems(100.0);
@@ -221,19 +220,18 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		// draws every text box in the array list
 		for (MyTextBox textBox : textBoxes)
 			textBox.drawToGraphics(g2);
-		// draws search status and loading bar
+		// draws loading bar
+		// disables parse button while loading
 		if(loading){
+			parsingButton.setEnabled(false);
 			load.drawToGraphics(g2,metrics.getCurrentItem(), metrics.getNumItems());
-			
-		}
-		searchDisplay.drawToGraphics(g2);
+		} else
+			parsingButton.setEnabled(true);
+		statusDisplay.drawToGraphics(g2);
 	}
 	
 	@Override
-	public void mouseDragged(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
+	public void mouseDragged(MouseEvent arg0) {}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
@@ -246,22 +244,13 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
+	public void mouseClicked(MouseEvent arg0) {}
 
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
+	public void mouseEntered(MouseEvent arg0) {}
 
 	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
+	public void mouseExited(MouseEvent arg0) {}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -271,7 +260,6 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		// iterates along each button
 		for (MyMouseButton button : buttons)
 			button.mousePressed(mouseX, mouseY);
-
 	}
 
 	@Override
@@ -307,7 +295,6 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		case KeyEvent.VK_ENTER:	// searches URL if enter is pressed
 			attemptURLParse();
 			break;
-			
 		}
 	}
 
