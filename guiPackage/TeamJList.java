@@ -33,9 +33,7 @@ public class TeamJList implements ComponentListener, ListSelectionListener {
 		// using .insertElementAt() we can keep elements in alphabetical order?
 		
 		
-		// populate list with some random teams
-		listModel.addElement(Team.createNew("https://www.tfrrs.org/teams/CT_college_m_Trinity_CT.html"));
-		listModel.addElement(Team.createNew("https://www.tfrrs.org/teams/MA_college_m_Amherst.html"));
+		
 		
 		 
 		 
@@ -69,6 +67,10 @@ public class TeamJList implements ComponentListener, ListSelectionListener {
 		HashMap<String, String> womensTeams = teams.get(1);
 	}
 
+	public void add(Team t) {
+		listModel.addElement(t);
+	}
+	
 	@Override
 	public void componentHidden(ComponentEvent arg0) {}
 

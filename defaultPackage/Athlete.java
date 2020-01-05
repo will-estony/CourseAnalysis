@@ -23,10 +23,11 @@ public class Athlete extends Parsable {
 	private long tfrrsID;
 	
 	private Athlete(long tfrrsID, StatusDisplay statusObject) {
+		super(statusObject);
+		super.parser = new AthleteParser(this);
 		this.tfrrsID = tfrrsID;
 		this.performances = new TreeMap<Date, List<Performance>>();
 		this.careerBests = new HashMap<>();
-		super.parser = new AthleteParser(this, statusObject);
 	}
 	
 	// static factory method pattern
@@ -104,9 +105,9 @@ public class Athlete extends Parsable {
 		url = url.replace("www.tfrrs.org/athletes/","");
 		url = url.replace("xc.tfrrs.org/athletes/","");
 	
-		// counts how many sequential chars are digits
+		// counts how many remaining sequential chars are digits
 		int i = 0;
-		while(Character.isDigit(url.charAt(i))){
+		while(i < url.length() && Character.isDigit(url.charAt(i))){
 			i++;
 		}
 		try {
@@ -169,14 +170,9 @@ public class Athlete extends Parsable {
 	    private Elements divs;
 		private Athlete athlete;
 
-	    public AthleteParser(Athlete a){
-			this(a, null);
-			
-	    }
-        public AthleteParser(Athlete a, StatusDisplay statusObject) {
+        private AthleteParser(Athlete a) {
+        	super(a);
 	        this.athlete = a;
-	        this.parsingObject = athlete;
-			this.statusObject = statusObject;
         }
 	    
 	    // attempts to connect to the athlete's URL
