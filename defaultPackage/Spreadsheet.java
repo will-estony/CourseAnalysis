@@ -19,6 +19,12 @@ public class Spreadsheet{
         export(set);
     }
     
+    /*
+    There are currently two export methods this one just exports a set (linear list)
+    of xc team names stored as string into a single excel spreadsheet column
+    this will become deprecated as I realized it is more useful to include urls 
+    in the spreadsheet as well.
+    */
     public void export(HashSet<String> set){
         //Blank workbook
         XSSFWorkbook workbook = new XSSFWorkbook(); 
@@ -45,5 +51,23 @@ public class Spreadsheet{
             e.printStackTrace();
         }
     }
-    public void export(Hash)
+
+    //TODO 
+    /*
+    In addition to putting a team name in the first column of the spreadsheet,
+    this function will also populate columns B and C with the urls to the men's and 
+    women's teams respectively should they exist. This is not hard to do, I just ran
+    out of time on account of all the football on today. 
+
+    The goal is to read in this data in two ways, one is just a giant HashSet of urls
+    to check if the entered team url is exists
+
+    The other is to read it in as a HashMap with the team name as a key, and the links
+    to mens and women's url as a value 
+
+
+    */
+    public void export(HashMap<String, HashMap<String, String>> teams){
+
+    }
 }
