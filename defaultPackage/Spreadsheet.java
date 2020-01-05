@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException; 
 import java.util.HashSet;
 import java.util.HashMap;
+import java.util.ArrayList;
 
 public class Spreadsheet{
 
@@ -96,13 +97,18 @@ public class Spreadsheet{
         }
     }
 
-    public static HashMap<String,String>[] importTeams(){
+    public static ArrayList<HashMap<String,String>> importTeams(){
         HashMap<String,String> mens = new HashMap<>();
         HashMap<String,String> womens = new HashMap<>();
+        ArrayList<HashMap<String,String>> both = new ArrayList<>();
 
-        HashMap<String,String>[] both = new HashMap[2];
-        both[0] = mens;
-        both[1] = womens;
+        FileInputStream fileInputStream = new FileInputStream(filePath);
+
+
+
+        both.add(mens);
+        both.add(womens);
 
         return both;
+    }
 }
