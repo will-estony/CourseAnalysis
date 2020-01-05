@@ -15,20 +15,14 @@ import java.util.HashSet;
 import java.util.HashMap;
 
 public class Spreadsheet{
-    public Spreadsheet(HashSet<String> set){
-        export(set);
-    }
-    public Spreadsheet(HashMap<String, HashMap<String, String>> teams){
-        export(teams);
-    }
-    
+
     /*
     There are currently two export methods this one just exports a set (linear list)
     of xc team names stored as string into a single excel spreadsheet column
     this will become deprecated as I realized it is more useful to include urls 
     in the spreadsheet as well.
     */
-    public void export(HashSet<String> set){
+    public static void exportTeams(HashSet<String> set){
         //Blank workbook
         XSSFWorkbook workbook = new XSSFWorkbook(); 
          
@@ -55,7 +49,6 @@ public class Spreadsheet{
         }
     }
 
-    //TODO 
     /*
     In addition to putting a team name in the first column of the spreadsheet,
     this function will also populate columns B and C with the urls to the men's and 
@@ -70,7 +63,7 @@ public class Spreadsheet{
 
 
     */
-    public void export(HashMap<String, HashMap<String, String>> teams){
+    public static void exportTeams(HashMap<String, HashMap<String, String>> teams){
         //Blank workbook
         XSSFWorkbook workbook = new XSSFWorkbook(); 
          
@@ -102,4 +95,14 @@ public class Spreadsheet{
             e.printStackTrace();
         }
     }
+
+    public static HashMap<String,String>[] importTeams(){
+        HashMap<String,String> mens = new HashMap<>();
+        HashMap<String,String> womens = new HashMap<>();
+
+        HashMap<String,String>[] both = new HashMap[2];
+        both[0] = mens;
+        both[1] = womens;
+
+        return both;
 }
