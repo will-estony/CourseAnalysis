@@ -5,7 +5,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 
-public class MyTextBox implements Drawable {
+public class MyTextBox extends Drawable {
 	
 	// instance variables for text
 	private Color textColor;
@@ -15,18 +15,15 @@ public class MyTextBox implements Drawable {
 	private float stringX, stringY;
 	private double centerX, centerY;
 	
-	
-	private UIConstraintSet constraints = null;
-	
-	// Main Constructor that uses new Constraint system
+	// Constructor that uses default text color
 	public MyTextBox(String textString, Font textFont, UIConstraintSet constraints) {
 		this(textString, textFont, defaultTextColor, constraints);	// passes params with default color being passed
 	}
 	// Constructor that allows color to be set
 	public MyTextBox(String textString, Font textFont, Color textColor, UIConstraintSet constraints) {
+		super(constraints);
 		this.textString = textString;
 		this.textFont = textFont;
-		this.constraints = constraints;
 		this.textColor = textColor;
 	}
 	

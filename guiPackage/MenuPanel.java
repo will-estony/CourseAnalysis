@@ -77,12 +77,20 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		//new UIConstraint(0.75)));
 
 		// creates all the buttons on the screen
-		buttons = new ArrayList<MyMouseButton>();
-		// creates quit button
-		buttons.add(new MyMouseButton("Quit", defaultFont, 80, 34,
+		// creates quit button so that it is a fixed num of pixels from the bottom right corner
+		MyMouseButton quitButton = new MyMouseButton("Quit", defaultFont, 66, 34,
 				new UIConstraintSet(gm,
-						new UIConstraint(-75, null),
-						new UIConstraint(-75, null))));
+						new UIConstraint(-65, null),
+						new UIConstraint(-75, null)));
+		// creates options button so tht it is 100 pixels to the left of the quit button
+		MyMouseButton optionsButton = new MyMouseButton("Options", defaultFont, 110, 34,
+				quitButton.createOffsetContraintSet(-100, 0));
+		
+		// adds all buttons to list
+		buttons = new ArrayList<MyMouseButton>();
+		buttons.add(quitButton);
+		buttons.add(optionsButton);
+		
 		// creates test button
 		buttons.add(new MyMouseButton("Parse TFRRS URL", defaultFont,
 				new UIConstraintSet(gm,

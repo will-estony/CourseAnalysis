@@ -7,12 +7,13 @@ import java.awt.Graphics2D;
 // where when a new status is displayed on the bottom it pushes all prior
 // statuses up a line, like printing to the console
 
-public class StatusDisplay implements Drawable {
+public class StatusDisplay extends Drawable {
 	// array of text boxes, aka each "line"
 	// index 0 being the bottom one
 	private MyTextBox[] textBoxes;
 
 	public StatusDisplay(int numLines, int lineHeights, Font font, UIConstraintSet baseConstraints) {
+		super(baseConstraints);
 		textBoxes = new MyTextBox[numLines];	// allocates array
 		// fills array with text boxes such that they are spaced out evenly
 		// and centered at the given baseConstraints
