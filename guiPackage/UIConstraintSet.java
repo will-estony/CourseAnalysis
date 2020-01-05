@@ -14,11 +14,11 @@ public class UIConstraintSet {
 	}
 	
 	
-	// creates a clone of this set but with the given offsets
+	// creates a new constraint set that is the given offset away from this one
 	public UIConstraintSet createOffsetContraintSet(double xOffset, double yOffset) {
 		// creates a new fixed xConstraint that is xOffset away from the current xConstraint
-		UIConstraint newXConstraint = new UIConstraint(xConstraint.value + xOffset, this);
-		UIConstraint newYConstraint = new UIConstraint(yConstraint.value + yOffset, this);
+		UIConstraint newXConstraint = new UIConstraint(xOffset, this);
+		UIConstraint newYConstraint = new UIConstraint(yOffset, this);
 		
 		// hostFrame reference can be "null" because we never actually reference it
 		// because our new clone constraint set is of type "fixed"
