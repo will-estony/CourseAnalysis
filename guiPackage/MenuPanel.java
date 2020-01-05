@@ -53,7 +53,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 	// status display
 	private StatusDisplay searchDisplay;
 	// loading bar
-	//private MyLoadingBar load;
+	private MyLoadingBar load;
 
 	private static boolean loading;
 
@@ -80,9 +80,9 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		loading = false;
 		setBackground(Color.BLACK);	// sets the background color of the panel
 		
-		//load = new MyLoadingBar("", defaultFont, 250, 10, new UIConstraintSet(gm,
-		//new UIConstraint(0.5),
-		//new UIConstraint(0.75)));
+		load = new MyLoadingBar("", defaultFont, 250, 10, new UIConstraintSet(gm,
+		new UIConstraint(0.5),
+		new UIConstraint(0.75)));
 
 		// creates all the buttons on the screen
 		// creates quit button so that it is a fixed num of pixels from the bottom right corner
@@ -149,31 +149,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		
 
 		
-		DefaultListModel listModel = new DefaultListModel();
-		// i could write my own list model that adheres to ListModel interface
-		// using .insertElementAt() we can keep elements in alphabetical order
-		listModel.addElement("Jasmine Mehra");
-		listModel.addElement("Ankit Mishra");
-		listModel.addElement("Madhuri Sanghvi");
-		listModel.addElement("Alok Kumar");
-		listModel.addElement("Rohit Bothra");
-		listModel.addElement("Rahul Aggarwal");
-		 
-		 
-		//Create the list 
-		JList list = new JList(listModel);
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		list.setSelectedIndex(0);
 		
-		// fired whenever the selection changes
-		// for us: should change which team is being displayed
-		//list.addListSelectionListener(this);
-		
-		list.setVisibleRowCount(5);
-		// and puts it in a scroll pane
-		listScrollPane = new JScrollPane(list);
-		listScrollPane.setBounds(20, 175, 200, 350);
-		add(listScrollPane);
 		textBoxes.add(new MyTextBox("Teams", headerFont, 
 			new UIConstraintSet(gm,
 				new UIConstraint(120, null),
@@ -240,9 +216,10 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		for (MyTextBox textBox : textBoxes)
 			textBox.drawToGraphics(g2);
 		// draws search status and loading bar
-		//if(loading){
-		//	load.drawToGraphics(g2,metrics.getCurrentItem(), metrics.getNumItems());
-		//}
+		if(loading){
+			load.drawToGraphics(g2,metrics.getCurrentItem(), metrics.getNumItems());
+			
+		}
 		searchDisplay.drawToGraphics(g2);
 	}
 	
@@ -347,8 +324,6 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		listScrollPane.setBounds(20, 175, 200, (getHeight() - 200));
 		//list.setVisibleRowCount(5);
 		//listScrollPane
-		
-		
 	}
 
 	@Override
