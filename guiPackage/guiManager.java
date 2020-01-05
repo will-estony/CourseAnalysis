@@ -47,13 +47,15 @@ public class guiManager extends JFrame implements Runnable {
 	// Disposes of this JFrame
 	public void quit() {
 		if (running) {
-			System.out.println("Ending program.");
+			System.out.println("Ending program...");
 			running = false;
 			try {
 				guiThread.join();	// waits for main thread to join
 			} catch (InterruptedException e) {e.printStackTrace();}
 		}
 		this.dispose();	// kills this JFrame
+		System.out.println("Done.");
+		System.exit(0);	// we end with a call to System.exit(0) to terminate ALL working threads.
 	}
 	
 	/**
