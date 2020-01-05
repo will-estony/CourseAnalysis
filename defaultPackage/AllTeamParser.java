@@ -39,7 +39,7 @@ public class AllTeamParser{
                 for(Element t: tables){
                     Elements tableHead = t.select("thead").select("tr").select("th");
                     if(tableHead.text().equals("MEN'S TEAM WOMEN'S TEAM")){
-                        for(int i = 0; i <=1; i++){
+                        for(int i = 0; i <=1; i++){ //this 2-time loop is for men's and women's
                             for(Element data: t.select("tbody").select("tr")){
                                 Elements d = data.select("td");
                                 
@@ -54,7 +54,7 @@ public class AllTeamParser{
 
                                 if(teams.containsKey(d.get(i).text())){
                                     teams.get(d.get(i).text()).put("Women's Url", url);
-                                }else{
+                                }else if(!d.get(i).text().equals("")){
                                     HashMap<String, String> urls = new HashMap<>();
                                     if(i == 0){ 
                                         urls.put("Men's Url", url);

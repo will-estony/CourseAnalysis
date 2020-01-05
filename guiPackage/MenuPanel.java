@@ -321,7 +321,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 	@Override
 	public void componentResized(ComponentEvent e) {
 		// updates height of list
-		listScrollPane.setBounds(20, 175, 200, (getHeight() - 200));
+		//listScrollPane.setBounds(20, 175, 200, (getHeight() - 200));
 		//list.setVisibleRowCount(5);
 		//listScrollPane
 	}

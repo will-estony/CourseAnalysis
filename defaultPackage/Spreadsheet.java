@@ -18,6 +18,9 @@ public class Spreadsheet{
     public Spreadsheet(HashSet<String> set){
         export(set);
     }
+    public Spreadsheet(HashMap<String, HashMap<String, String>> teams){
+        export(teams);
+    }
     
     /*
     There are currently two export methods this one just exports a set (linear list)
@@ -32,7 +35,7 @@ public class Spreadsheet{
         //Create a blank sheet
         XSSFSheet sheet = workbook.createSheet("Teams");
 
-        int rowNum = 0;
+        int rowNum = 1;
         for (String name : set){
             Row row = sheet.createRow(rowNum);
             Cell cell = row.createCell(0);
@@ -68,6 +71,35 @@ public class Spreadsheet{
 
     */
     public void export(HashMap<String, HashMap<String, String>> teams){
+        //Blank workbook
+        XSSFWorkbook workbook = new XSSFWorkbook(); 
+         
+        //Create a blank sheet
+        XSSFSheet sheet = workbook.createSheet("Teams");
 
+        int rowNum = 1;
+        for (String team : teams.keySet()){
+            Row row = sheet.createRow(rowNum);
+            Cell cell = row.createCell(0);
+            cell.setCellValue(team);
+            int cellNum = 1;
+            for(String url: teams.get(team).values()){
+                cell = row.createCell(cellNum);
+                cell.setCellValue(url);
+                cellNum++;
+            }
+            rowNum++;
+        }
+        try{
+            //Write the workbook in file system
+            FileOutputStream out = new FileOutputStream(new File("XCTeams.xlsx"));
+            workbook.write(out);
+            out.close();
+            System.out.println("XCTeams.xlsx written successfully on disk.");
+        } 
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+        }
     }
 }

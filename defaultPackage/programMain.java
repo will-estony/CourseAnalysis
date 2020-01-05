@@ -10,11 +10,9 @@ public class programMain {
 		
 		guiManager gm = new guiManager();
 		
-		//AllTeamParser atp = new AllTeamParser();
-		//atp.parseAllTeams();
-		//atp.printTeams();
-
-		//Spreadsheet s = new Spreadsheet(teams);
+		AllTeamParser atp = new AllTeamParser();
+		Spreadsheet s = new Spreadsheet(atp.parseAllTeams());
+		
 		//Athlete a = Athlete.createNew(5984486);
 		//a.parse();
 		//a.printPRs();
