@@ -12,7 +12,7 @@ public class programMain {
 		
 		//AllTeamParser atp = new AllTeamParser();
 		//Spreadsheet.exportTeams(atp.parseAllTeams());
-
+		Spreadsheet.importTeams();
 		//Athlete a = Athlete.createNew(5984486);
 		//a.parse();
 		//a.printPRs();

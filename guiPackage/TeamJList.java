@@ -19,7 +19,7 @@ import defaultPackage.Team;
 public class TeamJList implements ComponentListener, ListSelectionListener {
 	// we can write our own "ListModel" that extends AbstractListModel
 	private DefaultListModel<Team> listModel;
-	private JList list;
+	private JList<Team> list; //Pretty sure you want this to be of type team right?? It was giving a warning because you didn't specify 
 	private JScrollPane listScrollPane;
 	private MenuPanel mp;
 	private JTextField searchBar;
@@ -35,10 +35,10 @@ public class TeamJList implements ComponentListener, ListSelectionListener {
 		
 		
 		
-		 
+	
 		 
 		//Create the list 
-		list = new JList(listModel);
+		list = new JList<>(listModel);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.addListSelectionListener(this);
 		//list.setSelectedIndex(0);

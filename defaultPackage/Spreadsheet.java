@@ -103,7 +103,8 @@ public class Spreadsheet{
         ArrayList<HashMap<String,String>> both = new ArrayList<>();
 
         //FileInputStream fileInputStream = new FileInputStream(filePath);
-
+        System.out.println("Working Directory = " +
+            System.getProperty("user.dir"));
 
 
         both.add(mens);

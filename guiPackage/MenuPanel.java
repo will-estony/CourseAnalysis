@@ -175,7 +175,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		
 		switch (potentialURL.getType()){
 		case ATHLETE:
-			urlObject = (Athlete)Athlete.createNew(Athlete.urlToID(potentialURL.getURLString()), statusDisplay);
+			urlObject = Athlete.createNew(Athlete.urlToID(potentialURL.getURLString()), statusDisplay);
 			break;
 		case TEAM:
 			urlObject = Team.createNew(potentialURL.getURLString(), statusDisplay);
