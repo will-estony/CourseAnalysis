@@ -26,7 +26,6 @@ public class AllTeamParser{
     public HashMap<String,HashMap<String,String>> parseAllTeams(){
 
         Elements tables;
-        Elements headers;
         Document doc;
 
         for(String division: divisions.keySet()){
@@ -47,20 +46,27 @@ public class AllTeamParser{
                                 //d.get(1) - women's team
                                 String url = d.get(i).select("a").attr("href");
 
-                                if(!url.contains("/xc/") && !url.isEmpty()){
-                                    url = convertToXcUrl(url);
-                                }
-
-                                if(teams.containsKey(d.get(i).text())){
-                                    teams.get(d.get(i).text()).put("Women's Url", url);
-                                }else if(!d.get(i).text().equals("")){
-                                    HashMap<String, String> urls = new HashMap<>();
-                                    if(i == 0){ 
-                                        urls.put("Men's Url", url);
-                                    }else{
-                                        urls.put("Women's Url", url);
+                                //if(numAthletes(url) != 0 || numMeets(url) != 0){
+                                    
+                                    if(!url.isEmpty()){
+                                        url = cleanUrl(url);
+                                        //int[] objects = numObjects(url);
                                     }
-                                    teams.put(d.get(i).text(), urls);
+                                    
+                                    //System.out.println("Number of Athletes: " + objects[0]);
+                                    //System.out.println("Number of Meets: " + objects[1]);
+
+                                    if(teams.containsKey(d.get(i).text())){
+                                        teams.get(d.get(i).text()).put("Women's Url", url);
+                                    }else if(!d.get(i).text().equals("")){
+                                        HashMap<String, String> urls = new HashMap<>();
+                                        if(i == 0){ 
+                                            urls.put("Men's Url", url);
+                                        }else{
+                                            urls.put("Women's Url", url);
+                                        }
+                                        teams.put(d.get(i).text(), urls);
+                                    //}
                                 }
                             }
                         }
@@ -76,8 +82,48 @@ public class AllTeamParser{
         return teams;
     }
 
-    private String convertToXcUrl(String trackUrl){
-        return "https:" + trackUrl.substring(0,22) + "xc/" + trackUrl.substring(22);
+    /*
+    * Gets and returns the number of athletes on an xc team
+    */ 
+    private boolean isValidTeam(String url){
+        int numAthletes = 0;
+        int numMeets = 0;
+        //System.out.println("Attempting to connect to team " + url);
+        try{
+            Document doc = Jsoup.connect(url).get();
+            Elements tables = doc.select("table");
+
+            for(Element table: tables){
+                //Count the number of athletes
+                if(table.select("thead").select("tr").select("th").text().contains("NAME")){
+                    for(Element td: table.select("td")){
+                        if(!td.select("a").attr("href").equals("")){
+                            numAthletes++;
+                        }
+                    }
+                //Count the number of meets
+                }else if(table.select("thead").select("tr").select("th").text().contains("MEET")){
+                    for(Element td: table.select("td")){
+                        if(!td.select("a").attr("href").equals("")){
+                            numMeets++;
+                        }
+                    }
+                }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            System.out.println("Invalid Url: " + url);
+        }
+        int objects[] = {numAthletes, numMeets};
+        return false;
+    }
+
+    private String cleanUrl(String url){
+        if(!url.contains("/xc/")){
+            return "https:" + url.substring(0,22) + "xc/" + url.substring(22);
+        }else{
+            return "https:" + url;
+        }
     }
 
     public void printTeams(){

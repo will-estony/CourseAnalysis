@@ -1,6 +1,6 @@
 package defaultPackage;
 
-//import statements
+//Libraries for exporting data to an Excel Spreadsheet
 import org.apache.poi.hssf.usermodel.*; 
 import org.apache.poi.ss.usermodel.Row; 
 import org.apache.poi.ss.usermodel.Sheet; 
@@ -8,11 +8,16 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row.MissingCellPolicy; 
 import org.apache.poi.xssf.usermodel.*;
-import java.io.FileOutputStream; 
-import java.io.FileInputStream;  
-import java.awt.Desktop; 
+
+//For reading and writing to files
 import java.io.File; 
 import java.io.IOException; 
+import java.io.FileOutputStream; 
+import java.io.FileInputStream;  
+
+//import java.awt.Desktop;
+
+//Data Structures used in this class
 import java.util.HashSet;
 import java.util.HashMap;
 import java.util.ArrayList;

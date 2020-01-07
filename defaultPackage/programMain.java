@@ -9,9 +9,10 @@ public class programMain {
 
 	public static void main(String[] args) {
 		
-		guiManager gm = new guiManager();
+		//guiManager gm = new guiManager();
 		
-		//AllTeamParser atp = new AllTeamParser();
+		AllTeamParser atp = new AllTeamParser();
+		atp.parseAllTeams();
 		//Spreadsheet.exportTeams(atp.parseAllTeams());
 		//ArrayList<HashMap<String, String>> both = Spreadsheet.importTeams();
 		
@@ -35,7 +36,7 @@ public class programMain {
 		
 		
 		
-		//Team browdies = Team.createNew("https://www.tfrrs.org/teams/xc/CT_college_m_Trinity_CT.html");
+		//Team browdies = Team.createNew("https://www.tfrrs.org/teams/xc/CO_college_f_Southern_Colorado.html");
 		//browdies.parse();
 		//browdies.printTeam();
 

@@ -171,7 +171,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 	// attempts to read in the team that is currently in the search bar
 	// CURRENTLY JUST TESTING NOT PERMANANT
 	private void attemptURLParse() {
-		// we identify the URL
+		
 
 		//THIS IS AN IMPORTANT LINE PLEASE READ!
 		/*

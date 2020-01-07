@@ -124,7 +124,6 @@ public class Team extends Parsable {
         for(Meet m : meets){
             m.parse();
         }
-
     }
 
     public void addMeet(Meet m){
@@ -170,7 +169,7 @@ public class Team extends Parsable {
         	return false;
         }
 
-        public int getNumAthletes(){
+        private int getNumAthletes(){
             int numAthletes = 0;
             for(Element table: tables){
                 //Get to the table on the page that contains the names
@@ -188,6 +187,7 @@ public class Team extends Parsable {
         public void parseAthletes() {
             metrics.setcurrentItem(1.0);
             int numItems = getNumAthletes();
+            System.out.println("There are " + numItems + " athletes on this team.");
             metrics.setNumItems((double)numItems);
             int numAthletes = getNumAthletes();
             for(Element table: tables){
