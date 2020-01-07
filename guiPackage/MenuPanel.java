@@ -12,6 +12,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -23,7 +24,7 @@ import defaultPackage.ParsingThread;
 import defaultPackage.Team;
 import defaultPackage.tfrrsURL;
 import defaultPackage.Metrics;
-
+import defaultPackage.Spreadsheet;
 
 @SuppressWarnings("serial")
 public class MenuPanel extends JPanel implements KeyListener, MouseListener, MouseMotionListener {
@@ -32,6 +33,8 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 	private static final Font headerFont = new Font("TimeRoman", Font.PLAIN, 42);
 	private static final Font defaultFont = new Font("TimeRoman", Font.PLAIN, 24);
 	private static final Font smallFont = new Font("TimeRoman", Font.PLAIN, 16);
+
+	private static final String PARSE_BUTTON_TEXT = "Parse Team";
 	
 	// reference to gui manager that created this panel
 	private guiManager gm;
@@ -42,6 +45,9 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 	
 	// ArrayList of text boxes that appear on the menu
 	private ArrayList<MyTextBox> textBoxes;
+
+	//Will be populated with each team and their respective urls
+	ArrayList<HashMap<String, String>> teams;
 	
 	// search bar
 	private JTextField searchField;
@@ -95,7 +101,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		buttons.add(optionsButton);
 		
 		// creates parse button
-		parsingButton = new MyMouseButton("Parse TFRRS URL", defaultFont,
+		parsingButton = new MyMouseButton(PARSE_BUTTON_TEXT, defaultFont,
 				new UIConstraintSet(gm,
 						new UIConstraint(129, null),
 						new UIConstraint(72, null)));
@@ -146,18 +152,16 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		// is visible within the viewport that this list is in.
 		
 
-		
-		
 		MyTextBox TeamHeader = new MyTextBox("Teams", headerFont, 
 			new UIConstraintSet(gm,
 				new UIConstraint(125, null),
 				new UIConstraint(148, null)));
 		textBoxes.add(TeamHeader);
 		
+		teams = Spreadsheet.importTeams();
 		
 		teamList = new TeamJList(this, searchField);
-		teamList.add(Team.createNew("https://www.tfrrs.org/teams/CT_college_m_Trinity_CT.html", statusDisplay));
-		teamList.add(Team.createNew("https://www.tfrrs.org/teams/MA_college_m_Amherst.html", statusDisplay));
+		teamList.populateList(teams, statusDisplay);
 	}
 	
 	
@@ -168,7 +172,19 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 	// CURRENTLY JUST TESTING NOT PERMANANT
 	private void attemptURLParse() {
 		// we identify the URL
-		tfrrsURL potentialURL = new tfrrsURL(searchField.getText());
+
+		//THIS IS AN IMPORTANT LINE PLEASE READ!
+		/*
+		teams is the arraylist from the spreadsheet parser that contains the team names and the urls.
+		currently every team has a women's url but not a mens url because there are more women's teams 
+		than guys. When the user clicks on one of the teams in the beautiful scroll list (nice job implement that)
+		instead of having the url appear in the search bar, we now have the team name appear in the search bar,
+		this way no links have to displayed on the gui == much cleaner in my opinion. however in order for the link
+		to get parsed we need to map the team name to the link which I use the hashmap located at teams.get(1) ie the womens
+		map. The point of this comment is to say that we are parsing womens links not mens links but we should
+		figure out a way (maybe a double column approach) to differentiate between the two. :)
+		*/
+		tfrrsURL potentialURL = new tfrrsURL(teams.get(1).get(searchField.getText()));
 		
 		// we create a different object depending on the type of url supplied
 		Parsable urlObject = null;
@@ -278,7 +294,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 						break;
 					case "Options":	// if options button is clicked
 						break;
-					case "Parse TFRRS URL":	// if parse button clicked
+					case PARSE_BUTTON_TEXT:	// if parse button clicked
 						attemptURLParse();
 						break;
 				}

@@ -32,11 +32,6 @@ public class TeamJList implements ComponentListener, ListSelectionListener {
 		// i could write my own list model that adheres to ListModel interface
 		// using .insertElementAt() we can keep elements in alphabetical order?
 		
-		
-		
-		
-	
-		 
 		//Create the list 
 		list = new JList<>(listModel);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -56,15 +51,21 @@ public class TeamJList implements ComponentListener, ListSelectionListener {
 		
 	}
 	
-	public void populateList(List<HashMap<String, String>> teams) {
+	public void populateList(List<HashMap<String, String>> teams, StatusDisplay sd) {
 		// all mens teams
 		HashMap<String, String> mensTeams = teams.get(0);
+		for(String team: mensTeams.keySet()){
+			listModel.addElement(Team.createNew(team, mensTeams.get(team), sd));
+		}
 		
 		
 		
 		
 		// all womens teams
 		HashMap<String, String> womensTeams = teams.get(1);
+		for(String team: womensTeams.keySet()){
+			listModel.addElement(Team.createNew(team, womensTeams.get(team), sd));
+		}
 	}
 
 	public void add(Team t) {
@@ -90,7 +91,7 @@ public class TeamJList implements ComponentListener, ListSelectionListener {
 	public void valueChanged(ListSelectionEvent e) {
 		if (e.getValueIsAdjusting() == false && list.getSelectedIndex() != -1) {
 			// puts team's URL in the search bar if selected
-			searchBar.setText(listModel.get(list.getSelectedIndex()).getURL());
+			searchBar.setText(listModel.get(list.getSelectedIndex()).getName());
 		}
 	}
 }

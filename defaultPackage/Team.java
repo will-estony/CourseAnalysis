@@ -37,6 +37,16 @@ public class Team extends Parsable {
         	this.name = this.name.substring(0, this.name.length()-5);
         this.tfrrsURL = tfrrsURL;
     }
+
+    private Team(String name, String tfrrsURL, StatusDisplay statusObject){
+    	super(statusObject);
+    	super.parser = new TeamParser(this);
+        teammates = new HashMap<>();
+        competitors = new HashMap<>();
+        meets = new ArrayList<>();
+        this.name = name;
+        this.tfrrsURL = tfrrsURL;
+    }
     
     // static factory method pattern
     // forces teams to be created through this static factory method,
@@ -52,6 +62,21 @@ public class Team extends Parsable {
         }
     	// if the team doesn't exist yet: create it, add it to allTeams, and return it
     	newTeam = new Team(url, statusObject);
+    	allTeams.put(url, newTeam);
+    	return newTeam;
+    }
+
+    public static Team createNew(String name, String url, StatusDisplay statusObject) {
+    	// removes difference between http and https urls
+		url = url.replace("http://","https://");
+    	// tests if Team exists already, and returns it if it does
+    	Team newTeam = allTeams.get(url);
+        if (newTeam != null){
+            System.out.println("Team has already been created.");
+            return newTeam;
+        }
+    	// if the team doesn't exist yet: create it, add it to allTeams, and return it
+    	newTeam = new Team(name, url, statusObject);
     	allTeams.put(url, newTeam);
     	return newTeam;
     }

@@ -9,12 +9,12 @@ public class programMain {
 
 	public static void main(String[] args) {
 		
-		//guiManager gm = new guiManager();
+		guiManager gm = new guiManager();
 		
 		//AllTeamParser atp = new AllTeamParser();
 		//Spreadsheet.exportTeams(atp.parseAllTeams());
-		ArrayList<HashMap<String, String>> both = Spreadsheet.importTeams();
-		Spreadsheet.printSpreadSheet(both);
+		//ArrayList<HashMap<String, String>> both = Spreadsheet.importTeams();
+		
 		//Athlete a = Athlete.createNew(5984486);
 		//a.parse();
 		//a.printPRs();
