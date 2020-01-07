@@ -25,7 +25,6 @@ public class AllTeamParser{
 
     public HashMap<String,HashMap<String,String>> parseAllTeams(){
 
-        
         Elements tables;
         Elements headers;
         Document doc;

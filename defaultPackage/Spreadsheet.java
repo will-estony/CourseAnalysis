@@ -4,7 +4,9 @@ package defaultPackage;
 import org.apache.poi.hssf.usermodel.*; 
 import org.apache.poi.ss.usermodel.Row; 
 import org.apache.poi.ss.usermodel.Sheet; 
-import org.apache.poi.ss.usermodel.Cell; 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.Row.MissingCellPolicy; 
 import org.apache.poi.xssf.usermodel.*;
 import java.io.FileOutputStream; 
 import java.io.FileInputStream;  
@@ -16,6 +18,13 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 public class Spreadsheet{
+
+
+    private final static int teamNameIndex = 0;
+    private final static int womensUrlIndex = 1;
+    private final static int mensUrlIndex = 2;
+    
+    private final static String fileName = "XCTeams.xlsx";
 
     /*
     There are currently two export methods this one just exports a set (linear list)
@@ -39,10 +48,10 @@ public class Spreadsheet{
         }
         try{
             //Write the workbook in file system
-            FileOutputStream out = new FileOutputStream(new File("XCTeams.xlsx"));
+            FileOutputStream out = new FileOutputStream(new File(fileName));
             workbook.write(out);
             out.close();
-            System.out.println("XCTeams.xlsx written successfully on disk.");
+            System.out.println(fileName + " written successfully on disk.");
         } 
         catch (Exception e) 
         {
@@ -86,10 +95,10 @@ public class Spreadsheet{
         }
         try{
             //Write the workbook in file system
-            FileOutputStream out = new FileOutputStream(new File("XCTeams.xlsx"));
+            FileOutputStream out = new FileOutputStream(new File(fileName));
             workbook.write(out);
             out.close();
-            System.out.println("XCTeams.xlsx written successfully on disk.");
+            System.out.println(fileName + " written successfully on disk.");
         } 
         catch (Exception e) 
         {
@@ -101,15 +110,78 @@ public class Spreadsheet{
         HashMap<String,String> mens = new HashMap<>();
         HashMap<String,String> womens = new HashMap<>();
         ArrayList<HashMap<String,String>> both = new ArrayList<>();
+        System.out.println(System.getProperty("user.dir") + "/" + fileName);
 
-        //FileInputStream fileInputStream = new FileInputStream(filePath);
-        System.out.println("Working Directory = " +
-            System.getProperty("user.dir"));
+        try{
+            FileInputStream fileInputStream = new FileInputStream(System.getProperty("user.dir") + "/" + fileName);
+            
+            XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
+            
+            //this should only run once since there is only one sheet
+            for(int i = 0; i < workbook.getNumberOfSheets(); i++){
+                
+                Sheet sheet = workbook.getSheetAt(i);
+                
+                //loop through each row
+                for(int j = 0; j < sheet.getPhysicalNumberOfRows(); j++){
+                    Row row = sheet.getRow(j);
 
+                    //check that the row isn't null
+                    if(row != null){
+
+                        //Create each cell, if the cell is null, it makes the cell blank
+                        //The only Cell that should have blanks is mensUrlCell
+                        Cell teamCell = row.getCell(0, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+                        Cell womensUrlCell = row.getCell(1, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+                        Cell mensUrlCell = row.getCell(2, MissingCellPolicy.CREATE_NULL_AS_BLANK);
+
+                        //Conver the team name to a string
+                        if(teamCell.getCellType() != CellType.BLANK){
+                            String team = teamCell.toString();
+
+                            //Convert the women's url to a string
+                            if(womensUrlCell.getCellType() != CellType.BLANK){
+                                String womensUrl = womensUrlCell.toString();
+                                womens.put(team, womensUrl);
+                            }
+
+                            //Convert the mens url to a string
+                            if(mensUrlCell.getCellType() != CellType.BLANK){
+                                String mensUrl = mensUrlCell.toString();
+                                mens.put(team, mensUrl);
+                            }
+                        }
+                    }
+                }
+            }
+        }catch(Exception e){
+            System.out.println("Can't find the excel file: " + fileName);
+            e.printStackTrace();
+        }
 
         both.add(mens);
         both.add(womens);
 
         return both;
     }
+
+    public static void printSpreadSheet(ArrayList<HashMap<String, String>> list){
+
+        HashMap<String, String> mens = list.get(0);
+        HashMap<String, String> womens = list.get(1);
+
+        
+        System.out.println("Printing all the men's teams and their urls...");
+        for(String team: mens.keySet()){
+            System.out.println(team + ": " + mens.get(team));
+        }
+
+        System.out.println("Printing all the women's teams and their urls...");
+        for(String team: womens.keySet()){
+            System.out.println(team + ": " + womens.get(team));
+        }
+
+    }
+
+
 }
