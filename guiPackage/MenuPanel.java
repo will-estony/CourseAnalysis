@@ -229,14 +229,6 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		// access to specific painting methods
 		Graphics2D g2 = (Graphics2D) g;
 		
-		/*
-		// if the screen size was changed then update all the component positions
-		if (gm.getWidth() != lastScreenWidth || gm.getHeight() != lastScreenHeight) {
-			lastScreenWidth = gm.getWidth();
-			lastScreenHeight = gm.getHeight();
-			updateComponentPositions();
-		}*/
-		
 		// draws every button in the array list
 		for (MyMouseButton button : buttons)
 			button.drawToGraphics(g2);

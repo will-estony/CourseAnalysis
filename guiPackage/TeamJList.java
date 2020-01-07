@@ -35,7 +35,6 @@ public class TeamJList implements ComponentListener, ListSelectionListener {
 		list = new JList<>(listModel);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		list.addListSelectionListener(this);
-		//list.setSelectedIndex(0);
 		
 		// fired whenever the selection changes
 		// for us: should change which team is being displayed
