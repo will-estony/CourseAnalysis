@@ -183,8 +183,15 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		to get parsed we need to map the team name to the link which I use the hashmap located at teams.get(1) ie the womens
 		map. The point of this comment is to say that we are parsing womens links not mens links but we should
 		figure out a way (maybe a double column approach) to differentiate between the two. :)
+		The one downside to this is that if we want to test a specific link we will have 
 		*/
-		tfrrsURL potentialURL = new tfrrsURL(teams.get(1).get(searchField.getText()));
+		tfrrsURL potentialURL;
+		if(teams.get(1).containsKey(searchField.getText())){
+			potentialURL = new tfrrsURL(teams.get(1).get(searchField.getText()));
+		}else{
+			//This is just incase we want to quickly test a specific team link not in out list. 
+			potentialURL = new tfrrsURL(searchField.getText());
+		}
 		
 		// we create a different object depending on the type of url supplied
 		Parsable urlObject = null;
