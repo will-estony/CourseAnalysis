@@ -12,8 +12,7 @@ public class programMain {
 		//guiManager gm = new guiManager();
 		
 		AllTeamParser atp = new AllTeamParser();
-		atp.parseAllTeams();
-		//Spreadsheet.exportTeams(atp.parseAllTeams());
+		//Spreadsheet.exportTeams(atp.getTeams());
 		//ArrayList<HashMap<String, String>> both = Spreadsheet.importTeams();
 		
 		//Athlete a = Athlete.createNew(5984486);
