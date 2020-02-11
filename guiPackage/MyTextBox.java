@@ -41,11 +41,9 @@ public class MyTextBox extends Drawable {
 	// draws text in the specified location, recalculating the location as needed
 	public void drawToGraphics(Graphics2D g2) {
 		if (textString != null) {	// only draw if string actually exists rn
-			// TODO: these calculations shouldn't have to happen every time, they should only have to happen 
-			// each time the screen size is changed
 			
-			centerX = constraints.getX();	// resets x position based on constraints and screen width
-			centerY = constraints.getY();	// resets y position based on constraints and screen height
+			centerX = constraints.getCenterX();	// resets x position based on constraints
+			centerY = constraints.getCenterY();	// resets y position based on constraints
 			// uses the font metrics of the supplied font and the string to calculate how
 			// to place the text in the center of the rectangle
 			FontMetrics fontMetrics = g2.getFontMetrics(textFont);

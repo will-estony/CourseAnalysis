@@ -1,9 +1,7 @@
 package guiPackage;
 
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
@@ -24,7 +22,7 @@ public class MyMouseButton extends MyTextBox {
 	private boolean isPressed;
 	
 	public MyMouseButton(String textString, Font textFont, Color regularTextColor, Color highlightedTextColor,
-			Color regularBoxColor, Color highlightedBoxColor, double width, double height, UIConstraintSet constraints) {
+			Color regularBoxColor, Color highlightedBoxColor, UIConstraintSet constraints) {
 		// passes required params to super MyTextBox class
 		super(textString, textFont, regularTextColor, constraints);
 		// saves the needed params
@@ -34,7 +32,7 @@ public class MyMouseButton extends MyTextBox {
 		this.regularBoxColor = regularBoxColor;
 		this.highlightedBoxColor = highlightedBoxColor;
 		// creates and saves the shape of the box
-		boxShape = new RoundRectangle2D.Double(constraints.getX() - width/2, constraints.getY() - height/2, width, height, 20, 20);
+		boxShape = new RoundRectangle2D.Double(constraints.getX(), constraints.getY(), constraints.getWidth(), constraints.getHeight(), 20, 20);
 		
 		// default pressed colors
 		pressedBoxColor = Color.GRAY;
@@ -42,18 +40,8 @@ public class MyMouseButton extends MyTextBox {
 	}
 	
 	// constructor that uses some default values
-	public MyMouseButton(String textString, Font textFont, double width, double height, UIConstraintSet constraints) {
-		this(textString, textFont, Color.WHITE, Color.BLACK, Color.BLUE, Color.WHITE, width, height, constraints);
-	}
-	
-	// constructor with even more default values
 	public MyMouseButton(String textString, Font textFont, UIConstraintSet constraints) {
-		this(textString, textFont, 0, 0, constraints);
-		
-		// Updates the shape of the box after the original constructor built an empty one
-		Canvas c = new Canvas();
-		FontMetrics fm = c.getFontMetrics(textFont);
-		boxShape = new RoundRectangle2D.Double(0, 0, fm.stringWidth(textString)*1.05 + 6, fm.getHeight()*1.12, 20, 20);
+		this(textString, textFont, Color.WHITE, Color.BLACK, Color.BLUE, Color.WHITE, constraints);
 	}
 	
 	public void setEnabled(boolean isEnabled) {
@@ -102,16 +90,8 @@ public class MyMouseButton extends MyTextBox {
 	public void drawToGraphics(Graphics2D g2) {
 		// draws Button first, setting the text color along the way
 		
-		
-		// TODO: we don't want to have to do this every frame update, only when frame size has changed
-		// add a boolean? componenetListener? static componentListener class?
-		
 		// rebuilds the box
-		double width = boxShape.getBounds2D().getWidth();
-		double height = boxShape.getBounds2D().getHeight();
-		boxShape = new RoundRectangle2D.Double(constraints.getX() - width/2, constraints.getY() - height/2, width, height, 20, 20);
-		
-		
+		boxShape = new RoundRectangle2D.Double(constraints.getX(), constraints.getY(), constraints.getWidth(), constraints.getHeight(), 20, 20);
 		
 		if (isPressed || !isEnabled) {	// draws the button pressed in
 			g2.setColor(pressedBoxColor);

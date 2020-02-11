@@ -30,6 +30,9 @@ public class guiManager extends JFrame implements Runnable {
 		// sets the minimum size the user is allowed to resize to
 		setMinimumSize(new Dimension(startingWidth, startingHeight));
 		
+		// initializes UIConstraintSets to use this frame as it's host frame
+		UIConstraintSet.init(this);
+		
 		// creates a MenuPanel and adds it to this JFrame
 		activePanel = new MenuPanel(this);
 		//setPreferredSize(new Dimension(startingWidth, startingHeight));
