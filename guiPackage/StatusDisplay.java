@@ -12,14 +12,20 @@ public class StatusDisplay extends Drawable {
 	// index 0 being the bottom one
 	private MyTextBox[] textBoxes;
 
-	public StatusDisplay(int numLines, int lineHeights, Font font, UIConstraintSet baseConstraints) {
+	public StatusDisplay(int numLines, double lineHeights, Font font, UIConstraintSet baseConstraints) {
 		super(baseConstraints);
 		textBoxes = new MyTextBox[numLines];	// allocates array
 		// fills array with text boxes such that they are spaced out evenly
 		// and centered at the given baseConstraints
-		for (int i = 0; i < numLines; i++) {
-			textBoxes[i] = new MyTextBox(null, font, baseConstraints.createOffsetContraintSet(
-					0, (numLines/2 - i)*((double) lineHeights)));
+		if (numLines > 0) {
+			// create first text box
+			textBoxes[0] = new MyTextBox(null, font, baseConstraints.createOffsetContraintSet(
+					0, numLines*lineHeights/2, 0, 0));
+			// then create the rest based off of the first one
+			for (int i = 1; i < numLines; i++) {
+				textBoxes[i] = new MyTextBox(null, font, textBoxes[i-1].createOffsetContraintSet(
+						0, -lineHeights, 0, 0));
+			}
 		}
 	}
 	
