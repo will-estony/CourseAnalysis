@@ -82,15 +82,18 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		
 		
 
-		// creates all the buttons on the screen
-		// creates quit button so that it is a fixed num of pixels from the bottom right corner
-		MyMouseButton quitButton = new MyMouseButton("Quit", defaultFont, 66, 34,
-				new UIConstraintSet(gm,
-						new UIConstraint(-60, null),
-						new UIConstraint(-70, null)));
-		// creates options button so tht it is 100 pixels to the left of the quit button
-		MyMouseButton optionsButton = new MyMouseButton("Options", defaultFont, 100, 34,
-				quitButton.createOffsetContraintSet(-92, 0));
+		/* creates all the buttons on the screen */
+		// creates a constraint for the quit button, fixes it to the bottom right corner
+		UIConstraintSet quitConstraints = new UIConstraintSet();
+		quitConstraints.setBottomConstraint(-10);
+		quitConstraints.setRightConstraint(-10);
+		quitConstraints.setWidth(52);
+		quitConstraints.setHeight(32);
+		MyMouseButton quitButton = new MyMouseButton("Quit", defaultFont, quitConstraints);
+		
+		// creates options button so that it is 100 pixels to the left of the quit button
+		MyMouseButton optionsButton = new MyMouseButton("Options", defaultFont,
+				quitButton.createOffsetContraintSet(-10, 0, 92, 32));
 		
 		// temp until we make an options screen
 		optionsButton.setEnabled(false);
@@ -102,23 +105,23 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		
 		// creates parse button
 		parsingButton = new MyMouseButton(PARSE_BUTTON_TEXT, defaultFont,
-				new UIConstraintSet(gm,
-						new UIConstraint(129, null),
-						new UIConstraint(72, null)));
+				new UIConstraintSet(20, 60, 140, 32));
 		buttons.add(parsingButton);
 		
 		// creates all the text boxes on this panel
 		textBoxes = new ArrayList<MyTextBox>();
 		
 		// creates a StatusDiplay object to display the current status of the search
-		statusDisplay = new StatusDisplay(5, 26, smallFont,
-			new UIConstraintSet(gm,
-				new UIConstraint(0.70),
-				new UIConstraint(70, null)));
+		UIConstraintSet dispConstraints = new UIConstraintSet();
+		dispConstraints.setWidth(0);
+		dispConstraints.setHeight(0);
+		dispConstraints.setTopConstraint(100);
+		dispConstraints.setLeftConstraint(0.7, parsingButton.getConstraintSet().getLeftConstraint(), UIConstraintSet.getRightWall());
+		statusDisplay = new StatusDisplay(5, 26, smallFont, dispConstraints);
 		
-		// places the loading bar 100 pixels below the center of the searchDisplay
-		load = new MyLoadingBar("", defaultFont, 250, 10, 
-				statusDisplay.createOffsetContraintSet(0, 100));
+		// places the loading bar 100 pixels below the center of the statusDisplay
+		load = new MyLoadingBar("", defaultFont, 
+				statusDisplay.createOffsetContraintSet(0, 90, 250, 10));
 		
 		searchField = new JTextField("Enter TFRRS URL here", 50);
 		searchField.setBounds(20, 20, 300, 25);	// sets location/size
@@ -152,11 +155,11 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		// is visible within the viewport that this list is in.
 		
 
-		MyTextBox TeamHeader = new MyTextBox("Teams", headerFont, 
-			new UIConstraintSet(gm,
-				new UIConstraint(125, null),
-				new UIConstraint(148, null)));
-		textBoxes.add(TeamHeader);
+//		MyTextBox TeamHeader = new MyTextBox("Teams", headerFont, 
+//			new UIConstraintSet(gm,
+//				new UIConstraint(125, null),
+//				new UIConstraint(148, null)));
+//		textBoxes.add(TeamHeader);
 		
 		teams = Spreadsheet.importTeams();
 		
@@ -220,8 +223,6 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		new ParsingThread(urlObject);
 	}
 	
-	
-	//private int lastScreenWidth, lastScreenHeight;
 	/* overriding paintComponent allows us to paint things to the screen */
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);	// passes g to overridden super method
