@@ -87,13 +87,13 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		UIConstraintSet quitConstraints = new UIConstraintSet();
 		quitConstraints.setBottomConstraint(-10);
 		quitConstraints.setRightConstraint(-10);
-		quitConstraints.setWidth(52);
+		quitConstraints.setWidth(60);
 		quitConstraints.setHeight(32);
 		MyMouseButton quitButton = new MyMouseButton("Quit", defaultFont, quitConstraints);
 		
 		// creates options button so that it is 100 pixels to the left of the quit button
 		MyMouseButton optionsButton = new MyMouseButton("Options", defaultFont,
-				quitButton.createOffsetContraintSet(-10, 0, 92, 32));
+				quitButton.createOffsetContraintSet(-10, 0, 100, 32));
 		
 		// temp until we make an options screen
 		optionsButton.setEnabled(false);
@@ -105,7 +105,7 @@ public class MenuPanel extends JPanel implements KeyListener, MouseListener, Mou
 		
 		// creates parse button
 		parsingButton = new MyMouseButton(PARSE_BUTTON_TEXT, defaultFont,
-				new UIConstraintSet(20, 60, 140, 32));
+				new UIConstraintSet(20, 60, 142, 32));
 		buttons.add(parsingButton);
 		
 		// creates all the text boxes on this panel

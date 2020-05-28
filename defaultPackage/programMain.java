@@ -9,9 +9,9 @@ public class programMain {
 
 	public static void main(String[] args) {
 		
-		//guiManager gm = new guiManager();
+		guiManager gm = new guiManager();
 		
-		AllTeamParser atp = new AllTeamParser();
+		//AllTeamParser atp = new AllTeamParser();
 		//Spreadsheet.exportTeams(atp.getTeams());
 		//ArrayList<HashMap<String, String>> both = Spreadsheet.importTeams();
 		
