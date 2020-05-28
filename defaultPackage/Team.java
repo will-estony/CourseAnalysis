@@ -29,12 +29,10 @@ public class Team extends Parsable {
         competitors = new HashMap<>();
         meets = new ArrayList<>();
         
-        
         // saves the "name" of the team as the identifying section of the url
-        // - 5 at the end to get rid of ".html"
+        // removes everything before the first occurance of "teams/" (aka the www. stuff)
         this.name = tfrrsURL.substring(tfrrsURL.indexOf("teams/") + 6);
-        if (this.name.contains(".html"))
-        	this.name = this.name.substring(0, this.name.length()-5);
+        this.name = this.name.replace(".html", "");	// gets rid of the .html if present
         this.tfrrsURL = tfrrsURL;
     }
 
