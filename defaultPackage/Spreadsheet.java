@@ -126,7 +126,7 @@ public class Spreadsheet{
             for(int i = 0; i < workbook.getNumberOfSheets(); i++){
                 
                 Sheet sheet = workbook.getSheetAt(i);
-                
+                System.out.println(sheet.getPhysicalNumberOfRows());
                 //loop through each row
                 for(int j = 0; j < sheet.getPhysicalNumberOfRows(); j++){
                     Row row = sheet.getRow(j);
@@ -159,11 +159,12 @@ public class Spreadsheet{
                     }
                 }
             }
+            workbook.close();
         }catch(Exception e){
             System.out.println("Can't find the excel file: " + fileName);
             e.printStackTrace();
         }
-
+        System.out.println(mens);
         both.add(mens);
         both.add(womens);
 
