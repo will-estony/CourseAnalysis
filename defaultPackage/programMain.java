@@ -9,7 +9,7 @@ public class programMain {
 
 	public static void main(String[] args) {
 		
-		guiManager gm = new guiManager();
+		//guiManager gm = new guiManager();
 		
 		//AllTeamParser atp = new AllTeamParser();
 		//Spreadsheet.exportTeams(atp.getTeams());
@@ -35,9 +35,9 @@ public class programMain {
 		
 		
 		
-		//Team browdies = Team.createNew("https://www.tfrrs.org/teams/xc/CO_college_f_Southern_Colorado.html");
-		//browdies.parse();
-		//browdies.printTeam();
+		Team browdies = Team.createNew("https://www.tfrrs.org/teams/xc/CT_college_m_Trinity_CT.html");
+		browdies.parse();
+		browdies.printTeam();
 
 		
 		//Meet Regionals2018 = Meet.createNew("https://www.tfrrs.org/results/xc/14521/NCAA_Division_III_New_England_Region_Cross_Country_Championships");

@@ -104,11 +104,12 @@ public class Team extends Parsable {
     }
 
     public boolean parse() {
-		// casts parser to this specific objects parser type
-		TeamParser thisParser = (TeamParser) super.parser;
 		// attempts to connect to URL
 		if (!super.parse())
 			return false;
+		
+		// casts parser to this specific object's parser type
+		TeamParser thisParser = (TeamParser) super.parser;
     	
 		thisParser.parseAthletes();
     	

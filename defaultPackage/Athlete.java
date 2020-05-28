@@ -49,12 +49,13 @@ public class Athlete extends Parsable {
     }
 	
 	public boolean parse() {
-		// casts parser to this specific objects parser type
-		AthleteParser thisParser = (AthleteParser) super.parser;
-		if (!super.parse()){
+		// attempts to connect to URL
+		if (!super.parse())
 			return false;
-		}
     	
+		// casts parser to this specific object's parser type
+		AthleteParser thisParser = (AthleteParser) super.parser;
+		
     	this.name = thisParser.getName();
     	thisParser.parseBests();
 		thisParser.parsePerformances();

@@ -89,12 +89,13 @@ public class Meet extends Parsable {
 		return -1;
 	}
 	public boolean parse() {
-		// casts parser to this specific objects parser type
-		MeetParser thisParser = (MeetParser) super.parser;
 		// attempts to connect to URL
 		if (!super.parse())
 			return false;
     	
+		// casts parser to this specific object's parser type
+		MeetParser thisParser = (MeetParser) super.parser;
+		
 		this.date = new Date(thisParser.getDateString());
         this.name = thisParser.getName();
         
