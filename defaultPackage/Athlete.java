@@ -66,21 +66,9 @@ public class Athlete extends Parsable {
     }
 	
 	// Some getters //
-	
 	// athlete must already be parsed to have a local name variable
 	public String getName() { return name; }
 	public String getURL() { return idToUrl(tfrrsID); }
-	// adds performance to collection
-	public void addPerformance(Performance p) {
-		// if there is already a performance for this date, and they're not the same performance, then append it to list
-		if (performances.containsKey(p.getDate()) && !performances.get(p.getDate()).contains(p))
-			performances.get(p.getDate()).add(p);
-		else {	// else create a new list containing the performance and add that
-			List<Performance> newList = new ArrayList<Performance>();
-			newList.add(p);
-			performances.put(p.getDate(), newList);
-		}
-	}
 	public TreeMap<Date, List<Performance>> getPerformances(){ return performances; }
 	// returns a list of performances that happened at a given meet
 	// runs in O(log(n))
@@ -93,6 +81,17 @@ public class Athlete extends Parsable {
 		return null;	// if this athlete didn't perform at this meet then return null
 	}
 	
+	// adds performance to collection
+	public void addPerformance(Performance p) {
+		// if there is already a performance for this date, and they're not the same performance, then append it to list
+		if (performances.containsKey(p.getDate()) && !performances.get(p.getDate()).contains(p))
+			performances.get(p.getDate()).add(p);
+		else {	// else create a new list containing the performance and add that
+			List<Performance> newList = new ArrayList<Performance>();
+			newList.add(p);
+			performances.put(p.getDate(), newList);
+		}
+	}
 	
 	public static String idToUrl(long l){ return "https://www.tfrrs.org/athletes/" + l; }
 	
@@ -124,7 +123,7 @@ public class Athlete extends Parsable {
 	// finds and returns the fastest performance within the given date range (inclusive)
 	public Performance findFastestInRange(Date start, Date end) {
 		
-		// gets all of an athletes performances from start to finish, inclusively, into a Map
+		// gets all of an athlete's performances from start to finish, inclusively, into a Map
 		Map<Date, List<Performance>> subPerformances = performances.subMap(start, true, end, true);
 		
 		// then we iterate along the subPerformances and find fastest valid performance
