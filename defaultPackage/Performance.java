@@ -20,11 +20,13 @@ public class Performance{
     
     // converts String of the form dd:hh:mm:ss.ms to a double
     public static double timeStringToDouble(String timeString) {
-    	// if the mark was a DNF or a DNS store the result as a -1 or -2 respectively
+    	// if the mark was a DNF, DNS, or DQ, store the result as a -1, -2, or -3 respectively
     	if (timeString.equals("DNF"))
     		return -1;
     	if (timeString.equals("DNS"))
     		return -2;
+    	if (timeString.equals("DQ"))
+    		return -3;
     	
         double timeSecondsDouble = 0;   // initialize return value
         int indexOfFirstDecimal = timeString.indexOf(".");   // searches for the first decimal point
@@ -139,11 +141,13 @@ public class Performance{
     
     public String toString(){
     	String perfString;
-    	// if the performance is a DNF or DNS
+    	// if the performance is a DNF, DNS, or DQ
     	if (time == -1)
     		perfString = "DNF";
     	else if (time == -2)
     		perfString = "DNS";
+    	else if (time == -3)
+    		perfString = "DQ";
     	else // if it's a normal performance
     		perfString = timeDoubleToString(time);
         return event + ": " + perfString + " - " + date;
