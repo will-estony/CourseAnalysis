@@ -92,7 +92,7 @@ public class guiManager extends JFrame implements Runnable {
 		    } */
 		    
 		    // if statement fires only as many times as allowed by desiredFramesPerSecond
-		    // draws panel desiredFramesPerSecond times per second
+		    // draws panel a max desiredFramesPerSecond times per second
 		    if (curr_frame_tick - prev_paint_tick >= (1000000000 / desiredFramesPerSecond)) {
 				if (activePanel != null)
 					activePanel.repaint();

@@ -53,16 +53,16 @@ public class TeamJList implements ComponentListener, ListSelectionListener {
 		// all mens teams
 		HashMap<String, String> mensTeams = teams.get(0);
 		for(String team: mensTeams.keySet()){
-			listModel.addElement(Team.createNew(team, mensTeams.get(team), sd));
+			listModel.addElement(Team.createNew(team, sd));
 		}
-		
+		// , mensTeams.get(team)
 		
 		
 		
 		// all womens teams
 		HashMap<String, String> womensTeams = teams.get(1);
 		for(String team: womensTeams.keySet()){
-			listModel.addElement(Team.createNew(team, womensTeams.get(team), sd));
+			listModel.addElement(Team.createNew(team, sd));
 		}
 	}
 
