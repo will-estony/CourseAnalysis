@@ -14,16 +14,20 @@ public class Meet extends Parsable {
 	// first entry is URL, second is the Meet
 	private static HashMap<Long, Meet> allMeets = new HashMap<Long, Meet>();
 	
-	private Date date;		//the date the meet took place on as a date object. 
-    private long tfrrsID; 	//the id num of the meet stats on tffrs
-    private boolean isXC;	// is this an XC meet or not
-    private String name;	//The name of the meet as listed on tffrs
+	// Attributes
+	private long ID;			// the id num of the meet stats on tffrs
+	private boolean isXC;		// is this an XC meet or not
+	private String name;		// The name of the meet as listed on tffrs
+	private Date start_date;	// the first day of the meet as a date object.
+	private short length;		// the length of the meet (in days)
+	private Course course;		// the course this meet was hosted on
+	
     private HashMap<Long, Athlete> competitors;
 
     private Meet(long tfrrsID, boolean isXC, StatusDisplay statusObject) {
     	super(statusObject);
     	super.parser = new MeetParser(this);
-    	this.tfrrsID = tfrrsID;
+    	this.ID = tfrrsID;
     	this.isXC = isXC;
     	competitors = new HashMap<>();
     }
@@ -59,20 +63,6 @@ public class Meet extends Parsable {
 		// looks for "results/" in url and skips to end of that
 		url = url.substring(url.indexOf("results/") + 8);
 		
-		/*
-		// remove https's
-		url = url.replace("https://","");
-		url = url.replace("http://","");
-		// remove the url up to the ID num
-		
-		url = url.replace("www.tfrrs.org/results/","");
-		url = url.replace("xc.tfrrs.org/results/","");
-	
-		// special case if the saved meet url is from directathletics.come
-		if (url.contains("directathletics")) {
-			url.substring(url.indexOf(""))
-		}
-		*/
 		// counts how many remaining/sequential chars are digits
 		int i = 0;
 		while(i < url.length() && Character.isDigit(url.charAt(i)))
@@ -89,33 +79,45 @@ public class Meet extends Parsable {
 		return -1;
 	}
 	public boolean parse() {
-		// attempts to connect to URL
-		if (!super.parse())
-			return false;
-    	
-		// casts parser to this specific object's parser type
-		MeetParser thisParser = (MeetParser) super.parser;
-		
-		this.date = new Date(thisParser.getDateString());
-        this.name = thisParser.getName();
-        
-        thisParser.parseMeet();
-    	
-        super.isParsed = true;
-    	// dereferences parser for cleanup as its not needed anymore
-    	super.parser = thisParser = null;
-    	return true;
+		if (!isParsed) {	// only parses if not already parsed
+			// attempts to connect to URL
+			if (!super.parse())
+				return false;
+	    	
+			// casts parser to this specific object's parser type
+			MeetParser thisParser = (MeetParser) super.parser;
+			
+			thisParser.setDate(this);
+	        this.name = thisParser.getName();
+	        
+	        thisParser.parseMeet();
+	        
+	        // TODO: need parser to parse out course (for now use placeholder values)
+	        // defaulting to XC also for now
+	    	this.course = new Course("UKNOWN", "CT", "UKNOWN", Course.TYPE.XC);
+	        
+	        super.isParsed = true;
+	    	// dereferences parser for cleanup as its not needed anymore
+	    	super.parser = thisParser = null;
+		}
+		return true;	// if already parsed or parsed successfully
     }
     
     public void addCompetitor(Long id, Athlete a){ competitors.put(id, a); }
 
-    public Date getDate() { return date; }
+    /* Getters */
+    public long getID() { return ID; }
+    public boolean getIsXC() { return isXC; }
     public String getName() { return name; }
+    public Date getStartDate() { return start_date; }
+    public short getLength() { return length; }
+    public Course getCourse() { return course; }
+    public static HashMap<Long, Meet> getAllMeets() { return allMeets; }
     public String getURL(){
 		String ret = "https://www.tfrrs.org/results/";
 		if (isXC)	// if the meet is an xc meet we need to add this little piece
 			ret+= "xc/";
-		return ret + tfrrsID; 
+		return ret + ID; 
 	}
 
     // Creates and returns a results matrix for this meet
@@ -130,8 +132,8 @@ public class Meet extends Parsable {
     	System.out.println("Number of competitors: " + numRows);
     	
     	// the start of the season is defined as September 1st on the given year
-		Date startOfSeason = new Date((byte) 9, (byte) 1, date.getYear());
-		Date dayBeforeThisMeet = new Date(date.getMonth(), (byte) (date.getDay() - 1), date.getYear());	// the day before this meet 
+		Date startOfSeason = new Date((byte) 9, (byte) 1, start_date.getYear());
+		Date dayBeforeThisMeet = new Date(start_date.getMonth(), (byte) (start_date.getDay() - 1), start_date.getYear());	// the day before this meet 
 		// we don't need to worry about the case where the day decrements to zero
 		// because we're only using this day to compare with and a day of zero doesn't mess up the comparisons
 		
@@ -141,10 +143,10 @@ public class Meet extends Parsable {
     	for (Athlete a : competitors.values()) {
     		// DEBUGGING
     		List<Performance> temp1 = a.getPerformances(this);
-    		System.out.println(temp1.get(0).getTime());
+    		System.out.println(temp1.get(0).getMark());
     		
     		// only continues for athletes that completed this race
-    		if (a.getPerformances(this).get(0).getTime() > 0) {
+    		if (a.getPerformances(this).get(0).getMark() > 0) {
     			// parses athlete first to get all their times and build their performance lists
     			a.parse();
 
@@ -153,11 +155,11 @@ public class Meet extends Parsable {
     			// and we make sure that they did a run in the range requested
     			if (p != null) {
 	    			// then we build the results matrix
-		    		returnMatrix[i][0] = p.getTime();	// fastest time of the season prior to this meet
+		    		returnMatrix[i][0] = p.getMark();	// fastest time of the season prior to this meet
 		    		// DEBUGGING
 		    		List<Performance> temp2 = a.getPerformances(this);
-		    		System.out.println(temp2.get(0).getTime());
-		    		returnMatrix[i][1] = a.getPerformances(this).get(0).getTime();	// time at this meet
+		    		System.out.println(temp2.get(0).getMark());
+		    		returnMatrix[i][1] = a.getPerformances(this).get(0).getMark();	// time at this meet
 		    		
 		    		//debugging
 		    		System.out.println(Performance.timeDoubleToString(returnMatrix[i][0]) + 
@@ -174,10 +176,41 @@ public class Meet extends Parsable {
     	if (o instanceof Meet) {
     		Meet m = (Meet) o;
     		// if isXC and tfrrsID are the same 
-    		return m.tfrrsID == tfrrsID && m.isXC == isXC;
+    		return m.ID == ID && m.isXC == isXC;
     	} else
     		return super.equals(o);
     }
+    
+    // inserts this meet, all its athletes, and this meet's performances into the given database
+    public void insert_into(RunningDatabase db) {
+    	// parses meet if not parsed yet
+		this.parse();
+    	
+    	// prepares to insert all athletes who competed in this meet into the athlete table
+    	long[] athleteIDs = new long[competitors.size()];
+    	String [] athleteNames = new String[competitors.size()];
+    	int i = 0;
+    	for (long athleteID : competitors.keySet()) {
+    		athleteIDs[i] = athleteID;
+    		athleteNames[i++] = competitors.get(athleteID).getName();
+    	}
+    	
+    	// inserts course
+    	db.insert_into_course(this.course.getName(), this.course.getState(), this.course.getCity(),
+    			this.course.getType().toString());
+    	
+    	// inserts meet
+    	db.insert_into_meet(this.ID, this.isXC, this.name, this.start_date.toString(), this.length,
+    			this.course.getName(), this.course.getState(), this.course.getCity());
+    	
+    	// inserts all athletes into database
+    	db.insert_into_athlete(athleteIDs, athleteNames);
+    	
+    	
+
+    }
+    
+    
     
     private class MeetParser extends Parser {
         private Elements tables;
@@ -203,12 +236,17 @@ public class Meet extends Parsable {
         	return false;
         }
         
-        public String getDateString(){
+        public void setDate(Meet m) {
         	// makes sure we're connected before accessing webpage details
         	if (!isConnected)
         		connect();
             Elements e = doc.select("div.panel-second-title").select("div.col-lg-8").select("div.panel-heading-normal-text");
-            return e.get(0).text();
+            
+            //TODO: get the start date and the meet length from the date string
+            // rn we are just defaulting meet length to 1 day.
+            
+            m.start_date = new Date(e.get(0).text());
+            m.length = 1;
         }
 
         public String getName(){
@@ -297,14 +335,21 @@ public class Meet extends Parsable {
             	// not for athlete URL.
             	// So to overcome both of these at once we check to see if the "href" attribute
             	// contains the word "athlete" (which is what all athlete URLs should)
+            	
+            	int place = 1;	// TEMP
+            	
             	if (result.select("td").select("a").attr("href").contains("athlete")) {
 	                long id = Athlete.urlToID("https:" + result.select("td").select("a").attr("href"));
 					String time = result.select("td").get(headerMap.get("TIME")).text();
-					System.out.println(time);
+//					System.out.println(time);
 					Athlete a = Athlete.createNew(id, statusObject);
 					
-	                Performance p = new Performance("8K", 
-	                		Performance.timeStringToDouble(time), meet.getDate(), meet);
+					// TODO: parse out event_name, place, and athleteCredentials
+					// rn makes all performances "8K", counts places manually (which might have some issues),
+					// and makes athleteCredentials "First_Year" for everyone
+	                Performance p = new Performance(meet, "8K",
+	                		place++, Performance.timeStringToDouble(time), Performance.CREDENTIALS.FIRST_YEAR);
+	                
 	                a.addPerformance(p);
 					meet.addCompetitor(id, a);
 					metrics.setcurrentItem(metrics.getCurrentItem() + 1.0);

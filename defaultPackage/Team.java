@@ -17,8 +17,8 @@ public class Team extends Parsable {
     private HashMap<Long, Athlete> teammates;
     private HashMap<Long, Athlete> competitors;
     private ArrayList<Meet> meets; //Contains a unique list of meets that have been competed in by a team
-    private String tfrrsURL; //The url to a teams XC tffrs page
-    private String name;     //The name of an xc team
+    private String tfrrsURL; //The url to a team's tffrs page
+    private String name;     //The name of the team
 
     // status object is an object that the parser can write to as its parsing
     // to display the status of the parsing without writing to System.out
@@ -32,17 +32,6 @@ public class Team extends Parsable {
         // saves the "name" of the team as the identifying section of the url
         // removes everything before the first occurance of "teams/" (aka the www. stuff)
         this.name = tfrrsURL.substring(tfrrsURL.indexOf("teams/") + 6);
-        this.name = this.name.replace(".html", "");	// gets rid of the .html if present
-        this.tfrrsURL = tfrrsURL;
-    }
-
-    private Team(String name, String tfrrsURL, StatusDisplay statusObject){
-    	super(statusObject);
-    	super.parser = new TeamParser(this);
-        teammates = new HashMap<>();
-        competitors = new HashMap<>();
-        meets = new ArrayList<>();
-        this.name = name;
         this.tfrrsURL = tfrrsURL;
     }
     
@@ -52,6 +41,7 @@ public class Team extends Parsable {
     public static Team createNew(String url, StatusDisplay statusObject) {
     	// removes difference between http and https urls
 		url = url.replace("http://","https://");
+        url = url.replace(".html", "");	// gets rid of the .html if present
     	// tests if Team exists already, and returns it if it does
     	Team newTeam = allTeams.get(url);
         if (newTeam != null){
@@ -60,21 +50,6 @@ public class Team extends Parsable {
         }
     	// if the team doesn't exist yet: create it, add it to allTeams, and return it
     	newTeam = new Team(url, statusObject);
-    	allTeams.put(url, newTeam);
-    	return newTeam;
-    }
-
-    public static Team createNew(String name, String url, StatusDisplay statusObject) {
-    	// removes difference between http and https urls
-		url = url.replace("http://","https://");
-    	// tests if Team exists already, and returns it if it does
-    	Team newTeam = allTeams.get(url);
-        if (newTeam != null){
-            System.out.println("Team has already been created.");
-            return newTeam;
-        }
-    	// if the team doesn't exist yet: create it, add it to allTeams, and return it
-    	newTeam = new Team(name, url, statusObject);
     	allTeams.put(url, newTeam);
     	return newTeam;
     }
@@ -100,22 +75,23 @@ public class Team extends Parsable {
             competitors.put(id, a);
         }
     }
-
     public boolean parse() {
-		// attempts to connect to URL
-		if (!super.parse())
-			return false;
-		
-		// casts parser to this specific object's parser type
-		TeamParser thisParser = (TeamParser) super.parser;
-    	
-		thisParser.parseAthletes();
-    	
-		super.isParsed = true;
-    	// dereferences parser for cleanup as its not needed anymore
-        super.parser = thisParser = null;
-        //System.out.println("TEAM PARSED!");
-    	return true;
+		if (!isParsed) {	// only parses if not already parsed
+			// attempts to connect to URL
+			if (!super.parse())
+				return false;
+			
+			// casts parser to this specific object's parser type
+			TeamParser thisParser = (TeamParser) super.parser;
+	    	
+			// parser needs to get team "name" also
+			thisParser.parseAthletes();
+	    	
+			super.isParsed = true;
+	    	// dereferences parser for cleanup as its not needed anymore
+	        super.parser = thisParser = null;
+		}
+		return true;	// if already parsed or parsed successfully
     }
 
     // untested method
@@ -145,7 +121,36 @@ public class Team extends Parsable {
     
     public String toString() { return name; }
     
-    // a team parser is not needed outside of the team class so this should be a private class to team
+    
+    // inserts this team and all its athletes into the given database
+    public void insert_into(RunningDatabase db) {
+    	// parses team if not parsed yet
+    	this.parse();
+    	
+    	// prepares to insert all athletes who are part of this team into the athlete table
+    	long[] athleteIDs = new long[teammates.size()];
+    	String [] athleteNames = new String[teammates.size()];
+    	String [] organizationNames = new String[teammates.size()];	// an array of all the same value to make inserting later easier
+    	int i = 0;
+    	for (long athleteID : teammates.keySet()) {
+    		organizationNames[i] = this.name;
+    		athleteIDs[i] = athleteID;
+    		athleteNames[i++] = teammates.get(athleteID).getName();
+    	}
+    	
+    	// inserts all athletes into database
+    	db.insert_into_athlete(athleteIDs, athleteNames);
+    	
+    	// inserts team into database
+    	// TODO: get the state and division from parsing, rn state is null and division is D3
+    	db.insert_into_organization(name, null, "Division III");
+    	
+    	// tells database all of the athletes are associated with this team
+    	db.insert_into_athlete_competes_for(athleteIDs, organizationNames);
+    	
+    }
+    
+    // a team parser is not needed outside of the team class so this is a private class to team
     private class TeamParser extends Parser {
         private Elements tables;
         private Elements headers;

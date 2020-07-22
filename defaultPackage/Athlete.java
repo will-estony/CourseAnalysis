@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.jsoup.nodes.Element;
@@ -32,7 +33,7 @@ public class Athlete extends Parsable {
 	
 	// static factory method pattern
     // forces Athletes to be created through this static factory method,
-    // thus preventing duplicate teams from being created
+    // thus preventing duplicate athletes from being created
     public static Athlete createNew(long tfrrsID, StatusDisplay statusObject) {
     	// tests if Athlete exists already, and returns it if it does
     	Athlete newAthlete = allAthletes.get(tfrrsID);
@@ -47,23 +48,25 @@ public class Athlete extends Parsable {
     public static Athlete createNew(long tfrrsID) {
     	return createNew(tfrrsID, null);
     }
-	
+    
 	public boolean parse() {
-		// attempts to connect to URL
-		if (!super.parse())
-			return false;
-    	
-		// casts parser to this specific object's parser type
-		AthleteParser thisParser = (AthleteParser) super.parser;
-		
-    	this.name = thisParser.getName();
-    	thisParser.parseBests();
-		thisParser.parsePerformances();
-    	
-    	super.isParsed = true;
-    	// dereferences parser for cleanup as its not needed anymore
-		super.parser = thisParser = null;
-    	return true;
+		if (!isParsed) {	// only parses if not already parsed
+			// attempts to connect to URL
+			if (!super.parse())
+				return false;
+	    	
+			// casts parser to this specific object's parser type
+			AthleteParser thisParser = (AthleteParser) super.parser;
+			
+	    	this.name = thisParser.getName();
+	    	thisParser.parseBests();
+			thisParser.parsePerformances();
+	    	
+	    	super.isParsed = true;
+	    	// dereferences parser for cleanup as its not needed anymore
+			super.parser = thisParser = null;
+		}
+		return true;	// if already parsed or parsed successfully
     }
 	
 	// Some getters //
@@ -71,11 +74,12 @@ public class Athlete extends Parsable {
 	public String getName() { return name; }
 	public String getURL() { return idToUrl(tfrrsID); }
 	public TreeMap<Date, List<Performance>> getPerformances(){ return performances; }
+	public static HashMap<Long, Athlete> getAllAthletes() { return allAthletes; }
 	// returns a list of performances that happened at a given meet
 	// runs in O(log(n))
 	public List<Performance> getPerformances(Meet goalMeet) {
 		// gets the list of performances that happened on the same date
-		List<Performance> retList = performances.get(goalMeet.getDate());
+		List<Performance> retList = performances.get(goalMeet.getStartDate());
 		// checks if the meets are actually the same
 		if (retList.get(0).getMeet().equals(goalMeet))
 			return retList;
@@ -85,12 +89,12 @@ public class Athlete extends Parsable {
 	// adds performance to collection
 	public void addPerformance(Performance p) {
 		// if there is already a performance for this date, and they're not the same performance, then append it to list
-		if (performances.containsKey(p.getDate()) && !performances.get(p.getDate()).contains(p))
-			performances.get(p.getDate()).add(p);
+		if (performances.containsKey(p.getMeet().getStartDate()) && !performances.get(p.getMeet().getStartDate()).contains(p))
+			performances.get(p.getMeet().getStartDate()).add(p);
 		else {	// else create a new list containing the performance and add that
 			List<Performance> newList = new ArrayList<Performance>();
 			newList.add(p);
-			performances.put(p.getDate(), newList);
+			performances.put(p.getMeet().getStartDate(), newList);
 		}
 	}
 	
@@ -131,7 +135,7 @@ public class Athlete extends Parsable {
 		Performance fastestInRange = null;
 		for (List<Performance> perfList : subPerformances.values())
 			for (Performance p : perfList)
-				if (fastestInRange == null || (p.getTime() > 0 && fastestInRange.getTime() > p.getTime()))
+				if (fastestInRange == null || (p.getMark() > 0 && fastestInRange.getMark() > p.getMark()))
 					fastestInRange = p;
 		return fastestInRange;	// and return it
 	}
@@ -163,6 +167,80 @@ public class Athlete extends Parsable {
 	}
 	
 	public Metrics getMetrics(){  return this.metrics; }
+	
+	// inserts this athlete and all their performances into the given database
+    public void insert_into(RunningDatabase db) {
+    	// parses this athlete (if not parsed yet)
+		this.parse();
+		
+//    	// parses all meets this athlete competed in (if they aren't already parsed)
+//    	for (List<Performance> performanceList : performances.values()) {
+//    		performanceList.get(0).getMeet().parse();
+//    	}
+    	
+    	// prepares to insert all performances
+		// counts number of performances
+		int numPerformances = 0;
+		for (List<Performance> performanceList : performances.values()) {
+    		numPerformances += performanceList.size();
+    	}
+		// for inserting meets
+    	long[] meetIDs = new long[numPerformances];
+    	boolean [] isXC_arr = new boolean[numPerformances];
+    	String [] meetNames = new String[numPerformances];
+    	String [] meetStartDates = new String[numPerformances];
+    	short [] meetLengths = new short[numPerformances];
+    	String [] courseNames = new String[numPerformances];
+    	String [] courseStates = new String[numPerformances];
+    	String [] courseCities = new String[numPerformances];
+    	String [] courseTypes = new String[numPerformances];
+    	
+    	// for inserting performances
+    	String [] eventNames = new String[numPerformances];
+    	int [] places = new int[numPerformances];
+    	long [] athleteIDs = new long[numPerformances];
+    	Performance.CREDENTIALS [] athleteCredentials = new Performance.CREDENTIALS[numPerformances];
+    	double [] marks = new double[numPerformances];
+    	int i = 0;
+    	// iterate along all performance lists
+    	for (List<Performance> performanceLists : performances.values()) {
+    		Meet m = performanceLists.get(0).getMeet();	// meet is the same within a performance list
+    		Course c = m.getCourse();					// same with course
+    		// iterate along each performance list
+    		for (Performance p : performanceLists) {
+    			// meet stuff
+    			meetIDs[i] = m.getID();
+    			isXC_arr[i] = m.getIsXC();
+    			meetNames[i] = m.getName();
+    			meetStartDates[i] = m.getStartDate().toString();
+    			meetLengths[i] = m.getLength();
+    			courseNames[i] = c.getName();
+    			courseStates[i] = c.getState();
+    			courseCities[i] = c.getCity();
+    			courseTypes[i] = c.getType().toString();
+    			
+    			// performance stuff
+    			eventNames[i] = p.getEvent();
+    			places[i] = p.getPlace();
+    			athleteIDs[i] = this.tfrrsID;
+    			athleteCredentials[i] = p.getAthleteCredentials();
+    			marks[i++] = p.getMark();
+    		}
+    	}
+
+    	// inserts this athlete into database
+    	db.insert_into_athlete(this.tfrrsID, this.name);
+    	
+    	// inserts all courses into database
+    	db.insert_into_course(courseNames, courseStates, courseCities, courseTypes);
+    	
+    	// inserts all meets into database
+    	db.insert_into_meet(meetIDs, isXC_arr, meetNames, meetStartDates, meetLengths, courseNames, courseStates, courseCities);
+    	
+    	// inserts all the performances this athlete has participated in into database
+    	db.insert_into_performance(meetIDs, eventNames, places, athleteIDs, athleteCredentials, marks);
+
+    }
 
 	private class AthleteParser extends Parser {
 	    private Elements tables;
@@ -238,11 +316,15 @@ public class Athlete extends Parsable {
 	                    
 	                    m.parse();
 	                    
-	                    // creates a new performance passing it the Event, the event time (as a String), 
+	                    
+	                    // TODO: need to parse out place and atheteCredentials
+	                    int place = 1;
+	                    Performance.CREDENTIALS athleteCredentials = Performance.CREDENTIALS.FIRST_YEAR;
+	                    
+	                    // creates a new performance passing it the Event, the event mark (as a double), 
 	                    // the meet (as a Date), and the meet it occurred at
-	                    Performance p = new Performance(split[0], 
-	                    		Performance.timeStringToDouble(split[1]), 
-	                    		new Date(table.select("span").text()), m);
+	                    Performance p = new Performance(m, split[0], place, Performance.timeStringToDouble(split[1]), athleteCredentials);
+
 
 	                    // in order for each performance to have a date, our old approach
 	                    // required the meet to be parsed first and then take the date from there.

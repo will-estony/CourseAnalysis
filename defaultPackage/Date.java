@@ -63,12 +63,74 @@ public class Date implements Comparable<Date> {
 		this.day = day;
 		this.year = year;
 	}
+	// autocasts data types to make it life a little easier
+	public Date(int month, int day, int year) {
+		this((byte) month, (byte) day, (short) year);
+	}
 	
 	// getters
 	public byte getMonth() { return month; }
 	public byte getDay() { return day; }
 	public short getYear() { return year; }
 	
+	// Dates of NCAA D3 XC Nationals
+	// (cross country championships are the Saturday prior to Thanksgiving
+	//  cool to see that they run the race on that Saturday regardless of weather.)
+	private static final Date [] D3XCNationals = {
+			new Date(11, 18, 2000),	// index 0 = year 2000	- Trinity sends team to NCAAs [14th/24]
+			new Date(11, 17, 2001),
+			new Date(11, 23, 2002),	// - Ryan Bak wins NCAAs
+			new Date(11, 22, 2003),
+			new Date(11, 20, 2004),
+			new Date(11, 19, 2005),
+			new Date(11, 18, 2006),	// - Trinity sends team to NCAAs [31st/32] (second to last...)
+			new Date(11, 17, 2007),	// - Trinity sends team to NCAAs [29th/32]
+			new Date(11, 22, 2008),	// - Trinity sends team to NCAAs [7th/32] (damn...)
+			new Date(11, 21, 2009),
+			new Date(11, 20, 2010),	// index 10 = year 2010
+			new Date(11, 19, 2011),
+			new Date(11, 17, 2012),
+			new Date(11, 23, 2013),
+			new Date(11, 22, 2014),
+			new Date(11, 21, 2015),
+			new Date(11, 19, 2016),
+			new Date(11, 18, 2017),
+			new Date(11, 17, 2018),
+			new Date(11, 23, 2019),
+			new Date(11, 21, 2020),// index 20 = year 2020
+			new Date(11, 20, 2021),
+	};
+	
+	// TODO: fill this out
+	// Dates of NCAA D3 Indoor Nationals
+	// (more specifically the date of the last day of the meet, bc these are multi-day meets)
+	private static final Date [] D3IndoorNationals = {
+			new Date(3, 11, 2000)//	March 10-11, 2000	Ryan Bak runs 800m ,fails to make finals by .07
+	};
+	
+	// TODO: fill this out
+	// Dates of NCAA D3 Outdoor Nationals
+	// the last day of the meet
+	private static final Date [] D3OutdoorNationals = {
+			
+	};
+	
+	// returns the official D3 season of this date
+	public String getD3Season() {
+		
+		// everything is already compared to major events of the same year as this date
+		if (this.compareTo(D3IndoorNationals[this.year % 100]) != 1	// if before or on indoor nationals
+			|| this.compareTo(D3XCNationals[this.year % 100]) == 1)	// or after xc nationals
+			return "Winter";
+		else if (this.compareTo(D3OutdoorNationals[this.year % 100 ]) != 1)	// if before or on outdoor nationals
+			return "Spring";
+		else {	// Fall or Summer
+			// TODO: add a way to differentiate between Fall and Summer
+			return "Fall";	// for now we'll just default to Fall
+		}
+	}
+	
+	// returns 1 if this date is later than Date o
 	public int compareTo(Date o) {
 		if (year > o.getYear())
 			return 1;
@@ -88,50 +150,8 @@ public class Date implements Comparable<Date> {
 		return 0;
 	}
 	
+	// converts date to yyyy-[m]m-[d]d format
 	public String toString() {
-		String retString = "";
-		switch (month) {	// first month
-			case 1:
-				retString += "Jan";
-				break;
-			case 2:
-				retString += "Feb";
-				break;
-			case 3:
-				retString += "Mar";
-				break;
-			case 4:
-				retString += "Apr";
-				break;
-			case 5:
-				retString += "May";
-				break;
-			case 6:
-				retString += "Jun";
-				break;
-			case 7:
-				retString += "Jul";
-				break;
-			case 8:
-				retString += "Aug";
-				break;
-			case 9:
-				retString += "Sep";
-				break;
-			case 10:
-				retString += "Oct";
-				break;
-			case 11:
-				retString += "Nov";
-				break;
-			case 12:
-				retString += "Dec";
-				break;
-		}
-		// then day
-		retString += " " + Byte.toString(day);
-		// then year
-		retString += ", " + Short.toString(year);
-		return retString;
+		return Short.toString(year) + "-" + Byte.toString(month) + "-" + Byte.toString(day);
 	}
 }

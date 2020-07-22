@@ -1,26 +1,52 @@
 package defaultPackage;
 
 public class Performance{
-	private String event; //the event the athlete competed in ex. 8k
-    private double time;  //the time the athlete completed the event in, in seconds
-    private Meet meet;    //the meet the performance happened at
-    private Date date;
-
-    public Performance(String event, double time, Date date, Meet meet){
+	
+	public static enum CREDENTIALS {
+		FIRST_YEAR, SOPHOMORE, JUNIOR, SENIOR, UNATTACHED;
+		public String toString() {
+			switch(this) {
+			case FIRST_YEAR:
+				return "First_Year";
+			case SOPHOMORE:
+				return "Sophomore";
+			case JUNIOR:
+				return "Junior";
+			case SENIOR:
+				return "Senior";
+			case UNATTACHED:
+				return "Unattached";
+			default:
+				return null;
+			}
+		}
+	};
+	
+	// Attributes
+	private Meet meet;		//the meet the performance happened at
+	private String event;	//the event the athlete competed in ex. 8k
+	private int place;		//the place this performance resulted in in the competition
+    private double mark;	//the mark the athlete completed the event in, in seconds or meters (depending on the event)
+    private CREDENTIALS athleteCredentials;
+    
+    public Performance(Meet meet, String event, int place, double mark, CREDENTIALS athleteCredentials) {
+    	this.meet = meet;
     	this.event = event;
-    	this.time = time;
-    	this.date = date;
-        this.meet = meet;
+    	this.place = place;
+    	this.mark = mark;
+    	this.athleteCredentials = athleteCredentials;
     }
+    
     // Getters
-    public String getEvent() { return event; }
-    public double getTime() { return time; }
     public Meet getMeet(){ return meet; }
-    public Date getDate() { return date; }
+    public String getEvent() { return event; }
+    public int getPlace() { return place; }
+    public double getMark() { return mark; }
+    public CREDENTIALS getAthleteCredentials() { return athleteCredentials; }
     
     // converts String of the form dd:hh:mm:ss.ms to a double
     public static double timeStringToDouble(String timeString) {
-    	// if the mark was a DNF, DNS, or DQ, store the result as a -1, -2, or -3 respectively
+    	// if the time was a DNF, DNS, or DQ, store the result as a -1, -2, or -3 respectively
     	if (timeString.equals("DNF"))
     		return -1;
     	if (timeString.equals("DNS"))
@@ -32,7 +58,7 @@ public class Performance{
         int indexOfFirstDecimal = timeString.indexOf(".");   // searches for the first decimal point
         // if a decimal was not found
         if (indexOfFirstDecimal == -1) {
-            System.out.println("Parsing Performance Error: no decimal found in time mark");
+            System.out.println("Parsing Performance Error: no decimal found in mark mark");
             return 0;   // leaves function after error
         }
         
@@ -133,7 +159,7 @@ public class Performance{
     public boolean equals(Object o) {
     	if (o instanceof Performance) {
     		Performance p = (Performance) o;
-    		return (time == p.time) && (meet.equals(p.meet));
+    		return (mark == p.mark) && (meet.equals(p.meet));
 
     	} else
     		return super.equals(o);
@@ -142,14 +168,14 @@ public class Performance{
     public String toString(){
     	String perfString;
     	// if the performance is a DNF, DNS, or DQ
-    	if (time == -1)
+    	if (mark == -1)
     		perfString = "DNF";
-    	else if (time == -2)
+    	else if (mark == -2)
     		perfString = "DNS";
-    	else if (time == -3)
+    	else if (mark == -3)
     		perfString = "DQ";
     	else // if it's a normal performance
-    		perfString = timeDoubleToString(time);
-        return event + ": " + perfString + " - " + date;
+    		perfString = timeDoubleToString(mark);
+        return event + ": " + perfString;
     }
 }

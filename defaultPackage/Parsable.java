@@ -79,4 +79,6 @@ public abstract class Parsable {
 				System.out.println(newStatus);
 		}
 	}
+	// force all subclasses to be insertable into a RunningDatabase
+	public abstract void insert_into(RunningDatabase db);
 }
